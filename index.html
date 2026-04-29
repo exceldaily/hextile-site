@@ -26,33 +26,63 @@
 
     <header class="max-w-7xl mx-auto px-8 py-20 text-center">
         <h1 class="text-6xl md:text-8xl font-black mb-6 tracking-tight uppercase">Aesthetics you <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">can hear.</span></h1>
-        <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-medium">Modular acoustic treatment for high-end gaming dens and professional home studios.</p>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-medium">Modular acoustic treatment for high-end gaming dens and professional home studios. Built to last. Designed to snap.</p>
         
-        <div class="relative w-full aspect-video rounded-[40px] overflow-hidden border border-gray-700 shadow-2xl">
-            <img src="hextile-launch.jpg" alt="Hextile modular acoustic wall" class="w-full h-full object-cover">
+        <div class="relative w-full aspect-video rounded-[40px] overflow-hidden border border-gray-700 shadow-2xl shadow-black/30">
+            <img src="hextile-launch.jpg.jpg" alt="Hextile modular acoustic wall" class="w-full h-full object-cover">
         </div>
     </header>
 
-    <section class="max-w-7xl mx-auto px-8 py-10">
+    <section class="max-w-7xl mx-auto px-8 py-20">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bento-card md:col-span-2 flex flex-col justify-between overflow-hidden">
+            
+            <div class="bento-card md:col-span-2 flex flex-col justify-between overflow-hidden relative">
                 <div>
                     <h3 class="text-3xl font-bold mb-4">Infinite Modularity.</h3>
-                    <p class="text-gray-400">Our magnetic mounting system allows you to expand your studio wall one tile at a time.</p>
+                    <p class="text-gray-400 max-w-md">Our magnetic mounting system allows you to expand your studio wall one tile at a time. No glue, no mess, just perfect acoustics.</p>
                 </div>
                 <div class="mt-8 flex gap-4">
                     <div class="w-16 h-16 bg-gray-700 hex-clip"></div>
                     <div class="w-16 h-16 bg-blue-600 hex-clip"></div>
+                    <div class="w-16 h-16 bg-gray-700 hex-clip"></div>
+                </div>
+            </div>
+
+            <div class="bento-card flex flex-col justify-between">
+                <div>
+                    <img src="texture.jpg.jpg" alt="Hextile texture" class="w-full h-32 rounded-xl object-cover mb-6 border border-gray-800">
+                    <h3 class="text-xl font-bold mb-2">High-Density PET</h3>
+                    <p class="text-gray-400 text-sm">Industrial-grade absorption with a premium felt finish. Fire-rated and eco-friendly.</p>
                 </div>
             </div>
 
             <div class="bento-card">
-                <img src="texture.jpg" alt="Hextile texture" class="w-full h-32 rounded-xl object-cover mb-6 border border-gray-800">
-                <h3 class="text-xl font-bold mb-2">High-Density PET</h3>
-                <p class="text-gray-400 text-sm">Industrial-grade absorption with a premium felt finish.</p>
+                <h3 class="text-xl font-bold mb-2 uppercase tracking-tight">Zero-Fade Colors</h3>
+                <p class="text-gray-400 text-sm">UV-resistant dyes ensure your studio looks as good in Year 10 as it did on Day 1.</p>
+            </div>
+
+            <div class="bento-card md:col-span-2 flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Coming Soon: The Hextile Room Planner</h3>
+                    <p class="text-gray-400">Upload a photo of your wall and let our AI calculate exactly how many tiles you need.</p>
+                </div>
+                <div class="hidden md:block bg-blue-600/20 text-blue-400 px-4 py-2 rounded-full text-xs font-bold border border-blue-500/30">
+                    BETA 2026
+                </div>
             </div>
         </div>
     </section>
+
+    <footer class="bg-[#050505] py-28 border-t border-gray-900">
+        <div class="max-w-3xl mx-auto text-center px-8">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Get the Launch Discount.</h2>
+            <p class="text-gray-400 mb-10 text-lg">We're shipping the first 500 sets in July 2026. Join the list for 30% off.</p>
+            <form class="flex flex-col md:flex-row gap-4" onsubmit="return false;">
+                <input type="email" placeholder="Your Email Address" class="flex-grow bg-gray-900 border border-gray-700 rounded-full px-8 py-5 focus:outline-none focus:border-blue-500 transition">
+                <button class="bg-blue-600 text-white font-bold px-12 py-5 rounded-full hover:bg-blue-500 transition shadow-lg shadow-blue-900/20">Reserve My Set</button>
+            </form>
+        </div>
+    </footer>
 
 </body>
 </html>
