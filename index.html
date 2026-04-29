@@ -9,8 +9,9 @@
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
-            background: radial-gradient(circle at top, #161616 0%, #0a0a0a 100%);
+            background: radial-gradient(circle at top, #1a1a1a 0%, #0a0a0a 100%);
             color: #f5f5f5; 
+            scroll-behavior: smooth;
         }
         .hex-clip { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
         .bento-card { 
@@ -21,7 +22,8 @@
             padding: 2rem; 
             transition: all 0.3s ease; 
         }
-        .tab-btn.active { background: white; color: black; }
+        .bento-card:hover { border-color: rgba(255, 255, 255, 0.2); transform: translateY(-5px); }
+        .tab-btn.active { background: white; color: black; border-color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: grid; }
     </style>
@@ -29,7 +31,14 @@
 <body class="antialiased min-h-screen">
 
     <nav class="flex justify-between items-center p-8 max-w-7xl mx-auto">
-        <div class="text-2xl font-black tracking-tighter">HEXTILE<span class="text-blue-500">.</span></div>
+        <div class="flex items-center gap-3">
+            <svg class="w-10 h-10" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21.5 5C17.9102 5 15 7.91015 15 11.5V48.5C15 52.0898 17.9102 55 21.5 55H38.5C42.0898 55 45 52.0898 45 48.5V23L33 5H21.5Z" fill="#2563eb"/>
+                <path d="M15 48.5V31L3 17V48.5C3 52.0898 5.91015 55 9.5 55H15V48.5Z" fill="#1e40af"/>
+                <path d="M57 17L45 31V48.5C45 52.0898 42.0898 55 38.5 55H33L21 41.5V48.5C21 52.0898 23.9102 55 27.5 55H33L45 31L57 17Z" fill="#111111"/>
+            </svg>
+            <div class="text-2xl font-black tracking-tighter">HEXTILE<span class="text-blue-500">.</span><span class="text-gray-500 text-sm ml-1 font-medium tracking-normal">studio</span></div>
+        </div>
         <div class="space-x-8 text-sm font-medium text-gray-400 uppercase tracking-widest flex items-center">
             <a href="#shop" class="hover:text-white transition text-[10px]">The Tiles</a>
             <a href="#video" class="hover:text-white transition text-[10px]">Showcase</a>
@@ -39,7 +48,11 @@
 
     <header class="max-w-7xl mx-auto px-8 py-12 text-center">
         <h1 class="text-6xl md:text-8xl font-black mb-6 tracking-tight uppercase leading-none italic">Aesthetics you <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">can hear.</span></h1>
-        <div class="relative w-full aspect-video rounded-[40px] overflow-hidden border border-white/10 shadow-2xl mb-10">
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+            Premium PET acoustic treatment for professional home studios. <br>
+            <span class="text-blue-400">Fire-rated. Eco-friendly. Engineered to perform.</span>
+        </p>
+        <div class="relative w-full aspect-video rounded-[40px] overflow-hidden border border-white/10 shadow-2xl mb-20">
             <img src="hextile-launch.jpg.jpg" alt="Hextile acoustic studio wall" class="w-full h-full object-cover">
         </div>
     </header>
@@ -56,33 +69,33 @@
         <div id="colors" class="tab-content active grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bento-card text-center">
                 <div class="w-24 h-24 bg-[#1a1a1a] hex-clip mx-auto mb-4 border border-white/10 shadow-lg"></div>
-                <h3 class="font-bold">Midnight Charcoal</h3>
+                <h3 class="font-bold uppercase tracking-widest text-xs">Midnight Charcoal</h3>
             </div>
             <div class="bento-card text-center">
                 <div class="w-24 h-24 bg-blue-900 hex-clip mx-auto mb-4 border border-white/10 shadow-lg"></div>
-                <h3 class="font-bold">Deep Sea Navy</h3>
+                <h3 class="font-bold uppercase tracking-widest text-xs">Deep Sea Navy</h3>
             </div>
             <div class="bento-card text-center">
                 <div class="w-24 h-24 bg-gray-400 hex-clip mx-auto mb-4 border border-white/10 shadow-lg"></div>
-                <h3 class="font-bold">Industrial Silver</h3>
+                <h3 class="font-bold uppercase tracking-widest text-xs">Industrial Silver</h3>
             </div>
         </div>
 
         <div id="shapes" class="tab-content grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bento-card flex items-center justify-between">
-                <div><h3 class="text-xl font-bold">The Classic Hex</h3></div>
+                <h3 class="text-xl font-bold uppercase italic">The Classic Hex</h3>
                 <div class="w-16 h-16 bg-blue-500 hex-clip"></div>
             </div>
             <div class="bento-card flex items-center justify-between">
-                <div><h3 class="text-xl font-bold">The Square</h3></div>
+                <h3 class="text-xl font-bold uppercase italic">The Square</h3>
                 <div class="w-16 h-16 bg-purple-500 rounded-lg"></div>
             </div>
         </div>
     </section>
 
     <section id="video" class="max-w-7xl mx-auto px-8 py-20">
-        <div class="bento-card overflow-hidden p-0 border-none relative group">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 flex flex-col justify-end p-10">
+        <div class="bento-card overflow-hidden p-0 border-none relative group rounded-[40px]">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10 flex flex-col justify-end p-10">
                 <h2 class="text-4xl font-black uppercase italic leading-none">Studio Grade<br>Performance.</h2>
                 <p class="text-gray-400 mt-4 max-w-lg">Watch how our high-density PET panels transform a standard room into a professional recording space.</p>
             </div>
@@ -92,14 +105,28 @@
         </div>
     </section>
 
-    <footer class="bg-black/50 py-20 border-t border-white/5">
-        <div class="max-w-3xl mx-auto text-center px-8">
-            <h2 class="text-3xl font-black italic uppercase">Join the July Batch</h2>
-            <p class="text-gray-500 mt-4 mb-8">Limited production run. Reserve your spot for early access.</p>
-            <div class="flex flex-col md:flex-row gap-4">
-                <input type="email" placeholder="Email Address" class="flex-grow bg-white/5 border border-white/10 rounded-full px-6 py-4 focus:outline-none focus:border-blue-500">
-                <button class="bg-blue-600 text-white font-black uppercase tracking-widest px-10 py-4 rounded-full hover:bg-blue-500 transition">Reserve</button>
+    <section class="max-w-7xl mx-auto px-8 py-10 pb-32">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bento-card flex flex-col justify-between">
+                <img src="texture.jpg.jpg" alt="Hextile texture" class="w-full h-32 rounded-xl object-cover mb-6 border border-white/10">
+                <h3 class="text-xl font-bold mb-2">Industrial PET</h3>
+                <p class="text-gray-400 text-sm font-medium">Precision friction-fit tiles engineered for NRC 0.85+ absorption.</p>
             </div>
+            <div class="bento-card md:col-span-2 flex flex-col justify-center">
+                <h3 class="text-2xl font-black uppercase italic text-blue-500 mb-2">Zero Maintenance.</h3>
+                <p class="text-gray-400 leading-relaxed">Made from 100% recyclable polyester fibers. Class A Fire Rated, eco-certified, and designed to last a lifetime without fading or off-gassing.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black/50 py-20 border-t border-white/5 text-center">
+        <div class="max-w-3xl mx-auto px-8">
+            <h2 class="text-3xl font-black italic uppercase mb-8 tracking-tighter">Ready to upgrade?</h2>
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="email" placeholder="Email Address" class="flex-grow bg-white/5 border border-white/10 rounded-full px-6 py-4 focus:outline-none focus:border-blue-500 transition">
+                <button class="bg-blue-600 text-white font-black uppercase tracking-widest px-10 py-4 rounded-full hover:bg-blue-500 transition shadow-xl shadow-blue-600/20">Reserve</button>
+            </div>
+            <p class="text-[10px] text-gray-600 mt-8 uppercase tracking-widest">© 2026 Hextile.studio | Phetchaburi, Thailand</p>
         </div>
     </footer>
 
