@@ -32,17 +32,13 @@
 
     <nav class="flex justify-between items-center p-8 max-w-7xl mx-auto">
         <div class="flex items-center gap-3">
-            <svg class="w-10 h-10" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21.5 5C17.9102 5 15 7.91015 15 11.5V48.5C15 52.0898 17.9102 55 21.5 55H38.5C42.0898 55 45 52.0898 45 48.5V23L33 5H21.5Z" fill="#2563eb"/>
-                <path d="M15 48.5V31L3 17V48.5C3 52.0898 5.91015 55 9.5 55H15V48.5Z" fill="#1e40af"/>
-                <path d="M57 17L45 31V48.5C45 52.0898 42.0898 55 38.5 55H33L21 41.5V48.5C21 52.0898 23.9102 55 27.5 55H33L45 31L57 17Z" fill="#111111"/>
-            </svg>
-            <div class="text-2xl font-black tracking-tighter">HEXTILE<span class="text-blue-500">.</span><span class="text-gray-500 text-sm ml-1 font-medium tracking-normal">studio</span></div>
+            <img src="logo.png" alt="Hextile Logo" class="w-10 h-10 object-contain">
+            <div class="text-2xl font-black tracking-tighter uppercase italic">HEXTILE<span class="text-blue-500">.</span><span class="text-gray-500 text-sm ml-1 font-medium tracking-normal not-italic">studio</span></div>
         </div>
         <div class="space-x-8 text-sm font-medium text-gray-400 uppercase tracking-widest flex items-center">
             <a href="#shop" class="hover:text-white transition text-[10px]">The Tiles</a>
             <a href="#video" class="hover:text-white transition text-[10px]">Showcase</a>
-            <a href="#" class="bg-white text-black px-5 py-2.5 rounded-full hover:bg-blue-600 hover:text-white transition text-[10px] font-black">JOIN LAUNCH</a>
+            <a href="#" class="bg-white text-black px-5 py-2.5 rounded-full hover:bg-blue-600 hover:text-white transition text-[10px] font-black tracking-tighter">JOIN LAUNCH</a>
         </div>
     </nav>
 
@@ -99,51 +95,5 @@
                 <h2 class="text-4xl font-black uppercase italic leading-none">Studio Grade<br>Performance.</h2>
                 <p class="text-gray-400 mt-4 max-w-lg">Watch how our high-density PET panels transform a standard room into a professional recording space.</p>
             </div>
-            <video class="w-full aspect-video object-cover brightness-50 group-hover:brightness-75 transition-all duration-700" autoplay muted loop playsinline>
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-recording-studio-with-equipment-and-instruments-34537-large.mp4" type="video/mp4">
-            </video>
-        </div>
-    </section>
-
-    <section class="max-w-7xl mx-auto px-8 py-10 pb-32">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bento-card flex flex-col justify-between">
-                <img src="texture.jpg.jpg" alt="Hextile texture" class="w-full h-32 rounded-xl object-cover mb-6 border border-white/10">
-                <h3 class="text-xl font-bold mb-2">Industrial PET</h3>
-                <p class="text-gray-400 text-sm font-medium">Precision friction-fit tiles engineered for NRC 0.85+ absorption.</p>
-            </div>
-            <div class="bento-card md:col-span-2 flex flex-col justify-center">
-                <h3 class="text-2xl font-black uppercase italic text-blue-500 mb-2">Zero Maintenance.</h3>
-                <p class="text-gray-400 leading-relaxed">Made from 100% recyclable polyester fibers. Class A Fire Rated, eco-certified, and designed to last a lifetime without fading or off-gassing.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-black/50 py-20 border-t border-white/5 text-center">
-        <div class="max-w-3xl mx-auto px-8">
-            <h2 class="text-3xl font-black italic uppercase mb-8 tracking-tighter">Ready to upgrade?</h2>
-            <div class="flex flex-col md:flex-row gap-4">
-                <input type="email" placeholder="Email Address" class="flex-grow bg-white/5 border border-white/10 rounded-full px-6 py-4 focus:outline-none focus:border-blue-500 transition">
-                <button class="bg-blue-600 text-white font-black uppercase tracking-widest px-10 py-4 rounded-full hover:bg-blue-500 transition shadow-xl shadow-blue-600/20">Reserve</button>
-            </div>
-            <p class="text-[10px] text-gray-600 mt-8 uppercase tracking-widest">© 2026 Hextile.studio | Phetchaburi, Thailand</p>
-        </div>
-    </footer>
-
-    <script>
-        function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-    </script>
-</body>
-</html>
+            <video class="w-full aspect-video object-cover brightness-50 group-hover:brightness-75 transition-all duration-700" autoplay muted loop playsinline shadow-2xl>
+                <source src="https://assets.
