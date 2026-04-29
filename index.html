@@ -26,13 +26,15 @@
         .tab-btn.active { background: white; color: black; border-color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: grid; }
+        /* Fix for broken image icon */
+        img[src="logo.png"] { min-width: 40px; min-height: 40px; }
     </style>
 </head>
 <body class="antialiased min-h-screen">
 
     <nav class="flex justify-between items-center p-8 max-w-7xl mx-auto">
         <div class="flex items-center gap-4">
-            <img src="logo.png" alt="Hextile Logo" class="w-10 h-10 object-contain">
+            <img src="logo.png" alt="" onerror="this.style.display='none'" class="w-10 h-10 object-contain">
             <div class="text-2xl font-black tracking-tighter uppercase italic leading-none">HEXTILE<span class="text-blue-500">.</span><span class="text-gray-500 text-sm ml-1 font-medium tracking-normal not-italic uppercase">studio</span></div>
         </div>
         <div class="space-x-8 text-sm font-medium text-gray-400 uppercase tracking-widest flex items-center">
@@ -143,4 +145,3 @@
     </script>
 </body>
 </html>
- 
