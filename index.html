@@ -32,16 +32,16 @@
 
     <nav class="flex justify-between items-center p-8 max-w-7xl mx-auto">
         <div class="flex items-center gap-4">
-            <div class="flex gap-1 items-center">
-                <div class="w-2.5 h-8 bg-blue-600 rounded-sm"></div>
-                <div class="w-3 h-3 bg-white opacity-20 rounded-full"></div>
-                <div class="w-2.5 h-8 bg-blue-600 rounded-sm"></div>
+            <div class="relative w-10 h-10 flex items-center justify-center">
+                <div class="absolute inset-0 bg-blue-600 hex-clip opacity-20 animate-pulse"></div>
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-700 hex-clip shadow-lg shadow-blue-500/50"></div>
             </div>
-            <div class="text-2xl font-black tracking-tighter uppercase italic leading-none">
-                HEXTILE<span class="text-blue-500">.</span><span class="text-gray-500 text-sm ml-1 font-medium tracking-normal not-italic uppercase">studio</span>
+            <div class="flex flex-col leading-none">
+                <span class="text-2xl font-black tracking-tighter uppercase italic">HEXTILE<span class="text-blue-500">.</span></span>
+                <span class="text-[10px] text-gray-500 font-bold tracking-[0.2em] uppercase">Studio Solutions</span>
             </div>
         </div>
-        <div class="space-x-8 text-sm font-medium text-gray-400 uppercase tracking-widest flex items-center">
+        <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-400 uppercase tracking-widest items-center">
             <a href="#shop" class="hover:text-white transition text-[10px]">The Tiles</a>
             <a href="#video" class="hover:text-white transition text-[10px]">Showcase</a>
             <a href="#" class="bg-white text-black px-6 py-2.5 rounded-full hover:bg-blue-600 hover:text-white transition text-[10px] font-black tracking-tighter uppercase">Join Launch</a>
@@ -54,7 +54,7 @@
             Premium PET acoustic treatment for professional home studios. <br>
             <span class="text-blue-400">Fire-rated. Eco-friendly. Engineered to perform.</span>
         </p>
-        <div class="relative w-full aspect-video rounded-[40px] overflow-hidden border border-white/10 shadow-2xl mb-20">
+        <div class="relative w-full aspect-video rounded-[40px] overflow-hidden border border-white/10 shadow-2xl mb-20 shadow-blue-900/10">
             <img src="hextile-launch.jpg.jpg" alt="Hextile acoustic studio wall" class="w-full h-full object-cover">
         </div>
     </header>
@@ -69,16 +69,16 @@
         </div>
 
         <div id="colors" class="tab-content active grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bento-card text-center">
-                <div class="w-24 h-24 bg-[#1a1a1a] hex-clip mx-auto mb-4 border border-white/10 shadow-lg"></div>
+            <div class="bento-card text-center group">
+                <div class="w-24 h-24 bg-[#1a1a1a] hex-clip mx-auto mb-4 border border-white/10 shadow-lg group-hover:scale-110 transition-transform"></div>
                 <h3 class="font-bold uppercase tracking-widest text-xs">Midnight Charcoal</h3>
             </div>
-            <div class="bento-card text-center">
-                <div class="w-24 h-24 bg-blue-900 hex-clip mx-auto mb-4 border border-white/10 shadow-lg"></div>
+            <div class="bento-card text-center group">
+                <div class="w-24 h-24 bg-blue-900 hex-clip mx-auto mb-4 border border-white/10 shadow-lg group-hover:scale-110 transition-transform"></div>
                 <h3 class="font-bold uppercase tracking-widest text-xs">Deep Sea Navy</h3>
             </div>
-            <div class="bento-card text-center">
-                <div class="w-24 h-24 bg-gray-400 hex-clip mx-auto mb-4 border border-white/10 shadow-lg"></div>
+            <div class="bento-card text-center group">
+                <div class="w-24 h-24 bg-gray-400 hex-clip mx-auto mb-4 border border-white/10 shadow-lg group-hover:scale-110 transition-transform"></div>
                 <h3 class="font-bold uppercase tracking-widest text-xs">Industrial Silver</h3>
             </div>
         </div>
@@ -99,7 +99,7 @@
         <div class="bento-card overflow-hidden p-0 border-none relative group rounded-[40px]">
             <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent z-10 flex flex-col justify-end p-10">
                 <h2 class="text-4xl font-black uppercase italic leading-none">Studio Grade<br>Performance.</h2>
-                <p class="text-gray-400 mt-4 max-w-lg">Watch how our high-density PET panels transform a standard room into a professional recording space.</p>
+                <p class="text-gray-400 mt-4 max-w-lg">Engineered for maximum sound absorption with zero aesthetic compromise.</p>
             </div>
             <video class="w-full aspect-video object-cover brightness-50 group-hover:brightness-75 transition-all duration-700" autoplay muted loop playsinline>
                 <source src="https://assets.mixkit.co/videos/preview/mixkit-recording-studio-with-equipment-and-instruments-34537-large.mp4" type="video/mp4">
@@ -111,24 +111,24 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bento-card flex flex-col justify-between">
                 <img src="texture.jpg.jpg" alt="Hextile texture" class="w-full h-32 rounded-xl object-cover mb-6 border border-white/10">
-                <h3 class="text-xl font-bold mb-2 uppercase tracking-tighter">Industrial PET</h3>
-                <p class="text-gray-400 text-sm font-medium">Precision friction-fit tiles engineered for NRC 0.85+ absorption.</p>
+                <h3 class="text-xl font-bold mb-2 uppercase tracking-tighter">Precision PET</h3>
+                <p class="text-gray-400 text-sm font-medium">12mm high-density fiber panels with a 0.85 NRC rating.</p>
             </div>
             <div class="bento-card md:col-span-2 flex flex-col justify-center">
                 <h3 class="text-2xl font-black uppercase italic text-blue-500 mb-2">Zero Maintenance.</h3>
-                <p class="text-gray-400 leading-relaxed">Made from 100% recyclable polyester fibers. Class A Fire Rated, eco-certified, and designed to last a lifetime without fading or off-gassing.</p>
+                <p class="text-gray-400 leading-relaxed italic">Fire-rated and eco-certified. No off-gassing, no fading, just professional acoustics for your gaming or recording setup.</p>
             </div>
         </div>
     </section>
 
     <footer class="bg-black/50 py-20 border-t border-white/5 text-center">
         <div class="max-w-3xl mx-auto px-8">
-            <h2 class="text-3xl font-black italic uppercase mb-8 tracking-tighter">Ready to upgrade?</h2>
+            <h2 class="text-3xl font-black italic uppercase mb-8 tracking-tighter">Join the July Batch</h2>
             <div class="flex flex-col md:flex-row gap-4">
                 <input type="email" placeholder="Email Address" class="flex-grow bg-white/5 border border-white/10 rounded-full px-6 py-4 focus:outline-none focus:border-blue-500 transition">
-                <button class="bg-blue-600 text-white font-black uppercase tracking-widest px-10 py-4 rounded-full hover:bg-blue-500 transition">Reserve</button>
+                <button class="bg-blue-600 text-white font-black uppercase tracking-widest px-10 py-4 rounded-full hover:bg-blue-500 transition">Reserve My Set</button>
             </div>
-            <p class="text-[10px] text-gray-600 mt-8 uppercase tracking-widest">© 2026 Hextile.studio | Phetchaburi, Thailand</p>
+            <p class="text-[10px] text-gray-600 mt-8 uppercase tracking-widest italic">Hextile Studio Solutions | Phetchaburi, Thailand</p>
         </div>
     </footer>
 
