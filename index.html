@@ -1,431 +1,223 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Hextile | Premium PET Acoustic Panels | Studio Sound Treatment</title>
 
     <meta name="description" content="Hextile Modular Acoustic Panels — NRC 0.85+ rated, Class A fire-rated PET fiber hexagon tiles. Professional studio sound treatment that looks as good as it performs. Fire-rated. Eco-friendly. Renter-friendly.">
-
     <meta name="keywords" content="acoustic wall panels, studio sound treatment, hexagon acoustic tiles, PET acoustic felt, DIY soundproofing, home studio decor">
-
     <meta property="og:title" content="Hextile | Premium PET Acoustic Panels">
-
     <meta property="og:description" content="Transform any wall into a professional acoustic landscape in under 30 minutes. Fire-rated. Eco-friendly. Engineered to perform.">
-
     <meta property="og:type" content="website">
 
-
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
-
         * { box-sizing: border-box; }
 
         body {
-
             font-family: 'Inter', sans-serif;
-
             background: #0a0a0a;
-
             color: #f5f5f5;
-
             scroll-behavior: smooth;
-
         }
 
         .bg-hero { background: radial-gradient(ellipse at top center, #111827 0%, #0a0a0a 65%); }
 
         .hex-clip { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
 
-
-
-        /* Cards */
-
         .bento-card {
-
             background: rgba(18, 18, 18, 0.85);
-
             backdrop-filter: blur(14px);
-
             border: 1px solid rgba(255, 255, 255, 0.06);
-
             border-radius: 24px;
-
             padding: 2rem;
-
             transition: all 0.35s ease;
-
         }
 
         .bento-card:hover {
-
             border-color: rgba(59, 130, 246, 0.25);
-
             transform: translateY(-4px);
-
             box-shadow: 0 24px 48px rgba(59, 130, 246, 0.07);
-
         }
-
-
-
-        /* Sticky nav */
 
         .nav-sticky {
-
             position: sticky;
-
             top: 0;
-
             z-index: 100;
-
             background: rgba(10, 10, 10, 0.88);
-
             backdrop-filter: blur(20px);
-
             -webkit-backdrop-filter: blur(20px);
-
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-
         }
-
-
-
-        /* Gradient text */
 
         .gradient-text {
-
             background: linear-gradient(130deg, #60a5fa 0%, #a855f7 100%);
-
             -webkit-background-clip: text;
-
             -webkit-text-fill-color: transparent;
-
             background-clip: text;
-
         }
 
-
-
-        /* Primary button */
-
         .btn-primary {
-
             display: inline-block;
-
             background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-
             color: white;
-
             font-weight: 900;
-
             text-transform: uppercase;
-
             letter-spacing: 0.08em;
-
             border-radius: 9999px;
-
             transition: all 0.3s ease;
-
             box-shadow: 0 0 32px rgba(37, 99, 235, 0.28);
-
             text-align: center;
-
             cursor: pointer;
-
         }
 
         .btn-primary:hover {
-
             box-shadow: 0 0 56px rgba(37, 99, 235, 0.48);
-
             transform: translateY(-2px);
-
             opacity: 0.92;
-
         }
 
-
-
-        /* Secondary button */
-
         .btn-secondary {
-
             display: inline-block;
-
             background: rgba(255,255,255,0.05);
-
             border: 1px solid rgba(255,255,255,0.12);
-
             color: white;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 0.08em;
-
             border-radius: 9999px;
-
             transition: all 0.3s ease;
-
             text-align: center;
-
         }
 
         .btn-secondary:hover { background: rgba(255,255,255,0.1); }
 
-
-
-        /* Trust badges */
-
         .trust-badge {
-
             background: rgba(255,255,255,0.03);
-
             border: 1px solid rgba(255,255,255,0.07);
-
             border-radius: 10px;
-
             padding: 0.6rem 1rem;
-
             display: inline-flex;
-
             align-items: center;
-
             gap: 6px;
-
             font-size: 10px;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 0.08em;
-
             color: #9ca3af;
-
         }
 
-
-
-        /* Tab buttons */
-
         .tab-btn { transition: all 0.2s ease; }
-
         .tab-btn.active { background: white; color: black; border-color: white; }
-
         .tab-content { display: none; }
-
         .tab-content.active { display: grid; }
 
-
-
-        /* Stats */
-
         .stat-cell {
-
             text-align: center;
-
             padding: 2.25rem 1.5rem;
-
             border-right: 1px solid rgba(255,255,255,0.05);
-
         }
 
         .stat-cell:last-child { border-right: none; }
 
-
-
-        /* Glow divider line */
-
         .glow-line {
-
             width: 56px;
-
             height: 3px;
-
             background: linear-gradient(90deg, #2563eb, #7c3aed);
-
             border-radius: 999px;
-
             margin-bottom: 1.25rem;
-
         }
 
-
-
-        /* Pricing */
-
         .pricing-card {
-
             background: rgba(18, 18, 18, 0.9);
-
             border: 1px solid rgba(255,255,255,0.07);
-
             border-radius: 28px;
-
             padding: 2.5rem;
-
             position: relative;
-
             transition: all 0.3s ease;
-
         }
 
         .pricing-card.featured {
-
             border-color: rgba(59,130,246,0.45);
-
             box-shadow: 0 0 70px rgba(59,130,246,0.1), inset 0 0 40px rgba(59,130,246,0.02);
-
         }
 
         .pricing-badge {
-
             position: absolute;
-
             top: -13px;
-
             left: 50%;
-
             transform: translateX(-50%);
-
             background: linear-gradient(135deg, #2563eb, #7c3aed);
-
             color: white;
-
             font-size: 9px;
-
             font-weight: 900;
-
             text-transform: uppercase;
-
             letter-spacing: 0.15em;
-
             padding: 4px 18px;
-
             border-radius: 999px;
-
             white-space: nowrap;
-
         }
-
-
-
-        /* FAQ */
 
         .faq-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
 
         .faq-question {
-
             width: 100%;
-
             text-align: left;
-
             padding: 1.25rem 0;
-
             font-weight: 700;
-
             font-size: 0.9rem;
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             cursor: pointer;
-
             color: #e5e7eb;
-
             background: none;
-
             border: none;
-
             gap: 1rem;
-
         }
 
         .faq-question:hover { color: #ffffff; }
 
         .faq-answer {
-
             display: none;
-
             padding-bottom: 1.25rem;
-
             color: #9ca3af;
-
             font-size: 0.875rem;
-
             line-height: 1.75;
-
         }
 
         .faq-answer.open { display: block; }
 
         .faq-icon {
-
             width: 26px;
-
             height: 26px;
-
             border-radius: 50%;
-
             background: rgba(59,130,246,0.1);
-
             border: 1px solid rgba(59,130,246,0.25);
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             flex-shrink: 0;
-
             font-size: 15px;
-
             color: #60a5fa;
-
             transition: transform 0.25s ease, background 0.25s ease;
-
         }
 
         .faq-question.open .faq-icon {
-
             background: rgba(59,130,246,0.25);
-
             transform: rotate(45deg);
-
         }
 
-
-
-        /* Spec rows */
-
         .spec-row {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             padding: 0.875rem 0;
-
             border-bottom: 1px solid rgba(255,255,255,0.04);
-
             font-size: 0.875rem;
-
         }
 
         .spec-row:last-child { border-bottom: none; }
@@ -434,107 +226,146 @@
 
         .spec-value { font-weight: 700; color: #e5e7eb; }
 
-
-
-        /* Scroll reveal */
-
         .reveal {
-
             opacity: 0;
-
             transform: translateY(28px);
-
             transition: opacity 0.65s ease, transform 0.65s ease;
-
         }
 
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
-
-
-        /* Step numbers */
-
         .step-num {
-
             width: 50px;
-
             height: 50px;
-
             border-radius: 50%;
-
             background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.15));
-
             border: 1px solid rgba(59,130,246,0.3);
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             font-size: 1.125rem;
-
             font-weight: 900;
-
             color: #60a5fa;
-
             flex-shrink: 0;
-
         }
-
-
-
-        /* Mobile menu */
 
         #mobile-menu { display: none; }
 
         #mobile-menu.open { display: block; }
 
-
-
-        /* Hamburger */
-
         .hamburger span {
-
             display: block;
-
             width: 22px;
-
             height: 2px;
-
             background: white;
-
             border-radius: 2px;
-
             transition: all 0.3s;
-
         }
 
-
-
-        /* Input focus ring */
-
-        input:focus, textarea:focus, select:focus {
-
+        input:focus,
+        textarea:focus,
+        select:focus {
             outline: none;
-
             border-color: rgba(59,130,246,0.6) !important;
-
             box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
-
         }
-
-
-
-        /* Checklist icons */
 
         .check-blue { color: #60a5fa; }
 
         .check-purple { color: #a855f7; }
 
-    </style>
+        @media (max-width: 639px) {
+            html,
+            body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
 
+            #video {
+                padding: 3.5rem 1.25rem 4rem;
+                scroll-margin-top: 84px;
+            }
+
+            #video .text-center {
+                margin-bottom: 1.75rem;
+            }
+
+            #video > .relative.group {
+                border-radius: 28px;
+                background: rgba(18, 18, 18, 0.9);
+            }
+
+            #video > .relative.group > .absolute {
+                position: relative;
+                inset: auto;
+                display: block;
+                padding: 1.5rem 1.25rem 1.75rem;
+                text-align: center;
+                background: linear-gradient(180deg, rgba(0,0,0,0.95), rgba(10,10,10,0.9));
+            }
+
+            #video > .relative.group > .absolute > div {
+                max-width: 19rem;
+                margin-inline: auto;
+            }
+
+            #video > .relative.group h2 {
+                font-size: 1.875rem;
+                line-height: 0.95;
+                letter-spacing: -0.03em;
+                margin-bottom: 0.875rem;
+            }
+
+            #video > .relative.group p {
+                font-size: 0.8125rem;
+                line-height: 1.65;
+                margin-bottom: 1.25rem;
+            }
+
+            #video > .relative.group .btn-primary {
+                padding: 0.875rem 1.75rem;
+                font-size: 0.75rem;
+            }
+
+            #video video {
+                aspect-ratio: 16 / 10;
+                border-top: 1px solid rgba(255,255,255,0.06);
+            }
+
+            .bento-card:has(.spec-row) {
+                padding: 1.25rem;
+                border-radius: 22px;
+            }
+
+            .spec-row {
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+                gap: 0.35rem;
+                padding: 1rem 0;
+                line-height: 1.45;
+            }
+
+            .spec-label,
+            .spec-value {
+                width: 100%;
+                text-align: left;
+            }
+
+            .spec-label {
+                font-size: 0.8125rem;
+                line-height: 1.35;
+            }
+
+            .spec-value {
+                font-size: 0.9375rem;
+                line-height: 1.45;
+                overflow-wrap: anywhere;
+            }
+        }
+    </style>
 </head>
+
 
 <body class="antialiased min-h-screen">
 
@@ -1202,7 +1033,8 @@
 
             <p class="text-gray-400 text-sm mb-6 leading-relaxed">12 high-density hex tiles. Perfect for a focused treatment zone, vocal corner, or first-time studio setup.</p>
 
-            <div class="text-5xl font-black mb-1">฿2,990</div>
+            <div class="text-5xl font-black mb-1">>$93</div>
+
 
             <div class="text-gray-500 text-xs mb-8">Free shipping within Thailand</div>
 
@@ -1236,7 +1068,7 @@
 
             <p class="text-gray-400 text-sm mb-6 leading-relaxed">12 Charcoal + 4 Navy tiles. The perfect vocal booth configuration — our most-requested combination.</p>
 
-            <div class="text-5xl font-black gradient-text mb-1">฿4,490</div>
+            <div class="text-5xl font-black gradient-text mb-1">$139</div>
 
             <div class="text-gray-500 text-xs mb-8">Free worldwide shipping</div>
 
@@ -1272,7 +1104,7 @@
 
             <p class="text-gray-400 text-sm mb-6 leading-relaxed">Maximum coverage for full rooms, home theaters, or gaming setups. 30 tiles, fully customizable mix.</p>
 
-            <div class="text-5xl font-black mb-1">฿8,990</div>
+            <div class="text-5xl font-black mb-1">$279</div>
 
             <div class="text-gray-500 text-xs mb-8">Free global shipping + priority support</div>
 
