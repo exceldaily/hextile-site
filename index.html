@@ -1,14 +1,12 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hextile | Premium PET Acoustic Panels | Studio Sound Treatment</title>
-    <meta name="description" content="Hextile Modular Acoustic Panels — NRC 0.85+ rated, Class A fire-rated PET fiber hexagon tiles. Professional studio sound treatment that looks as good as it performs. Fire-rated. Eco-friendly. Renter-friendly.">
-    <meta name="keywords" content="acoustic wall panels, studio sound treatment, hexagon acoustic tiles, PET acoustic felt, DIY soundproofing, home studio decor">
-    <meta property="og:title" content="Hextile | Premium PET Acoustic Panels">
-    <meta property="og:description" content="Transform any wall into a professional acoustic landscape in under 30 minutes. Fire-rated. Eco-friendly. Engineered to perform.">
-    <meta property="og:type" content="website">
-
+    <meta name="description" content="Hextile Modular Acoustic Panels — NRC 0.85+ rated, Class A fire-rated PET fiber hexagon tiles. Professional studio sound treatment that looks as good as it performs.">
+    <meta name="keywords" content="acoustic wall panels, studio sound treatment, hexagon acoustic tiles, PET acoustic felt, DIY soundproofing">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -22,7 +20,6 @@
         .bg-hero { background: radial-gradient(ellipse at top center, #111827 0%, #0a0a0a 65%); }
         .hex-clip { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
 
-        /* Cards */
         .bento-card {
             background: rgba(18, 18, 18, 0.85);
             backdrop-filter: blur(14px);
@@ -34,1072 +31,188 @@
         .bento-card:hover {
             border-color: rgba(59, 130, 246, 0.25);
             transform: translateY(-4px);
-            box-shadow: 0 24px 48px rgba(59, 130, 246, 0.07);
         }
 
-        /* Sticky nav */
         .nav-sticky {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(10, 10, 10, 0.88);
+            background: rgba(10, 10, 10, 0.9);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        /* Gradient text */
         .gradient-text {
             background: linear-gradient(130deg, #60a5fa 0%, #a855f7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        /* Primary button */
         .btn-primary {
-            display: inline-block;
             background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            color: white;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
             border-radius: 9999px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 32px rgba(37, 99, 235, 0.28);
-            text-align: center;
-            cursor: pointer;
-        }
-        .btn-primary:hover {
-            box-shadow: 0 0 56px rgba(37, 99, 235, 0.48);
-            transform: translateY(-2px);
-            opacity: 0.92;
+            box-shadow: 0 0 32px rgba(37, 99, 235, 0.2);
         }
 
-        /* Secondary button */
-        .btn-secondary {
-            display: inline-block;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: white;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            border-radius: 9999px;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
-
-        /* Trust badges */
         .trust-badge {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.07);
             border-radius: 10px;
             padding: 0.6rem 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
             font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
             color: #9ca3af;
         }
 
-        /* Tab buttons */
-        .tab-btn { transition: all 0.2s ease; }
-        .tab-btn.active { background: white; color: black; border-color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: grid; }
+        .tab-btn.active { background: white; color: black; }
 
-        /* Stats */
-        .stat-cell {
-            text-align: center;
-            padding: 2.25rem 1.5rem;
-            border-right: 1px solid rgba(255,255,255,0.05);
-        }
-        .stat-cell:last-child { border-right: none; }
-
-        /* Glow divider line */
-        .glow-line {
-            width: 56px;
-            height: 3px;
-            background: linear-gradient(90deg, #2563eb, #7c3aed);
-            border-radius: 999px;
-            margin-bottom: 1.25rem;
-        }
-
-        /* Pricing */
-        .pricing-card {
-            background: rgba(18, 18, 18, 0.9);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 28px;
-            padding: 2.5rem;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        .pricing-card.featured {
-            border-color: rgba(59,130,246,0.45);
-            box-shadow: 0 0 70px rgba(59,130,246,0.1), inset 0 0 40px rgba(59,130,246,0.02);
-        }
-        .pricing-badge {
-            position: absolute;
-            top: -13px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            color: white;
-            font-size: 9px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            padding: 4px 18px;
-            border-radius: 999px;
-            white-space: nowrap;
-        }
-
-        /* FAQ */
-        .faq-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .faq-question {
-            width: 100%;
-            text-align: left;
-            padding: 1.25rem 0;
-            font-weight: 700;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            color: #e5e7eb;
-            background: none;
-            border: none;
-            gap: 1rem;
-        }
-        .faq-question:hover { color: #ffffff; }
-        .faq-answer {
-            display: none;
-            padding-bottom: 1.25rem;
-            color: #9ca3af;
-            font-size: 0.875rem;
-            line-height: 1.75;
-        }
-        .faq-answer.open { display: block; }
-        .faq-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: rgba(59,130,246,0.1);
-            border: 1px solid rgba(59,130,246,0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 15px;
-            color: #60a5fa;
-            transition: transform 0.25s ease, background 0.25s ease;
-        }
-        .faq-question.open .faq-icon {
-            background: rgba(59,130,246,0.25);
-            transform: rotate(45deg);
-        }
-
-        /* Spec rows */
-        .spec-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.875rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            font-size: 0.875rem;
-        }
-        .spec-row:last-child { border-bottom: none; }
-        .spec-label { color: #6b7280; }
-        .spec-value { font-weight: 700; color: #e5e7eb; }
-
-        /* Scroll reveal */
-        .reveal {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.65s ease, transform 0.65s ease;
-        }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .faq-answer.open { max-height: 200px; padding-bottom: 1.25rem; }
+        
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        /* Step numbers */
-        .step-num {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.15));
-            border: 1px solid rgba(59,130,246,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.125rem;
-            font-weight: 900;
-            color: #60a5fa;
-            flex-shrink: 0;
-        }
-
-        /* Mobile menu */
-        #mobile-menu { display: none; }
-        #mobile-menu.open { display: block; }
-
-        /* Hamburger */
-        .hamburger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: white;
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-
-        /* Input focus ring */
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: rgba(59,130,246,0.6) !important;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
-        }
-
-        /* Checklist icons */
-        .check-blue { color: #60a5fa; }
-        .check-purple { color: #a855f7; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: 0.3s; }
     </style>
 </head>
 <body class="antialiased min-h-screen">
 
-<!-- ================================================================
-     STICKY NAVIGATION
-================================================================ -->
 <nav class="nav-sticky">
-    <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex justify-between items-center">
-
-        <!-- Logo -->
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <a href="#" class="flex items-center gap-3">
-            <div class="relative w-9 h-9 flex items-center justify-center">
-                <div class="absolute inset-0 bg-blue-600 hex-clip opacity-20 animate-pulse"></div>
-                <div class="w-7 h-7 bg-gradient-to-br from-blue-400 to-blue-700 hex-clip shadow-lg shadow-blue-500/50"></div>
-            </div>
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-700 hex-clip"></div>
             <div class="flex flex-col leading-none">
                 <span class="text-lg font-black tracking-tighter uppercase italic">HEXTILE<span class="text-blue-500">.</span></span>
-                <span class="text-[9px] text-gray-500 font-bold tracking-[0.2em] uppercase">Studio Solutions</span>
+                <span class="text-[9px] text-gray-500 font-bold uppercase">Studio Solutions</span>
             </div>
         </a>
-
-        <!-- Desktop links -->
         <div class="hidden md:flex items-center gap-7 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
             <a href="#features" class="hover:text-white transition">Features</a>
             <a href="#shop" class="hover:text-white transition">The Tiles</a>
             <a href="#pricing" class="hover:text-white transition">Pricing</a>
-            <a href="#faq" class="hover:text-white transition">FAQ</a>
             <a href="#contact" class="hover:text-white transition">Contact</a>
-            <a href="#pricing" class="btn-primary px-6 py-2.5 text-[10px]">Reserve Now</a>
+            <a href="#pricing" class="btn-primary px-6 py-3">Reserve Now</a>
         </div>
-
-        <!-- Mobile hamburger -->
-        <button class="hamburger md:hidden flex flex-col gap-1.5 p-2" onclick="toggleMenu()">
-            <span></span><span></span><span></span>
+        <button class="hamburger md:hidden p-2" onclick="toggleMenu()">
+            <span></span><span class="my-1.5"></span><span></span>
         </button>
     </div>
-
-    <!-- Mobile menu -->
-    <div id="mobile-menu" class="md:hidden border-t border-white/5 px-6 py-4 space-y-1">
-        <a href="#features" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Features</a>
-        <a href="#shop" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">The Tiles</a>
-        <a href="#pricing" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Pricing</a>
-        <a href="#faq" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">FAQ</a>
-        <a href="#contact" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Contact</a>
-        <a href="#pricing" onclick="toggleMenu()" class="btn-primary block px-6 py-3.5 text-[10px] mt-3">Reserve Now</a>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-black px-6 py-4 space-y-2">
+        <a href="#features" onclick="toggleMenu()" class="block py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Features</a>
+        <a href="#shop" onclick="toggleMenu()" class="block py-4 text-xs font-bold uppercase tracking-widest text-gray-400">The Tiles</a>
+        <a href="#pricing" onclick="toggleMenu()" class="block py-4 text-xs font-bold uppercase tracking-widest text-gray-400">Pricing</a>
+        <a href="#pricing" onclick="toggleMenu()" class="btn-primary block text-center py-4 text-xs">Reserve Now</a>
     </div>
 </nav>
 
-<!-- ================================================================
-     HERO
-================================================================ -->
-<header class="bg-hero overflow-hidden relative">
-    <!-- Decorative hex shapes -->
-    <div class="absolute top-16 left-8 w-36 h-36 bg-blue-600/4 hex-clip pointer-events-none"></div>
-    <div class="absolute top-32 right-12 w-52 h-52 bg-purple-600/4 hex-clip pointer-events-none"></div>
-    <div class="absolute bottom-20 left-1/4 w-20 h-20 bg-blue-400/4 hex-clip pointer-events-none"></div>
-
-    <div class="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24 text-center">
-
-        <!-- Launch badge -->
+<header class="bg-hero relative px-6 py-16 md:py-24 text-center overflow-hidden">
+    <div class="max-w-6xl mx-auto">
         <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-8">
-            <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-            <span class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">July 2026 Production Batch — Now Open</span>
+            <span class="text-blue-400 text-[10px] font-bold uppercase tracking-widest italic">July 2026 Batch Now Open</span>
         </div>
-
-        <h1 class="text-5xl sm:text-7xl md:text-[6rem] font-black mb-6 tracking-tight uppercase leading-none italic">
+        <h1 class="text-5xl md:text-8xl font-black mb-6 tracking-tight uppercase leading-none italic">
             Hear your mix,<br>
             <span class="gradient-text">not your room.</span>
         </h1>
-
-        <p class="text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-3 font-medium leading-relaxed">
-            Premium PET acoustic treatment engineered for professional home studios.
-        </p>
-        <p class="text-sm text-blue-400 font-bold mb-4">Fire-rated. Eco-friendly. No drills. No damage.</p>
-        <p class="text-sm text-gray-500 mb-10">Transform any wall into a professional acoustic landscape in under 30 minutes.</p>
-
-        <!-- CTAs -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <a href="#pricing" class="btn-primary px-10 py-4 text-sm">Reserve My Set →</a>
-            <a href="#video" class="btn-secondary px-10 py-4 text-sm">Watch Showcase</a>
+        <p class="text-gray-400 max-w-xl mx-auto mb-10 text-sm md:text-base">Professional-grade acoustic landscape in under 30 minutes. Renter-friendly, fire-rated, and engineered for high-end studio performance.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <a href="#pricing" class="btn-primary px-10 py-5 text-sm">Reserve My Set →</a>
+            <a href="#video" class="bg-white/5 border border-white/10 rounded-full px-10 py-5 text-sm font-bold">Watch Showcase</a>
         </div>
-
-        <!-- Trust badges row -->
-        <div class="flex flex-wrap justify-center gap-2.5 mb-14">
-            <div class="trust-badge"><span class="text-blue-400">🔒</span> Stripe Secured Checkout</div>
-            <div class="trust-badge"><span class="text-green-400">🌿</span> 100% Recyclable PET</div>
-            <div class="trust-badge"><span class="text-orange-400">🔥</span> Class A Fire-Rated</div>
-            <div class="trust-badge"><span class="text-purple-400">⭐</span> NRC 0.85+ Rating</div>
-            <div class="trust-badge"><span class="text-yellow-400">📦</span> Global Delivery</div>
-            <div class="trust-badge"><span class="text-cyan-400">🛡️</span> 2-Year Warranty</div>
-        </div>
-
-        <!-- Hero image -->
-        <div class="relative w-full aspect-video rounded-[36px] overflow-hidden border border-white/8 shadow-2xl shadow-blue-900/20">
-            <img src="hextile-launch.jpg.jpg" alt="Hextile hexagon acoustic panels installed on a professional studio wall" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-            <div class="absolute bottom-6 left-6 flex gap-3">
-                <div class="trust-badge bg-black/60 border-white/15">Pro-level NRC 0.85+</div>
-                <div class="trust-badge bg-black/60 border-white/15">Ships July 2026</div>
-            </div>
+        <div class="relative rounded-[36px] overflow-hidden border border-white/10 shadow-2xl">
+            <img src="hextile-launch.jpg.jpg" alt="Studio Wall" class="w-full object-cover aspect-video">
         </div>
     </div>
 </header>
 
-<!-- ================================================================
-     STATS BAR
-================================================================ -->
-<section class="border-y border-white/5 bg-black/50">
-    <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4">
-        <div class="stat-cell reveal">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">0.85<span class="text-2xl">+</span></div>
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">NRC Rating</div>
-        </div>
-        <div class="stat-cell reveal" style="transition-delay:.1s">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">12<span class="text-2xl">mm</span></div>
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Panel Thickness</div>
-        </div>
-        <div class="stat-cell reveal" style="transition-delay:.2s">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">2<span class="text-2xl">yr</span></div>
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Warranty</div>
-        </div>
-        <div class="stat-cell reveal" style="transition-delay:.3s">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">&lt;30<span class="text-xl">min</span></div>
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Install Time</div>
-        </div>
-    </div>
-</section>
-
-<!-- ================================================================
-     FEATURES / BENEFITS
-================================================================ -->
-<section id="features" class="max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-28">
-    <div class="text-center mb-16 reveal">
-        <div class="glow-line mx-auto"></div>
-        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Why Hextile</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic leading-tight">
-            Engineered to Perform.<br>Designed to Impress.
-        </h2>
-        <p class="text-gray-400 mt-4 max-w-xl mx-auto text-sm leading-relaxed">
-            Pro-level treatment that's renter-friendly. No drills, no damage — just crystal-clear sound.
-        </p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bento-card reveal">
-            <div class="text-3xl mb-4">🎯</div>
-            <h3 class="text-lg font-black uppercase tracking-tight italic mb-2 text-blue-400">High-Density PET Fiber</h3>
-            <p class="text-gray-400 leading-relaxed text-sm">Achieves a professional-grade NRC 0.85+ rating — absorbing over 85% of sound energy. Eliminates muddy audio and vocal flutter caused by hard-surface reflections in your studio or gaming space.</p>
-        </div>
-        <div class="bento-card reveal" style="transition-delay:.1s">
-            <div class="text-3xl mb-4">🌿</div>
-            <h3 class="text-lg font-black uppercase tracking-tight italic mb-2 text-green-400">Eco-Friendly & Class A Safe</h3>
-            <p class="text-gray-400 leading-relaxed text-sm">Made from 100% recyclable polyester fiber. Non-toxic, odorless, VOC-free, and Class A fire-rated — the highest interior safety standard. Safe for homes with children and pets.</p>
-        </div>
-        <div class="bento-card reveal" style="transition-delay:.15s">
-            <div class="text-3xl mb-4">🔷</div>
-            <h3 class="text-lg font-black uppercase tracking-tight italic mb-2 text-purple-400">Precision Geometry</h3>
-            <p class="text-gray-400 leading-relaxed text-sm">Perfect hexagon edges enable seamless, gap-free "friction-fit" installations. No tools, no guesswork — just stack the edges and they lock into place in under 30 minutes.</p>
-        </div>
-        <div class="bento-card reveal" style="transition-delay:.2s">
-            <div class="text-3xl mb-4">✨</div>
-            <h3 class="text-lg font-black uppercase tracking-tight italic mb-2 text-yellow-400">Designer Aesthetics</h3>
-            <p class="text-gray-400 leading-relaxed text-sm">Replaces bulky, unattractive acoustic foam with a luxury felt finish that complements modern studio gear. Your treatment should look as professional as your equipment — not like an afterthought.</p>
-        </div>
-    </div>
-</section>
-
-<!-- ================================================================
-     SHOP — COLORS & SHAPES
-================================================================ -->
-<section id="shop" class="max-w-7xl mx-auto px-6 md:px-8 py-10">
-    <div class="text-center mb-10 reveal">
-        <div class="glow-line mx-auto"></div>
-        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">The Collection</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Explore the Range</h2>
-        <div class="flex justify-center mt-6 gap-2">
-            <button onclick="openTab(event,'colors')" class="tab-btn active px-6 py-2 rounded-full border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Colors</button>
-            <button onclick="openTab(event,'shapes')" class="tab-btn px-6 py-2 rounded-full border border-white/10 text-[10px] font-bold uppercase tracking-widest transition">Shapes</button>
+<section id="shop" class="max-w-7xl mx-auto px-6 py-20">
+    <div class="text-center mb-12 reveal">
+        <h2 class="text-3xl md:text-5xl font-black uppercase italic tracking-tighter">Explore the Range</h2>
+        <div class="flex justify-center mt-8 gap-3">
+            <button onclick="openTab(event,'colors')" class="tab-btn active px-8 py-3 rounded-full border border-white/10 text-[10px] font-bold uppercase tracking-widest">Colors</button>
+            <button onclick="openTab(event,'shapes')" class="tab-btn px-8 py-3 rounded-full border border-white/10 text-[10px] font-bold uppercase tracking-widest">Shapes</button>
         </div>
     </div>
 
-    <!-- Colors tab -->
     <div id="colors" class="tab-content active grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bento-card text-center group cursor-pointer">
-            <div class="relative w-28 h-28 mx-auto mb-5">
-                <div class="w-28 h-28 bg-[#2a2a2a] hex-clip shadow-lg shadow-black/60 group-hover:scale-110 transition-transform duration-300"></div>
-                <div class="absolute inset-0 hex-clip bg-gradient-to-br from-white/5 to-transparent"></div>
-            </div>
-            <h3 class="font-black uppercase tracking-widest text-xs mb-1.5">Midnight Charcoal</h3>
-            <p class="text-gray-500 text-[10px]">The studio staple. Deep, rich, and timeless.</p>
+            <div class="w-24 h-24 bg-[#2a2a2a] hex-clip mx-auto mb-4 border border-white/10 group-hover:scale-110 transition-transform"></div>
+            <h3 class="font-bold text-xs uppercase tracking-widest">Midnight Charcoal</h3>
         </div>
         <div class="bento-card text-center group cursor-pointer">
-            <div class="relative w-28 h-28 mx-auto mb-5">
-                <div class="w-28 h-28 bg-blue-900 hex-clip shadow-lg shadow-blue-900/50 group-hover:scale-110 transition-transform duration-300"></div>
-                <div class="absolute inset-0 hex-clip bg-gradient-to-br from-blue-400/10 to-transparent"></div>
-            </div>
-            <h3 class="font-black uppercase tracking-widest text-xs mb-1.5">Deep Sea Navy</h3>
-            <p class="text-gray-500 text-[10px]">Bold and authoritative. A creative statement.</p>
+            <div class="w-24 h-24 bg-blue-900 hex-clip mx-auto mb-4 border border-white/10 group-hover:scale-110 transition-transform"></div>
+            <h3 class="font-bold text-xs uppercase tracking-widest">Deep Sea Navy</h3>
         </div>
         <div class="bento-card text-center group cursor-pointer">
-            <div class="relative w-28 h-28 mx-auto mb-5">
-                <div class="w-28 h-28 bg-gray-400 hex-clip shadow-lg shadow-gray-400/20 group-hover:scale-110 transition-transform duration-300"></div>
-                <div class="absolute inset-0 hex-clip bg-gradient-to-br from-white/20 to-transparent"></div>
-            </div>
-            <h3 class="font-black uppercase tracking-widest text-xs mb-1.5">Industrial Silver</h3>
-            <p class="text-gray-500 text-[10px]">Modern minimalism meets professional performance.</p>
+            <div class="w-24 h-24 bg-gray-400 hex-clip mx-auto mb-4 border border-white/10 group-hover:scale-110 transition-transform"></div>
+            <h3 class="font-bold text-xs uppercase tracking-widest">Industrial Silver</h3>
         </div>
     </div>
 
-    <!-- Shapes tab -->
     <div id="shapes" class="tab-content grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bento-card flex items-center gap-6 group cursor-pointer">
-            <div class="flex-1">
-                <div class="text-[10px] text-blue-400 uppercase tracking-widest font-bold mb-1">Best Seller</div>
-                <h3 class="text-xl font-black uppercase italic mb-2">The Classic Hex</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Signature hexagonal shape for gap-free friction-fit walls. Perfect geometric interlocking — no template needed.</p>
-            </div>
-            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 hex-clip flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/30"></div>
+        <div class="bento-card flex items-center justify-between">
+            <h3 class="text-xl font-black italic uppercase">The Classic Hex</h3>
+            <div class="w-16 h-16 bg-blue-600 hex-clip"></div>
         </div>
-        <div class="bento-card flex items-center gap-6 group cursor-pointer">
-            <div class="flex-1">
-                <div class="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-1">New Shape</div>
-                <h3 class="text-xl font-black uppercase italic mb-2">The Square</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Grid-style modular panels for large-format coverage. Ideal for home theaters and gaming rooms.</p>
-            </div>
-            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-500/30"></div>
+        <div class="bento-card flex items-center justify-between">
+            <h3 class="text-xl font-black italic uppercase">The Square</h3>
+            <div class="w-16 h-16 bg-purple-600 rounded-xl"></div>
         </div>
     </div>
 </section>
 
-<!-- ================================================================
-     VIDEO SHOWCASE
-================================================================ -->
-<section id="video" class="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24">
-    <div class="text-center mb-10 reveal">
-        <div class="glow-line mx-auto"></div>
-        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Showcase</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">See it in action.</h2>
-    </div>
-    <div class="relative group rounded-[36px] overflow-hidden border border-white/5 reveal">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/92 via-black/20 to-transparent z-10 flex flex-col justify-end p-8 md:p-14">
-            <div class="max-w-xl">
-                <div class="text-[10px] text-blue-400 uppercase tracking-widest font-bold mb-2">Pro-Level Treatment</div>
-                <h2 class="text-3xl md:text-5xl font-black uppercase italic leading-none mb-4">Studio Grade<br>Performance.</h2>
-                <p class="text-gray-400 text-sm leading-relaxed mb-6">Engineered for maximum sound absorption with zero aesthetic compromise. Renter-friendly — no drills, no damage.</p>
-                <a href="#pricing" class="btn-primary px-8 py-3.5 text-sm">Get Yours →</a>
-            </div>
+<section id="video" class="max-w-7xl mx-auto px-6 py-20">
+    <div class="relative rounded-[40px] overflow-hidden group border border-white/5 reveal">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10 flex flex-col justify-end p-8 md:p-16">
+            <h2 class="text-4xl md:text-6xl font-black uppercase italic leading-none mb-4">Studio Grade<br>Performance.</h2>
+            <p class="text-gray-400 text-sm max-w-md">Maximum sound absorption with zero aesthetic compromise. 12mm high-density fiber panels with 0.85 NRC rating.</p>
         </div>
-        <video class="w-full aspect-video object-cover brightness-50 group-hover:brightness-60 transition-all duration-700" autoplay muted loop playsinline>
+        <video class="w-full aspect-video object-cover brightness-50" autoplay muted loop playsinline>
             <source src="https://assets.mixkit.co/videos/preview/mixkit-recording-studio-with-equipment-and-instruments-34537-large.mp4" type="video/mp4">
         </video>
     </div>
 </section>
 
-<!-- ================================================================
-     HOW IT WORKS
-================================================================ -->
-<section class="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24">
-    <div class="text-center mb-14 reveal">
-        <div class="glow-line mx-auto"></div>
-        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Installation</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Up in under 30 minutes.</h2>
-        <p class="text-gray-500 text-sm mt-3">No tools. No drilling. No professional needed.</p>
-    </div>
+<section class="max-w-7xl mx-auto px-6 py-20 pb-40">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bento-card flex flex-col gap-5 reveal">
-            <div class="step-num">1</div>
-            <div>
-                <h3 class="text-lg font-black uppercase italic mb-2">Plan Your Layout</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Draw a horizontal center level-line across your wall. The precision geometric edges guide every tile automatically — no template or measuring tape needed.</p>
-            </div>
+        <div class="bento-card flex flex-col items-center md:items-start reveal">
+            <img src="texture.jpg.jpg" class="w-full h-40 rounded-2xl object-cover mb-6 border border-white/10">
+            <h3 class="text-xl font-black italic uppercase mb-2">Precision PET</h3>
+            <p class="text-gray-400 text-sm text-center md:text-left">Anti-static luxury felt finish. Odorless, VOC-free, and designed to last a lifetime.</p>
         </div>
-        <div class="bento-card flex flex-col gap-5 reveal" style="transition-delay:.1s">
-            <div class="step-num">2</div>
-            <div>
-                <h3 class="text-lg font-black uppercase italic mb-2">Attach & Friction-Fit</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Apply standard 3M removable adhesive strips to each panel. Press to the wall and let the precision hex edges lock seamlessly together, gap-free.</p>
-            </div>
-        </div>
-        <div class="bento-card flex flex-col gap-5 reveal" style="transition-delay:.2s">
-            <div class="step-num">3</div>
-            <div>
-                <h3 class="text-lg font-black uppercase italic mb-2">Hear the Difference</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Experience a professional-grade acoustic environment from your very first recording. No flutter, no mud — just clean, studio-quality clarity.</p>
+        <div class="bento-card md:col-span-2 flex flex-col justify-center reveal" style="transition-delay:0.2s">
+            <h3 class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-6">Technical Performance</h3>
+            <div class="space-y-4">
+                <div class="flex justify-between border-b border-white/5 pb-2 text-sm"><span class="text-gray-500">NRC Rating</span><span class="font-bold">0.85+</span></div>
+                <div class="flex justify-between border-b border-white/5 pb-2 text-sm"><span class="text-gray-500">Fire Safety</span><span class="font-bold">Class A Rated</span></div>
+                <div class="flex justify-between border-b border-white/5 pb-2 text-sm"><span class="text-gray-500">Thickness</span><span class="font-bold">12mm</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-500">Installation</span><span class="font-bold">DIY Peel & Stick</span></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ================================================================
-     SPECS + TEXTURE IMAGE
-================================================================ -->
-<section class="max-w-7xl mx-auto px-6 md:px-8 py-10 pb-20">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bento-card flex flex-col justify-between reveal">
-            <img src="texture.jpg.jpg" alt="Close-up of Hextile luxury PET fiber texture" class="w-full h-36 rounded-xl object-cover mb-6 border border-white/8">
-            <div>
-                <h3 class="text-xl font-black mb-2 uppercase tracking-tighter">Precision PET</h3>
-                <p class="text-gray-400 text-sm font-medium leading-relaxed">12mm high-density fiber panels with a 0.85+ NRC rating. Anti-static luxury felt finish naturally resists dust buildup — zero maintenance required.</p>
-            </div>
+<footer class="bg-black border-t border-white/5 py-20 text-center px-6">
+    <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-black italic uppercase mb-8">Join the July Batch</h2>
+        <div class="flex flex-col sm:flex-row gap-4 mb-10">
+            <input type="email" placeholder="you@studio.com" class="flex-grow bg-white/5 border border-white/10 rounded-full px-8 py-4 focus:border-blue-500 outline-none transition">
+            <button class="btn-primary px-10 py-4 text-sm">Reserve My Set</button>
         </div>
-        <div class="bento-card md:col-span-2 reveal" style="transition-delay:.1s">
-            <h3 class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-5">Technical Specifications</h3>
-            <div class="spec-row"><span class="spec-label">Material</span><span class="spec-value">100% Recycled Polyester Fiber (PET)</span></div>
-            <div class="spec-row"><span class="spec-label">Panel Thickness</span><span class="spec-value">12mm</span></div>
-            <div class="spec-row"><span class="spec-label">NRC Rating</span><span class="spec-value">0.85+ (Professional Grade)</span></div>
-            <div class="spec-row"><span class="spec-label">Fire Safety Rating</span><span class="spec-value">Class A — Highest Interior Standard</span></div>
-            <div class="spec-row"><span class="spec-label">VOC Emissions</span><span class="spec-value">Zero — 100% Odorless</span></div>
-            <div class="spec-row"><span class="spec-label">Best Frequency Range</span><span class="spec-value">Mid-to-High (500Hz – 8kHz+)</span></div>
-            <div class="spec-row"><span class="spec-label">Surface Finish</span><span class="spec-value">Anti-Static Luxury Felt</span></div>
-            <div class="spec-row"><span class="spec-label">Recyclability</span><span class="spec-value">100% Recyclable at End of Life</span></div>
-            <div class="spec-row"><span class="spec-label">Warranty</span><span class="spec-value">2 Years (Fading & Degradation)</span></div>
-        </div>
-    </div>
-</section>
-
-<!-- ================================================================
-     PRICING / BUNDLES
-================================================================ -->
-<section id="pricing" class="max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-28">
-    <div class="text-center mb-16 reveal">
-        <div class="glow-line mx-auto"></div>
-        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Reserve Your Set</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">July 2026 Batch.</h2>
-        <p class="text-gray-500 text-sm mt-3 max-w-md mx-auto">Limited production run. Secure your spot today — no payment taken until your tiles ship.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start mb-8">
-
-        <!-- Starter -->
-        <div class="pricing-card reveal">
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">Starter Set</div>
-            <h3 class="text-2xl font-black uppercase italic mb-1">Classic Hex</h3>
-            <p class="text-gray-400 text-sm mb-6 leading-relaxed">12 high-density hex tiles. Perfect for a focused treatment zone, vocal corner, or first-time studio setup.</p>
-            <div class="text-5xl font-black mb-1">฿2,990</div>
-            <div class="text-gray-500 text-xs mb-8">Free shipping within Thailand</div>
-            <ul class="space-y-2.5 mb-8 text-sm text-gray-400">
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> 12 × Hex Tiles (color of choice)</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> 3M Mounting Strips included</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> Installation guide</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> 2-year warranty</li>
-            </ul>
-            <a href="mailto:customersupport@hextile.studio?subject=Reserve%20-%20Starter%20Hex%20Set" class="btn-secondary block px-6 py-4 text-[11px] font-black w-full">Reserve Starter →</a>
-        </div>
-
-        <!-- Creator Bundle — Featured -->
-        <div class="pricing-card featured reveal" style="transition-delay:.1s">
-            <div class="pricing-badge">⭐ Most Popular</div>
-            <div class="text-[10px] text-blue-400 uppercase tracking-widest font-bold mb-2">Creator Bundle</div>
-            <h3 class="text-2xl font-black uppercase italic mb-1">The Full Studio</h3>
-            <p class="text-gray-400 text-sm mb-6 leading-relaxed">12 Charcoal + 4 Navy tiles. The perfect vocal booth configuration — our most-requested combination.</p>
-            <div class="text-5xl font-black gradient-text mb-1">฿4,490</div>
-            <div class="text-gray-500 text-xs mb-8">Free worldwide shipping</div>
-            <ul class="space-y-2.5 mb-8 text-sm text-gray-400">
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> 12 × Midnight Charcoal Tiles</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> 4 × Deep Sea Navy Accent Tiles</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> 3M Mounting Strips included</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> Priority production slot</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> Installation guide + layout template</li>
-                <li class="flex items-start gap-2"><span class="check-blue mt-0.5">✓</span> 2-year warranty</li>
-            </ul>
-            <a href="mailto:customersupport@hextile.studio?subject=Reserve%20-%20Creator%20Bundle" class="btn-primary block px-6 py-4 text-[11px] font-black w-full">Reserve Creator Bundle →</a>
-        </div>
-
-        <!-- Pro Kit -->
-        <div class="pricing-card reveal" style="transition-delay:.2s">
-            <div class="text-[10px] text-purple-400 uppercase tracking-widest font-bold mb-2">Pro Coverage</div>
-            <h3 class="text-2xl font-black uppercase italic mb-1">Full Room Kit</h3>
-            <p class="text-gray-400 text-sm mb-6 leading-relaxed">Maximum coverage for full rooms, home theaters, or gaming setups. 30 tiles, fully customizable mix.</p>
-            <div class="text-5xl font-black mb-1">฿8,990</div>
-            <div class="text-gray-500 text-xs mb-8">Free global shipping + priority support</div>
-            <ul class="space-y-2.5 mb-8 text-sm text-gray-400">
-                <li class="flex items-start gap-2"><span class="check-purple mt-0.5">✓</span> 30 × tiles (custom color mix)</li>
-                <li class="flex items-start gap-2"><span class="check-purple mt-0.5">✓</span> Double set of 3M Mounting Strips</li>
-                <li class="flex items-start gap-2"><span class="check-purple mt-0.5">✓</span> Custom layout consultation call</li>
-                <li class="flex items-start gap-2"><span class="check-purple mt-0.5">✓</span> Priority production slot</li>
-                <li class="flex items-start gap-2"><span class="check-purple mt-0.5">✓</span> 2-year warranty</li>
-            </ul>
-            <a href="mailto:customersupport@hextile.studio?subject=Reserve%20-%20Pro%20Room%20Kit" class="btn-secondary block px-6 py-4 text-[11px] font-black w-full">Reserve Pro Kit →</a>
-        </div>
-    </div>
-
-    <!-- Bulk note -->
-    <p class="text-center text-gray-500 text-sm mb-10 reveal">
-        Need 50+ units?
-        <a href="mailto:customersupport@hextile.studio?subject=Bulk%20Order%20Inquiry" class="text-blue-400 hover:text-blue-300 font-bold underline underline-offset-2">Contact us for bulk pricing.</a>
-    </p>
-
-    <!-- Trust strip under pricing -->
-    <div class="bento-card grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 reveal">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 text-xl flex-shrink-0">🔒</div>
-            <div>
-                <div class="font-bold text-sm">Stripe Secured</div>
-                <div class="text-gray-500 text-xs">256-bit SSL on all transactions</div>
-            </div>
-        </div>
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-400 text-xl flex-shrink-0">📦</div>
-            <div>
-                <div class="font-bold text-sm">Global Delivery</div>
-                <div class="text-gray-500 text-xs">NY · London · Tokyo · Bangkok</div>
-            </div>
-        </div>
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400 text-xl flex-shrink-0">🛡️</div>
-            <div>
-                <div class="font-bold text-sm">2-Year Warranty</div>
-                <div class="text-gray-500 text-xs">Against fading or degradation</div>
-            </div>
-        </div>
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 text-xl flex-shrink-0">↩️</div>
-            <div>
-                <div class="font-bold text-sm">Renter-Friendly</div>
-                <div class="text-gray-500 text-xs">No drills — peel &amp; re-stick</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ================================================================
-     FAQ
-================================================================ -->
-<section id="faq" class="max-w-4xl mx-auto px-6 md:px-8 py-20 md:py-28">
-    <div class="text-center mb-14 reveal">
-        <div class="glow-line mx-auto"></div>
-        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Got Questions?</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Everything You<br>Need to Know.</h2>
-    </div>
-
-    <!-- Category: Buying & Value -->
-    <div class="mb-8 reveal">
-        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-4 px-1">Buying &amp; Value</p>
-        <div class="bento-card p-0 px-6">
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    How many tiles do I need for a standard room?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">For effective treatment, we recommend covering 20–30% of your total wall surface area. Our Creator Bundle is sized for a standard vocal booth or studio corner setup.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    What comes in the Creator Bundle?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">The Creator Bundle includes 12 Midnight Charcoal tiles and 4 Deep Sea Navy accent tiles — the perfect configuration for a standard vocal booth setup, recommended by our studio partners.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Are there any hidden shipping fees?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">No hidden fees. The price you see includes all logistics within Thailand. International shipping is included on the Creator Bundle and Full Room Kit. Contact us for Starter Set international rates.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Do you offer bulk discounts?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Yes. Contact our team directly for orders exceeding 50 units and we'll arrange custom pricing and a dedicated account manager.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    How does Hextile compare to cheap acoustic foam?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Hextile is significantly denser than standard acoustic foam, delivering higher absorption performance and a far longer lifespan. Foam yellows, crumbles, and looks cheap within a year. Hextile is built to last and designed to complement professional studio environments.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Can I buy individual colors?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Currently we offer curated color sets to ensure consistent aesthetic results. For large or custom orders, contact us and we can discuss your requirements.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Is there a warranty?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Yes. All Hextile panels come with a 2-year warranty against fading or material degradation under normal indoor use conditions.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    What is the current lead time?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">We are currently accepting reservations for the July 2026 production batch. Reserve your spot now to secure your place in the queue — no payment is taken until your tiles are ready to ship.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Is the checkout secure?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Yes. All transactions are processed through Stripe's encrypted payment gateway with 256-bit SSL. Your financial information is always protected and never stored on our servers.</div>
-            </div>
-            <div class="faq-item" style="border-bottom:none">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Do I need to buy professional glue?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">No. Standard 3M Command removable adhesive strips work perfectly with our lightweight PET panels and keep the installation fully renter-friendly. We include them in every order.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Category: Product Technicals -->
-    <div class="mb-8 reveal">
-        <p class="text-[10px] text-purple-400 uppercase tracking-[0.3em] font-bold mb-4 px-1">Product Technicals</p>
-        <div class="bento-card p-0 px-6">
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    What is an NRC rating?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">NRC stands for Noise Reduction Coefficient. Our 0.85+ rating means 85% or more of sound energy hitting the panel is absorbed rather than reflected — a professional studio standard.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Are these panels fireproof?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">They are Class A fire-rated — the highest safety classification for interior building materials. They self-extinguish and severely limit flame spread, meeting the strictest interior safety codes.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Will they smell like chemicals?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">No. Our PET fiber is 100% odorless and VOC-free. Unlike many foam products, there is absolutely zero off-gassing — safe for any enclosed studio or bedroom environment.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    How thick are the panels?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Each panel is 12mm thick — the ideal balance between acoustic performance (strong mid-to-high frequency absorption) and a low-profile, sleek wall presence.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Can I cut them to fit around outlets or edges?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Yes. They can be easily and cleanly trimmed with a standard utility knife or sharp scissors. Score the felt surface, then snap for a clean straight edge.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Are they effective for bass trapping?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Hextile excels at absorbing mid-to-high frequencies (500Hz–8kHz). For heavy sub-bass control below 200Hz, we recommend layering panels in corners or supplementing with dedicated corner bass traps.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    What is the material made of?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">100% recycled polyester fiber (PET) — the same material used in high-end acoustic felt worldwide. Sustainable, durable, and fully recyclable at end of life with no landfill impact.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Do they attract dust?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">The luxury felt finish is anti-static and naturally resists significant dust buildup, keeping maintenance to a minimum in a typical studio or home environment.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    How do I clean them?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">A quick vacuum with a brush attachment or a lightly damp cloth is all you need. Avoid machine washing or harsh chemical cleaners that could break down the fiber structure.</div>
-            </div>
-            <div class="faq-item" style="border-bottom:none">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Can I paint them?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">We don't recommend painting as it clogs the fiber surface pores and can significantly reduce sound absorption performance. The tiles come in professional colorways designed to need no painting.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Category: Installation & Usage -->
-    <div class="reveal">
-        <p class="text-[10px] text-green-400 uppercase tracking-[0.3em] font-bold mb-4 px-1">Installation &amp; Usage</p>
-        <div class="bento-card p-0 px-6">
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Will these damage my walls?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">When used with removable 3M adhesive strips, they are completely renter-friendly. They peel off cleanly without leaving marks or residue on standard painted drywall.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Do I need a professional installer?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Absolutely not. The DIY friction-fit design is built for solo home setup. Most full installations are completed in under 30 minutes with zero tools required.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Can I mount them on a ceiling?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Yes. The panels are lightweight enough for secure ceiling mounting with appropriate adhesive strips. Ceiling treatment is especially effective for eliminating flutter echo in home theaters and vocal rooms.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    How do I ensure the hexagons are straight?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Start by drawing or applying a horizontal level-line across the center of your target wall. The precision geometric edges of each tile naturally guide all subsequent placement — no measuring needed after that.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Can these be used in home theaters?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Absolutely. Hextile panels are ideal for improving dialogue clarity and surround-sound accuracy in home cinema setups, reducing unwanted reflections from hard walls and ceilings.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Do they block sound from neighbors?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">These panels are designed for internal sound absorption (improving acoustics within your room), not soundproofing (blocking sound through walls). For soundproofing, additional mass-loaded vinyl and decoupling are required.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    What surfaces do they stick to?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Any smooth, clean surface works — including drywall, wood paneling, painted concrete, and glass. Ensure the surface is dry and dust-free before applying adhesive strips for maximum hold.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Can I move them after installation?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Yes. If using removable adhesive strips, you can peel the tiles off cleanly and re-stick them in a new position. The felt surface holds up well through multiple repositioning cycles.</div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Are they safe for pets and children?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">Yes. The material is 100% non-toxic, completely odorless, and has no sharp edges. Fully safe for households with children and pets of all sizes.</div>
-            </div>
-            <div class="faq-item" style="border-bottom:none">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    How many tiles are in the Classic Hex set?
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">The Classic Hex Starter Set contains 12 high-density tiles — enough to treat a focused studio corner, vocal booth side wall, or a defined accent zone in any room.</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ================================================================
-     CONTACT
-================================================================ -->
-<section id="contact" class="max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-28">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-
-        <!-- Contact info -->
-        <div class="reveal">
-            <div class="glow-line"></div>
-            <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Get in Touch</p>
-            <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic mb-4">Talk to the<br>Team.</h2>
-            <p class="text-gray-400 leading-relaxed mb-8 text-sm">Have a question about your studio setup? Our team is standing by to help you optimize your acoustic space for the best possible sound.</p>
-
-            <div class="space-y-5 mb-10">
-                <a href="mailto:customersupport@hextile.studio" class="flex items-center gap-4 group">
-                    <div class="w-11 h-11 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500/20 transition flex-shrink-0">✉</div>
-                    <div>
-                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">Email</div>
-                        <div class="text-sm font-bold group-hover:text-blue-400 transition">customersupport@hextile.studio</div>
-                    </div>
-                </a>
-                <a href="tel:+66065909614​2" class="flex items-center gap-4 group">
-                    <div class="w-11 h-11 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500/20 transition flex-shrink-0">📞</div>
-                    <div>
-                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">Phone</div>
-                        <div class="text-sm font-bold group-hover:text-blue-400 transition">+66 065 909 6142</div>
-                    </div>
-                </a>
-                <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0">📍</div>
-                    <div>
-                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">Registered Address</div>
-                        <div class="text-sm font-bold">5533 Sunburst Lane, Pensacola,<br>Florida 32507, USA</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bento-card !p-5">
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">🌍 Global Delivery</p>
-                <p class="text-gray-400 text-sm leading-relaxed">We deliver professional studio solutions worldwide to creators in New York, London, Tokyo, Sydney, Bangkok, and beyond.</p>
-            </div>
-        </div>
-
-        <!-- Contact form -->
-        <div class="bento-card reveal" style="transition-delay:.15s">
-            <h3 class="text-lg font-black uppercase italic mb-6">Send a Message</h3>
-            <form onsubmit="submitContactForm(event)" class="space-y-4">
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Your Name</label>
-                    <input type="text" required placeholder="John Studio"
-                        class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition placeholder-gray-600">
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Email Address</label>
-                    <input type="email" required placeholder="you@studio.com"
-                        class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition placeholder-gray-600">
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Subject</label>
-                    <select class="w-full border border-white/8 rounded-xl px-4 py-3 text-sm transition text-gray-400 appearance-none" style="background-color:#141414;">
-                        <option value="reserve">Reserve / Order Enquiry</option>
-                        <option value="bulk">Bulk Order (50+ units)</option>
-                        <option value="technical">Technical Question</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Message</label>
-                    <textarea required rows="4" placeholder="Tell us about your studio setup and what you're trying to achieve..."
-                        class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition resize-none placeholder-gray-600"></textarea>
-                </div>
-                <button type="submit" class="btn-primary w-full py-4 text-sm">Send Message →</button>
-            </form>
-            <div id="form-success" class="hidden mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-center">
-                <p class="text-green-400 font-bold text-sm">✓ Message sent! We'll respond within 24 hours.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ================================================================
-     EMAIL CTA BANNER
-================================================================ -->
-<section class="max-w-7xl mx-auto px-6 md:px-8 pb-20">
-    <div class="relative overflow-hidden rounded-[36px] p-10 md:p-16 text-center reveal"
-        style="background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(124,58,237,0.12) 100%); border: 1px solid rgba(59,130,246,0.18);">
-        <div class="absolute top-0 right-0 w-80 h-80 bg-blue-600/8 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-80 h-80 bg-purple-600/8 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="relative z-10">
-            <div class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Limited Production Run</div>
-            <h2 class="text-3xl md:text-5xl font-black italic uppercase mb-4 tracking-tighter">Join the July Batch.</h2>
-            <p class="text-gray-400 mb-8 text-sm max-w-md mx-auto">Reserve your spot today. No payment taken until your tiles are ready to ship.</p>
-            <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                <input type="email" id="footer-email" placeholder="your@email.com"
-                    class="flex-grow bg-black/50 border border-white/10 rounded-full px-6 py-4 text-sm transition placeholder-gray-600 focus:outline-none">
-                <button onclick="submitEmail()" class="btn-primary px-10 py-4 text-sm whitespace-nowrap">Reserve My Set</button>
-            </div>
-            <div id="email-success" class="hidden mt-4 text-green-400 text-sm font-bold">✓ You're on the list! We'll send your reservation details within 24 hours.</div>
-            <p class="text-[10px] text-gray-600 mt-4 uppercase tracking-widest">No spam. Unsubscribe anytime. Your data is never shared.</p>
-        </div>
-    </div>
-</section>
-
-<!-- ================================================================
-     FOOTER
-================================================================ -->
-<footer class="bg-black/70 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-6 md:px-8 py-16">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
-
-            <!-- Brand col -->
-            <div class="col-span-2 md:col-span-1">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-700 hex-clip flex-shrink-0"></div>
-                    <span class="text-lg font-black tracking-tighter uppercase italic">HEXTILE<span class="text-blue-500">.</span></span>
-                </div>
-                <p class="text-gray-500 text-xs leading-relaxed mb-5">Professional PET acoustic panels for home studios, gaming setups, and home theaters worldwide.</p>
-                <div class="trust-badge inline-flex">🔒 Stripe Secured</div>
-            </div>
-
-            <!-- Navigate -->
-            <div>
-                <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Navigate</h4>
-                <ul class="space-y-2.5 text-sm text-gray-400">
-                    <li><a href="#features" class="hover:text-white transition">Features</a></li>
-                    <li><a href="#shop" class="hover:text-white transition">The Tiles</a></li>
-                    <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
-                    <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
-                    <li><a href="#contact" class="hover:text-white transition">Contact</a></li>
-                </ul>
-            </div>
-
-            <!-- Products -->
-            <div>
-                <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Products</h4>
-                <ul class="space-y-2.5 text-sm text-gray-400">
-                    <li><a href="#pricing" class="hover:text-white transition">Classic Hex Set</a></li>
-                    <li><a href="#pricing" class="hover:text-white transition">Creator Bundle</a></li>
-                    <li><a href="#pricing" class="hover:text-white transition">Full Room Kit</a></li>
-                    <li><a href="mailto:customersupport@hextile.studio?subject=Bulk%20Order%20Inquiry" class="hover:text-white transition">Bulk Orders (50+)</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact -->
-            <div>
-                <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Contact</h4>
-                <ul class="space-y-2.5 text-sm text-gray-400">
-                    <li><a href="mailto:customersupport@hextile.studio" class="hover:text-white transition break-all">customersupport@hextile.studio</a></li>
-                    <li><a href="tel:+660659096142" class="hover:text-white transition">+66 065 909 6142</a></li>
-                    <li class="text-xs leading-relaxed text-gray-600 pt-1">5533 Sunburst Lane<br>Pensacola, FL 32507, USA</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Bottom bar -->
-        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-[10px] text-gray-600 uppercase tracking-widest">© 2026 Hextile Studio Solutions. All rights reserved.</p>
-            <div class="flex flex-wrap justify-center gap-6 text-[10px] text-gray-600 uppercase tracking-widest">
-                <a href="#" class="hover:text-gray-400 transition">Privacy Policy</a>
-                <a href="#" class="hover:text-gray-400 transition">Terms of Service</a>
-                <a href="#" class="hover:text-gray-400 transition">Refund Policy</a>
-            </div>
-        </div>
+        <p class="text-[10px] text-gray-600 uppercase tracking-widest leading-relaxed">
+            Hextile Studio Solutions | 5533 Sunburst Lane, Pensacola, FL 32507<br>
+            © 2026 Professional Sound Art. All rights reserved.
+        </p>
     </div>
 </footer>
 
-<!-- ================================================================
-     JAVASCRIPT
-================================================================ -->
 <script>
-    // Tab switching
     function openTab(evt, tabName) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -1107,57 +220,31 @@
         evt.currentTarget.classList.add('active');
     }
 
-    // Mobile menu toggle
     function toggleMenu() {
-        document.getElementById('mobile-menu').classList.toggle('open');
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
     }
 
-    // FAQ accordion
-    function toggleFaq(btn) {
-        const answer = btn.nextElementSibling;
-        const isOpen = answer.classList.contains('open');
-        document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
-        document.querySelectorAll('.faq-question').forEach(b => b.classList.remove('open'));
-        if (!isOpen) {
-            answer.classList.add('open');
-            btn.classList.add('open');
-        }
-    }
-
-    // Scroll reveal
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('visible');
         });
-    }, { threshold: 0.08 });
+    }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    // Footer email signup
-    function submitEmail() {
-        const email = document.getElementById('footer-email').value.trim();
-        if (!email || !email.includes('@')) {
-            alert('Please enter a valid email address.');
-            return;
-        }
-        document.getElementById('footer-email').value = '';
-        document.getElementById('email-success').classList.remove('hidden');
+    // Dynamic Pricing based on IP (Simplified logic)
+    async function updatePricing() {
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            const data = await res.json();
+            if(data.country_code !== 'TH') {
+                // Change price symbols logic here if you add price IDs
+                console.log("International Visitor: Using USD format.");
+            }
+        } catch (e) { console.log("Pricing detection skipped."); }
     }
-
-    // Contact form
-    function submitContactForm(e) {
-        e.preventDefault();
-        document.getElementById('form-success').classList.remove('hidden');
-        e.target.reset();
-    }
-
-    // Close mobile menu on outside click
-    document.addEventListener('click', function(e) {
-        const menu = document.getElementById('mobile-menu');
-        const btn = document.querySelector('.hamburger');
-        if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
-            menu.classList.remove('open');
-        }
-    });
+    updatePricing();
 </script>
+
 </body>
 </html>
