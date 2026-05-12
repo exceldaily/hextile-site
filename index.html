@@ -156,9 +156,11 @@
         .color-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
         .color-swatch {
             width: 28px; height: 28px; border-radius: 50%;
-            cursor: default; border: 2px solid rgba(255,255,255,0.15);
-            position: relative;
+            cursor: pointer; border: 2px solid transparent;
+            transition: all 0.2s; position: relative;
         }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.selected { border-color: #60a5fa !important; box-shadow: 0 0 0 3px rgba(96,165,250,0.25); }
         .color-swatch .swatch-tooltip {
             display: none; position: absolute; bottom: 110%; left: 50%;
             transform: translateX(-50%);
@@ -445,11 +447,11 @@
 
                 <!-- Color -->
                 <div>
-                    <div class="variant-label">Available Colours:</div>
+                    <div class="variant-label">Colour: <span id="p1-color-label" style="color:#d1d5db">Black</span></div>
                     <div class="color-swatches" id="p1-colors">
-                        <div class="color-swatch" data-color="Black" style="background:#1a1a1a"><div class="swatch-tooltip">Black</div></div>
-                        <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.4)"><div class="swatch-tooltip">White</div></div>
-                        <div class="color-swatch" data-color="Grey" style="background:#9ca3af"><div class="swatch-tooltip">Grey</div></div>
+                        <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p1','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.4)" onclick="selectColor('p1','White',this)"><div class="swatch-tooltip">White</div></div>
+                        <div class="color-swatch" data-color="Grey" style="background:#9ca3af;border-color:#6b7280" onclick="selectColor('p1','Grey',this)"><div class="swatch-tooltip">Grey</div></div>
                     </div>
                 </div>
 
@@ -519,12 +521,12 @@
                 <p class="product-desc">Ultra-dense 1700g/m² hex panels with a 0.9 NRC rating. Absorbs 90% of noise frequencies and eliminates 97% of echo — studio performance, home price.</p>
 
                 <div>
-                    <div class="variant-label">Available Colours:</div>
+                    <div class="variant-label">Colour: <span id="p2-color-label" style="color:#d1d5db">White</span></div>
                     <div class="color-swatches" id="p2-colors">
-                        <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.5)"><div class="swatch-tooltip">White</div></div>
-                        <div class="color-swatch" data-color="Black" style="background:#1a1a1a"><div class="swatch-tooltip">Black</div></div>
-                        <div class="color-swatch" data-color="Blue" style="background:#1d4ed8;border-color:#1d4ed8"><div class="swatch-tooltip">Blue</div></div>
-                        <div class="color-swatch" data-color="Orange" style="background:#ea580c;border-color:#ea580c"><div class="swatch-tooltip">Orange</div></div>
+                        <div class="color-swatch selected" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.5)" onclick="selectColor('p2','White',this)"><div class="swatch-tooltip">White</div></div>
+                        <div class="color-swatch" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p2','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="Blue" style="background:#1d4ed8;border-color:#1d4ed8" onclick="selectColor('p2','Blue',this)"><div class="swatch-tooltip">Blue</div></div>
+                        <div class="color-swatch" data-color="Orange" style="background:#ea580c;border-color:#ea580c" onclick="selectColor('p2','Orange',this)"><div class="swatch-tooltip">Orange</div></div>
                     </div>
                 </div>
 
@@ -594,12 +596,12 @@
                 <p class="product-desc">Premium wood slat panels that double as luxury wall décor. MDF core, real wood veneer finish — reduce echo while transforming your space into something beautiful.</p>
 
                 <div>
-                    <div class="variant-label">Available Colours:</div>
+                    <div class="variant-label">Colour: <span id="p3-color-label" style="color:#d1d5db">Black</span></div>
                     <div class="color-swatches" id="p3-colors">
-                        <div class="color-swatch" data-color="Black" style="background:#1a1a1a"><div class="swatch-tooltip">Black</div></div>
-                        <div class="color-swatch" data-color="Burlywood" style="background:#deb887;border-color:#c9a96e"><div class="swatch-tooltip">Burlywood</div></div>
-                        <div class="color-swatch" data-color="Dark Walnut" style="background:#3d1f0a;border-color:#6b3a1f"><div class="swatch-tooltip">Dark Walnut</div></div>
-                        <div class="color-swatch" data-color="Grey" style="background:#6b7280;border-color:#9ca3af"><div class="swatch-tooltip">Grey</div></div>
+                        <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p3','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="Burlywood" style="background:#deb887;border-color:#c9a96e" onclick="selectColor('p3','Burlywood',this)"><div class="swatch-tooltip">Burlywood</div></div>
+                        <div class="color-swatch" data-color="Dark Walnut" style="background:#3d1f0a;border-color:#6b3a1f" onclick="selectColor('p3','Dark Walnut',this)"><div class="swatch-tooltip">Dark Walnut</div></div>
+                        <div class="color-swatch" data-color="Grey" style="background:#6b7280;border-color:#9ca3af" onclick="selectColor('p3','Grey',this)"><div class="swatch-tooltip">Grey</div></div>
                     </div>
                 </div>
 
@@ -663,11 +665,11 @@
                 <p class="product-desc">Clean 30×30cm square tiles with a smooth, minimalist finish. Maximum coverage, minimum fuss — 0.9 NRC performance that blends into any interior.</p>
 
                 <div>
-                    <div class="variant-label">Available Colours:</div>
+                    <div class="variant-label">Colour: <span id="p4-color-label" style="color:#d1d5db">Black</span></div>
                     <div class="color-swatches" id="p4-colors">
-                        <div class="color-swatch" data-color="Black" style="background:#1a1a1a"><div class="swatch-tooltip">Black</div></div>
-                        <div class="color-swatch" data-color="Grey" style="background:#9ca3af;border-color:#9ca3af"><div class="swatch-tooltip">Grey</div></div>
-                        <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.5)"><div class="swatch-tooltip">White</div></div>
+                        <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p4','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="Grey" style="background:#9ca3af;border-color:#6b7280" onclick="selectColor('p4','Grey',this)"><div class="swatch-tooltip">Grey</div></div>
+                        <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.5)" onclick="selectColor('p4','White',this)"><div class="swatch-tooltip">White</div></div>
                     </div>
                 </div>
 
