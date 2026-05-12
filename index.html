@@ -477,7 +477,7 @@
                     <li><span class="check">&#10003;</span> Non-toxic, wear-resistant &amp; safe for kids and pets</li>
                 </ul>
 
-                <a href="mailto:Exceldaily@hotmail.com?subject=Order: Soundsbay Honeycomb Panels" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <a id="p1-order-btn" href="https://buy.stripe.com/cNieVe8FN3b98yY8312sM00" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
             </div>
         </div>
 
@@ -551,7 +551,7 @@
                     <li><span class="check">&#10003;</span> Waterproof, odorless 100% polyester fiber</li>
                 </ul>
 
-                <a href="mailto:Exceldaily@hotmail.com?subject=Order: TONOR Hexagon Acoustic Panels" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <a id="p2-order-btn" href="https://buy.stripe.com/8x228sf4bbHF4iIab92sM03" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
             </div>
         </div>
     </div>
@@ -624,7 +624,7 @@
                     <li><span class="check">&#10003;</span> Cuttable to any length for a perfect custom fit</li>
                 </ul>
 
-                <a href="mailto:Exceldaily@hotmail.com?subject=Order: TONOR Wooden Acoustic Wall Panels" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <a id="p3-order-btn" href="https://buy.stripe.com/6oUeVe3lt4fdeXmcjh2sM07" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
             </div>
         </div>
 
@@ -694,7 +694,7 @@
                     <li><span class="check">&#10003;</span> Anti-slip, corrosion &amp; fade resistant</li>
                 </ul>
 
-                <a href="mailto:Exceldaily@hotmail.com?subject=Order: TONOR Square Acoustic Panels" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <a id="p4-order-btn" href="https://buy.stripe.com/eVq14oaNV3b9dTidnl2sM08" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
             </div>
         </div>
     </div>
@@ -746,20 +746,20 @@
                 <div>
                     <div class="variant-label mb-3">Select Width (All 4.7m / 15.4ft length):</div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="p5-sizes">
-                        <div class="tape-size-card selected" onclick="selectTapeSize('4.7m × 1cm', 11.98, this)">
+                        <div class="tape-size-card selected" onclick="selectTapeSize('1cm', 11.98, this)">
                             <div class="size-label">Width: 1cm</div>
                             <div class="size-price">&#8364;11.98</div>
                             <div style="font-size:9px;color:#4ade80;font-weight:700;margin-top:4px;text-transform:uppercase">Best Value</div>
                         </div>
-                        <div class="tape-size-card" onclick="selectTapeSize('4.7m × 1.5cm', 15.98, this)">
+                        <div class="tape-size-card" onclick="selectTapeSize('1.5cm', 15.98, this)">
                             <div class="size-label">Width: 1.5cm</div>
                             <div class="size-price">&#8364;15.98</div>
                         </div>
-                        <div class="tape-size-card" onclick="selectTapeSize('4.7m × 2cm', 19.58, this)">
+                        <div class="tape-size-card" onclick="selectTapeSize('2cm', 19.58, this)">
                             <div class="size-label">Width: 2cm</div>
                             <div class="size-price">&#8364;19.58</div>
                         </div>
-                        <div class="tape-size-card" onclick="selectTapeSize('4.7m × 2.5cm', 23.98, this)">
+                        <div class="tape-size-card" onclick="selectTapeSize('2.5cm', 23.98, this)">
                             <div class="size-label">Width: 2.5cm</div>
                             <div class="size-price">&#8364;23.98</div>
                             <div style="font-size:9px;color:#f59e0b;font-weight:700;margin-top:4px;text-transform:uppercase">Max Hold</div>
@@ -787,7 +787,7 @@
                     </ul>
                 </div>
 
-                <a href="mailto:Exceldaily@hotmail.com?subject=Order: FIXCHORD Double Sided Tape" class="btn-primary py-3.5 text-sm">Order Now &rarr;</a>
+                <a id="p5-order-btn" href="https://buy.stripe.com/14A4gA5tB8vt6qQ0Az2sM0c" target="_blank" class="btn-primary py-3.5 text-sm">Order Now &rarr;</a>
             </div>
         </div>
     </div>
@@ -1082,6 +1082,43 @@
      JAVASCRIPT
 ================================================================ -->
 <script>
+// ---- STRIPE PAYMENT LINKS ----
+const STRIPE_LINKS = {
+    p1: {
+        '12 Pack': 'https://buy.stripe.com/cNieVe8FN3b98yY8312sM00',
+        '18 Pack': 'https://buy.stripe.com/5kQ6oI2hp6nldTidnl2sM01'
+    },
+    p2: {
+        '12 Pack': 'https://buy.stripe.com/14A3cw8FNbHF8yY6YX2sM02',
+        '18 Pack': 'https://buy.stripe.com/8x228sf4bbHF4iIab92sM03',
+        '36 Pack': 'https://buy.stripe.com/4gMcN609hdPN9D21ED2sM04',
+        '48 Pack': 'https://buy.stripe.com/3cI4gA09h3b9eXm6YX2sM05'
+    },
+    p3: {
+        '2 Pack': 'https://buy.stripe.com/fZu14o5tB4fd3eE5UT2sM06',
+        '4 Pack': 'https://buy.stripe.com/6oUeVe3lt4fdeXmcjh2sM07'
+    },
+    p4: {
+        '12 Pack': 'https://buy.stripe.com/eVq14oaNV3b9dTidnl2sM08',
+        '18 Pack': 'https://buy.stripe.com/9B68wQf4b9zxg1q3ML2sM09',
+        '36 Pack': 'https://buy.stripe.com/28EbJ26xF9zx5mMcjh2sM0a',
+        '48 Pack': 'https://buy.stripe.com/5kQbJ29JRh1Z02s0Az2sM0b'
+    },
+    p5: {
+        '1cm':   'https://buy.stripe.com/14A4gA5tB8vt6qQ0Az2sM0c',
+        '1.5cm': 'https://buy.stripe.com/bJe8wQf4bcLJbLaab92sM0d',
+        '2cm':   'https://buy.stripe.com/aFa6oI5tB3b97uUerp2sM0e',
+        '2.5cm': 'https://buy.stripe.com/dRm14o7BJ131eXm5UT2sM0f'
+    }
+};
+
+function updateOrderLink(pid, pack) {
+    var btn = document.getElementById(pid + '-order-btn');
+    if (btn && STRIPE_LINKS[pid] && STRIPE_LINKS[pid][pack]) {
+        btn.href = STRIPE_LINKS[pid][pack];
+    }
+}
+
 // ---- PRODUCT DATA ----
 const PRODUCTS = {
     p1: {
@@ -1194,6 +1231,7 @@ function selectPack(pid, pack, btn) {
 
     var selColor = document.querySelector('#' + pid + '-colors .color-swatch.selected');
     if (selColor) updatePrice(pid, selColor.dataset.color, pack);
+    updateOrderLink(pid, pack);
 }
 
 // ---- UPDATE PRICE ----
@@ -1203,6 +1241,7 @@ function updatePrice(pid, color, pack) {
     var price = prod.colors[color].packs[pack];
     var el = document.getElementById(pid + '-price');
     if (el) el.textContent = '€' + price.toFixed(2);
+    updateOrderLink(pid, pack);
 }
 
 // ---- TAPE SIZE SELECTION ----
@@ -1213,6 +1252,7 @@ function selectTapeSize(size, price, el) {
     el.classList.add('selected');
     var priceEl = document.getElementById('p5-price');
     if (priceEl) priceEl.textContent = '€' + price.toFixed(2);
+    updateOrderLink('p5', size);
 }
 
 // ---- MOBILE MENU ----
