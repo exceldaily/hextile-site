@@ -1101,37 +1101,37 @@
 // ---- STRIPE PAYMENT LINKS ----
 const STRIPE_LINKS = {
     p1: {
-        '12 Pack': 'https://buy.stripe.com/cNieVe8FN3b98yY8312sM00',
-        '18 Pack': 'https://buy.stripe.com/5kQ6oI2hp6nldTidnl2sM01'
+        '12 Pack': { GBP: 'https://buy.stripe.com/14A28s9JR27516wcjh2sM0g', AUD: 'https://buy.stripe.com/cNi9AU09h7rpg1q8312sM0h' },
+        '18 Pack': { GBP: 'https://buy.stripe.com/6oU6oI3ltbHF16wgzx2sM0i', AUD: 'https://buy.stripe.com/4gMbJ28FNdPNaH6cjh2sM0j' }
     },
     p2: {
-        '12 Pack': 'https://buy.stripe.com/14A3cw8FNbHF8yY6YX2sM02',
-        '18 Pack': 'https://buy.stripe.com/8x228sf4bbHF4iIab92sM03',
-        '36 Pack': 'https://buy.stripe.com/4gMcN609hdPN9D21ED2sM04',
-        '48 Pack': 'https://buy.stripe.com/3cI4gA09h3b9eXm6YX2sM05'
+        '12 Pack': { GBP: 'https://buy.stripe.com/4gMeVe6xF6nlbLa1ED2sM0o', AUD: 'https://buy.stripe.com/8x2bJ2f4bfXV3eEab92sM0l' },
+        '18 Pack': { GBP: 'https://buy.stripe.com/eVq14o6xFeTRcPebfd2sM0m', AUD: 'https://buy.stripe.com/bJecN6g8f4fd9D25UT2sM0n' },
+        '36 Pack': { GBP: 'https://buy.stripe.com/8x200k2hpfXV9D2gzx2sM0p', AUD: 'https://buy.stripe.com/28EfZibRZ9zxdTicjh2sM0q' },
+        '48 Pack': { GBP: 'https://buy.stripe.com/aFa8wQ1dlaDBcPefvt2sM0r', AUD: 'https://buy.stripe.com/eVq00kbRZ4fdbLa4QP2sM0s' }
     },
     p3: {
-        '2 Pack': 'https://buy.stripe.com/fZu14o5tB4fd3eE5UT2sM06',
-        '4 Pack': 'https://buy.stripe.com/6oUeVe3lt4fdeXmcjh2sM07'
+        '2 Pack': { GBP: 'https://buy.stripe.com/4gM3cw1dlh1Zg1q2IH2sM0t', AUD: 'https://buy.stripe.com/dRmfZi4px1312aA0Az2sM0u' },
+        '4 Pack': { GBP: 'https://buy.stripe.com/bJe5kE09haDBbLa5UT2sM0v', AUD: 'https://buy.stripe.com/5kQ3cw6xF275bLa5UT2sM0w' }
     },
     p4: {
-        '12 Pack': 'https://buy.stripe.com/eVq14oaNV3b9dTidnl2sM08',
-        '18 Pack': 'https://buy.stripe.com/9B68wQf4b9zxg1q3ML2sM09',
-        '36 Pack': 'https://buy.stripe.com/28EbJ26xF9zx5mMcjh2sM0a',
-        '48 Pack': 'https://buy.stripe.com/5kQbJ29JRh1Z02s0Az2sM0b'
+        '12 Pack': { GBP: 'https://buy.stripe.com/dRmaEY9JR1317uUbfd2sM0x', AUD: 'https://buy.stripe.com/bJe14o9JRh1Z02s6YX2sM0y' },
+        '18 Pack': { GBP: 'https://buy.stripe.com/8x25kE5tB4fdaH6ab92sM0z', AUD: 'https://buy.stripe.com/4gM9AU09h275cPe4QP2sM0A' },
+        '36 Pack': { GBP: 'https://buy.stripe.com/bJe7sM09hfXV9D25UT2sM0B', AUD: 'https://buy.stripe.com/8x2bJ2f4bh1Z16werp2sM0C' },
+        '48 Pack': { GBP: 'https://buy.stripe.com/00wfZi7BJ4fd2aAab92sM0D', AUD: 'https://buy.stripe.com/eVq00k09heTR2aA9752sM0E' }
     },
     p5: {
-        '1cm':   'https://buy.stripe.com/14A4gA5tB8vt6qQ0Az2sM0c',
-        '1.5cm': 'https://buy.stripe.com/bJe8wQf4bcLJbLaab92sM0d',
-        '2cm':   'https://buy.stripe.com/aFa6oI5tB3b97uUerp2sM0e',
-        '2.5cm': 'https://buy.stripe.com/dRm14o7BJ131eXm5UT2sM0f'
+        '1cm':   { GBP: 'https://buy.stripe.com/6oUeVecW3dPN5mMbfd2sM0F', AUD: 'https://buy.stripe.com/14A9AUf4b13116w4QP2sM0G' },
+        '1.5cm': { GBP: 'https://buy.stripe.com/cNi28saNVcLJeXmdnl2sM0H', AUD: 'https://buy.stripe.com/9B6cN6aNVh1Z4iIbfd2sM0I' },
+        '2cm':   { GBP: 'https://buy.stripe.com/14A28scW3h1Z9D2gzx2sM0J', AUD: 'https://buy.stripe.com/5kQfZig8f6nl8yYdnl2sM0K' },
+        '2.5cm': { GBP: 'https://buy.stripe.com/4gMfZicW3cLJ5mM4QP2sM0L', AUD: 'https://buy.stripe.com/bJe4gA3lt9zx8yY4QP2sM0M' }
     }
 };
 
 function updateOrderLink(pid, pack) {
     var btn = document.getElementById(pid + '-order-btn');
-    if (btn && STRIPE_LINKS[pid] && STRIPE_LINKS[pid][pack]) {
-        btn.href = STRIPE_LINKS[pid][pack];
+    if (btn && STRIPE_LINKS[pid] && STRIPE_LINKS[pid][pack] && STRIPE_LINKS[pid][pack][activeCurrency]) {
+        btn.href = STRIPE_LINKS[pid][pack][activeCurrency];
     }
 }
 
@@ -1183,6 +1183,18 @@ function setCurrency(curr) {
         ? '<img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery'
         : '<img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free AU &amp; UK Delivery';
     document.querySelectorAll('.price-shipping').forEach(function(el) { el.innerHTML = flagHtml; });
+
+    // Update all Order Now links for new currency
+    ['p1','p2','p3','p4'].forEach(function(pid) {
+        var selPack = document.querySelector('#' + pid + '-packs .pack-btn.selected');
+        if (selPack) updateOrderLink(pid, selPack.dataset.pack);
+    });
+    // Update p5 tape link
+    var selTape = document.querySelector('#p5-sizes .tape-size-card.selected');
+    if (selTape) {
+        var sz = selTape.querySelector('.size-label').textContent.replace('Width: ', '').trim();
+        updateOrderLink('p5', sz);
+    }
 }
 
 // ---- PRODUCT DATA ----
