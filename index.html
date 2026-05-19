@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hextile | Premium Acoustic Panels | Delivered to Ireland</title>
+    <title>Hextile | Premium Acoustic Panels | UK &amp; Australia</title>
     <meta name="description" content="Premium acoustic panels for home studios, gaming rooms & offices. Free delivery to Ireland. Soundsbay, TONOR & FIXCHORD — professional soundproofing made easy.">
     <meta name="keywords" content="acoustic wall panels Ireland, studio sound treatment, hexagon acoustic tiles, PET acoustic felt, DIY soundproofing, home studio Dublin, acoustic panels Ireland">
     <meta property="og:title" content="Hextile | Premium Acoustic Panels — Ireland">
-    <meta property="og:description" content="Professional acoustic treatment for home studios, gaming rooms and offices. Free delivery to Ireland. Shop now.">
+    <meta property="og:description" content="Professional acoustic treatment for home studios, gaming rooms and offices. Free delivery to UK &amp; Australia. Shop now.">
     <meta property="og:type" content="website">
 
     <!-- Google tag (gtag.js) -->
@@ -258,17 +258,10 @@
             box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
         }
 
-        /* Irish stamp */
-        .irl-stamp {
-            display: flex; flex-direction: column; align-items: center; gap: 2px;
-            padding: 4px 5px;
-            border: 1.5px dashed rgba(255,255,255,0.3);
-            border-radius: 3px;
-            background: rgba(255,255,255,0.03);
-            flex-shrink: 0;
-        }
-        .irl-stamp img { width: 24px; height: auto; border-radius: 1px; display: block; }
-        .irl-stamp span { font-size: 6px; font-weight: 900; letter-spacing: 0.15em; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+        /* Currency switcher */
+        .currency-switcher { display: flex; align-items: center; gap: 2px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 3px; }
+        .curr-btn { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; border: none; background: transparent; color: #6b7280; transition: all 0.2s; white-space: nowrap; }
+        .curr-btn.active { background: rgba(37,99,235,0.9); color: white; box-shadow: 0 2px 8px rgba(37,99,235,0.4); }
 
         /* Ireland badge */
         .ireland-badge {
@@ -306,9 +299,15 @@
     <div class="max-w-7xl mx-auto px-5 md:px-8 py-3.5 flex justify-between items-center">
         <a href="#" class="flex items-center gap-2">
             <img src="logo.png" alt="Hextile" style="height:36px;width:auto;object-fit:contain;mix-blend-mode:screen">
-            <img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="width:20px;height:auto;border-radius:2px;opacity:0.85">
+            <img src="https://flagcdn.com/w20/gb.png" alt="UK" style="width:20px;height:auto;border-radius:2px;opacity:0.85">
         </a>
 
+        <div class="hidden md:flex items-center">
+            <div class="currency-switcher">
+                <button class="curr-btn active" data-currency="GBP" onclick="setCurrency('GBP')">£ GBP</button>
+                <button class="curr-btn" data-currency="AUD" onclick="setCurrency('AUD')">A$ AUD</button>
+            </div>
+        </div>
 
         <div class="hidden md:flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
             <a href="#faq" class="hover:text-white transition">FAQ</a>
@@ -321,6 +320,10 @@
         </button>
     </div>
     <div id="mobile-menu" class="md:hidden border-t border-white/5 px-6 py-4 space-y-1">
+        <div class="currency-switcher mb-3" style="display:inline-flex">
+            <button class="curr-btn active" data-currency="GBP" onclick="setCurrency('GBP')">£ GBP</button>
+            <button class="curr-btn" data-currency="AUD" onclick="setCurrency('AUD')">A$ AUD</button>
+        </div>
         <a href="#shop" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Shop All</a>
         <a href="#faq" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">FAQ</a>
         <a href="#contact" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Contact</a>
@@ -337,8 +340,9 @@
 
     <div class="max-w-6xl mx-auto px-6 md:px-8 py-14 md:py-20 text-center">
         <div class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2 mb-7">
-            <span class="text-lg"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"></span>
-            <span class="text-green-400 text-[10px] font-bold uppercase tracking-widest">Free Delivery to Ireland — Order Today</span>
+            <img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px">
+            <img src="https://flagcdn.com/w20/au.png" alt="Australia" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px">
+            <span class="text-green-400 text-[10px] font-bold uppercase tracking-widest">Free Delivery to UK &amp; Australia — Order Today</span>
         </div>
 
         <h1 class="text-5xl sm:text-7xl md:text-[5.5rem] font-black mb-5 tracking-tight uppercase leading-none italic">
@@ -349,7 +353,7 @@
         <p class="text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-3 font-medium leading-relaxed">
             Professional acoustic panels for home studios, gaming rooms &amp; offices.
         </p>
-        <p class="text-sm text-blue-400 font-bold mb-4">Soundsbay · TONOR · FIXCHORD — Curated &amp; Delivered to Ireland.</p>
+        <p class="text-sm text-blue-400 font-bold mb-4">Soundsbay · TONOR · FIXCHORD — Curated &amp; Delivered to UK &amp; Australia.</p>
         <p class="text-sm text-gray-500 mb-10">Install in under 30 minutes. No tools. No drilling. No damage.</p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10">
@@ -357,7 +361,7 @@
         </div>
 
         <div class="flex flex-wrap justify-center gap-2.5 mb-12">
-            <div class="trust-badge"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Ships to Ireland</div>
+            <div class="trust-badge"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:4px"> UK &amp; Australia</div>
             <div class="trust-badge"><span class="text-green-400">&#127807;</span> 100% Safe &amp; Non-Toxic</div>
             <div class="trust-badge"><span class="text-orange-400">&#128293;</span> Fire-Rated Materials</div>
             <div class="trust-badge"><span class="text-purple-400">&#11088;</span> 0.9 NRC Rating</div>
@@ -390,8 +394,8 @@
             <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Products</div>
         </div>
         <div class="stat-cell reveal" style="transition-delay:.2s">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"></div>
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Delivers to Ireland</div>
+            <div class="text-4xl md:text-5xl font-black gradient-text mb-1" style="display:flex;justify-content:center;gap:6px;align-items:center"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="width:32px;height:auto;border-radius:2px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="width:32px;height:auto;border-radius:2px"></div>
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">UK &amp; Australia</div>
         </div>
         <div class="stat-cell reveal" style="transition-delay:.3s">
             <div class="text-4xl md:text-5xl font-black gradient-text mb-1">&lt;30<span class="text-xl">min</span></div>
@@ -480,7 +484,7 @@
                 <!-- Price -->
                 <div class="price-display">
                     <span class="price-amount" id="p1-price">&#8364;64.28</span>
-                    <span class="price-shipping"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Free delivery to Ireland</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
                 </div>
 
                 <!-- Features -->
@@ -555,7 +559,7 @@
 
                 <div class="price-display">
                     <span class="price-amount" id="p2-price">&#8364;59.98</span>
-                    <span class="price-shipping"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Free delivery to Ireland</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
                 </div>
 
                 <ul class="feature-list">
@@ -628,7 +632,7 @@
 
                 <div class="price-display">
                     <span class="price-amount" id="p3-price">&#8364;199.98</span>
-                    <span class="price-shipping"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Free delivery to Ireland</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
                 </div>
 
                 <ul class="feature-list">
@@ -698,7 +702,7 @@
 
                 <div class="price-display">
                     <span class="price-amount" id="p4-price">&#8364;49.98</span>
-                    <span class="price-shipping"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Free delivery to Ireland</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
                 </div>
 
                 <ul class="feature-list">
@@ -759,22 +763,22 @@
                 <div>
                     <div class="variant-label mb-3">Select Width (All 4.7m / 15.4ft length):</div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="p5-sizes">
-                        <div class="tape-size-card selected" onclick="selectTapeSize('1cm', 11.98, this)">
+                        <div class="tape-size-card selected" onclick="selectTapeSize('1cm', 7.19, this)">
                             <div class="size-label">Width: 1cm</div>
-                            <div class="size-price">&#8364;11.98</div>
+                            <div class="size-price">&#8364;7.19</div>
                             <div style="font-size:9px;color:#4ade80;font-weight:700;margin-top:4px;text-transform:uppercase">Best Value</div>
                         </div>
-                        <div class="tape-size-card" onclick="selectTapeSize('1.5cm', 15.98, this)">
+                        <div class="tape-size-card" onclick="selectTapeSize('1.5cm', 9.59, this)">
                             <div class="size-label">Width: 1.5cm</div>
-                            <div class="size-price">&#8364;15.98</div>
+                            <div class="size-price">&#8364;9.59</div>
                         </div>
-                        <div class="tape-size-card" onclick="selectTapeSize('2cm', 19.58, this)">
+                        <div class="tape-size-card" onclick="selectTapeSize('2cm', 11.75, this)">
                             <div class="size-label">Width: 2cm</div>
-                            <div class="size-price">&#8364;19.58</div>
+                            <div class="size-price">&#8364;11.75</div>
                         </div>
-                        <div class="tape-size-card" onclick="selectTapeSize('2.5cm', 23.98, this)">
+                        <div class="tape-size-card" onclick="selectTapeSize('2.5cm', 14.39, this)">
                             <div class="size-label">Width: 2.5cm</div>
-                            <div class="size-price">&#8364;23.98</div>
+                            <div class="size-price">&#8364;14.39</div>
                             <div style="font-size:9px;color:#f59e0b;font-weight:700;margin-top:4px;text-transform:uppercase">Max Hold</div>
                         </div>
                     </div>
@@ -782,7 +786,7 @@
 
                 <div class="price-display">
                     <span class="price-amount" id="p5-price">&#8364;11.98</span>
-                    <span class="price-shipping"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Free delivery to Ireland</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -968,18 +972,18 @@
                     </div>
                 </a>
                 <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-lg flex-shrink-0"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"></div>
+                    <div class="w-11 h-11 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-lg flex-shrink-0"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:20px;height:15px;border-radius:2px"></div>
                     <div>
-                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">Ireland Location</div>
-                        <div class="text-sm font-bold">Central Internet Café</div>
-                        <div class="text-xs text-gray-500">6 Grafton Street, Dublin 2, D02 H227, Ireland</div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">UK Location</div>
+                        <div class="text-sm font-bold">Global Gossip Internet Café</div>
+                        <div class="text-xs text-gray-500">120 Earls Court Road, London, SW5 9QR, United Kingdom</div>
                     </div>
                 </div>
             </div>
 
             <div class="bento-card !p-5">
                 <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Delivering Across Ireland</p>
-                <p class="text-gray-400 text-sm leading-relaxed">We ship professional acoustic solutions to all addresses across Ireland — Dublin, Cork, Galway, Limerick, and everywhere in between.</p>
+                <p class="text-gray-400 text-sm leading-relaxed">We ship professional acoustic solutions to all addresses across the UK and Australia — London, Manchester, Sydney, Melbourne, and everywhere in between.</p>
             </div>
         </div>
 
@@ -1049,7 +1053,7 @@
                     <img src="logo.png" alt="Hextile" style="height:40px;width:auto;object-fit:contain;mix-blend-mode:screen">
                 </div>
                 <p class="text-gray-500 text-xs leading-relaxed mb-4">Professional acoustic panels for home studios, gaming rooms and offices. Delivered free to Ireland.</p>
-                <div class="ireland-badge"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Delivering to Ireland</div>
+                <div class="ireland-badge"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:3px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:4px"> UK &amp; Australia</div>
             </div>
             <div>
                 <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Shop</h4>
@@ -1075,7 +1079,7 @@
                 <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Contact</h4>
                 <ul class="space-y-2.5 text-sm text-gray-400">
                     <li><a href="mailto:customersupport@hextile.studio" class="hover:text-white transition break-all">customersupport@hextile.studio</a></li>
-                    <li class="text-xs text-gray-600 leading-relaxed pt-2"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Central Internet Café<br>6 Grafton Street<br>Dublin 2, D02 H227<br>Ireland</li>
+                    <li class="text-xs text-gray-600 leading-relaxed pt-2"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:3px"> Global Gossip Internet Café<br>120 Earls Court Road<br>London, SW5 9QR<br>United Kingdom</li>
                 </ul>
             </div>
         </div>
@@ -1131,39 +1135,89 @@ function updateOrderLink(pid, pack) {
     }
 }
 
+// ---- CURRENCY ----
+const RATES = { GBP: 0.85, AUD: 1.65 };
+const SYMBOLS = { GBP: '£', AUD: 'A$' };
+const TAPE_BASE = { '1cm': 7.19, '1.5cm': 9.59, '2cm': 11.75, '2.5cm': 14.39 };
+var activeCurrency = 'GBP';
+
+function setCurrency(curr) {
+    activeCurrency = curr;
+    var sym = SYMBOLS[curr];
+    var rate = RATES[curr];
+
+    // Update buttons (both nav and mobile)
+    document.querySelectorAll('.curr-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.currency === curr);
+    });
+
+    // Update p1–p4 prices
+    ['p1','p2','p3','p4'].forEach(function(pid) {
+        var selColor = document.querySelector('#' + pid + '-colors .color-swatch.selected');
+        var selPack  = document.querySelector('#' + pid + '-packs .pack-btn.selected');
+        if (selColor && selPack) {
+            var base = PRODUCTS[pid].colors[selColor.dataset.color].packs[selPack.dataset.pack];
+            var el = document.getElementById(pid + '-price');
+            if (el) el.textContent = sym + (base * rate).toFixed(2);
+        }
+    });
+
+    // Update tape card prices and p5 price display
+    document.querySelectorAll('#p5-sizes .tape-size-card').forEach(function(card) {
+        var lbl = card.querySelector('.size-label');
+        var priceEl = card.querySelector('.size-price');
+        if (lbl && priceEl) {
+            var size = lbl.textContent.replace('Width: ', '').trim();
+            if (TAPE_BASE[size]) priceEl.textContent = sym + (TAPE_BASE[size] * rate).toFixed(2);
+        }
+    });
+    var selTape = document.querySelector('#p5-sizes .tape-size-card.selected');
+    if (selTape) {
+        var size = selTape.querySelector('.size-label').textContent.replace('Width: ', '').trim();
+        var p5el = document.getElementById('p5-price');
+        if (p5el && TAPE_BASE[size]) p5el.textContent = sym + (TAPE_BASE[size] * rate).toFixed(2);
+    }
+
+    // Update shipping labels
+    var flagHtml = curr === 'GBP'
+        ? '<img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery'
+        : '<img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free AU &amp; UK Delivery';
+    document.querySelectorAll('.price-shipping').forEach(function(el) { el.innerHTML = flagHtml; });
+}
+
 // ---- PRODUCT DATA ----
 const PRODUCTS = {
     p1: {
         colors: {
-            'Black':  { hex:'#1a1a1a', packs: { '12 Pack': 64.28, '18 Pack': 85.84 } },
-            'White':  { hex:'#f0f0f0', packs: { '12 Pack': 64.28, '18 Pack': 85.84 } },
-            'Grey':   { hex:'#9ca3af', packs: { '12 Pack': 64.28, '18 Pack': 85.84 } }
+            'Black':  { hex:'#1a1a1a', packs: { '12 Pack': 38.57, '18 Pack': 51.50 } },
+            'White':  { hex:'#f0f0f0', packs: { '12 Pack': 38.57, '18 Pack': 51.50 } },
+            'Grey':   { hex:'#9ca3af', packs: { '12 Pack': 38.57, '18 Pack': 51.50 } }
         },
         default: { color: 'Black', pack: '12 Pack' }
     },
     p2: {
         colors: {
-            'White':  { hex:'#f0f0f0', packs: { '12 Pack': 39.98, '18 Pack': 59.98, '36 Pack': 119.98, '48 Pack': 159.98 } },
-            'Black':  { hex:'#1a1a1a', packs: { '12 Pack': 39.98, '18 Pack': 59.98, '36 Pack': 119.98, '48 Pack': 159.98 } },
-            'Blue':   { hex:'#1d4ed8', packs: { '12 Pack': 39.98, '18 Pack': 59.98, '36 Pack': 119.98, '48 Pack': 159.98 } },
-            'Orange': { hex:'#ea580c', packs: { '12 Pack': 39.98, '18 Pack': 59.98, '36 Pack': 119.98, '48 Pack': 159.98 } }
+            'White':  { hex:'#f0f0f0', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } },
+            'Black':  { hex:'#1a1a1a', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } },
+            'Blue':   { hex:'#1d4ed8', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } },
+            'Orange': { hex:'#ea580c', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } }
         },
         default: { color: 'White', pack: '18 Pack' }
     },
     p3: {
         colors: {
-            'Black':       { hex:'#1a1a1a', packs: { '2 Pack': 119.98, '4 Pack': 199.98 } },
-            'Burlywood':   { hex:'#deb887', packs: { '2 Pack': 119.98, '4 Pack': 199.98 } },
-            'Dark Walnut': { hex:'#3d1f0a', packs: { '2 Pack': 119.98 } },
-            'Grey':        { hex:'#6b7280', packs: { '2 Pack': 119.98, '4 Pack': 199.98 } }
+            'Black':       { hex:'#1a1a1a', packs: { '2 Pack': 71.99, '4 Pack': 119.99 } },
+            'Burlywood':   { hex:'#deb887', packs: { '2 Pack': 71.99, '4 Pack': 119.99 } },
+            'Dark Walnut': { hex:'#3d1f0a', packs: { '2 Pack': 71.99 } },
+            'Grey':        { hex:'#6b7280', packs: { '2 Pack': 71.99, '4 Pack': 119.99 } }
         },
         default: { color: 'Black', pack: '4 Pack' }
     },
     p4: {
         colors: {
-            'Black': { hex:'#1a1a1a', packs: { '12 Pack': 49.98, '18 Pack': 59.98 } },
-            'Grey':  { hex:'#9ca3af', packs: { '12 Pack': 49.98, '18 Pack': 59.98, '36 Pack': 139.98 } },
-            'White': { hex:'#f0f0f0', packs: { '12 Pack': 49.98, '18 Pack': 59.98, '36 Pack': 139.98, '48 Pack': 159.98 } }
+            'Black': { hex:'#1a1a1a', packs: { '12 Pack': 29.99, '18 Pack': 35.99 } },
+            'Grey':  { hex:'#9ca3af', packs: { '12 Pack': 29.99, '18 Pack': 35.99, '36 Pack': 83.99 } },
+            'White': { hex:'#f0f0f0', packs: { '12 Pack': 29.99, '18 Pack': 35.99, '36 Pack': 83.99, '48 Pack': 95.99 } }
         },
         default: { color: 'Black', pack: '12 Pack' }
     }
@@ -1252,7 +1306,7 @@ function updatePrice(pid, color, pack) {
     if (!prod || !prod.colors[color] || !prod.colors[color].packs[pack]) return;
     var price = prod.colors[color].packs[pack];
     var el = document.getElementById(pid + '-price');
-    if (el) el.textContent = '€' + price.toFixed(2);
+    if (el) el.textContent = SYMBOLS[activeCurrency] + (price * RATES[activeCurrency]).toFixed(2);
     updateOrderLink(pid, pack);
 }
 
@@ -1263,7 +1317,7 @@ function selectTapeSize(size, price, el) {
     });
     el.classList.add('selected');
     var priceEl = document.getElementById('p5-price');
-    if (priceEl) priceEl.textContent = '€' + price.toFixed(2);
+    if (priceEl) priceEl.textContent = SYMBOLS[activeCurrency] + (price * RATES[activeCurrency]).toFixed(2);
     updateOrderLink('p5', size);
 }
 
@@ -1335,6 +1389,9 @@ window.addEventListener('DOMContentLoaded', function() {
         // Set initial price & availability
         selectColor(pid, def.color, null);
     });
+
+    // Set default currency to GBP
+    setCurrency('GBP');
 });
 </script>
 </body>
