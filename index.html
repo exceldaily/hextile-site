@@ -288,6 +288,20 @@
         .spec-row:last-child { border-bottom: none; }
         .spec-label { color: #6b7280; }
         .spec-value { font-weight: 700; color: #e5e7eb; }
+
+        /* ---- CART ---- */
+        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .cart-overlay.open { opacity: 1; pointer-events: all; }
+        .cart-drawer { position: fixed; right: 0; top: 0; height: 100%; width: 100%; max-width: 430px; background: #111; border-left: 1px solid rgba(255,255,255,0.08); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94); }
+        .cart-drawer.open { transform: translateX(0); }
+        .cart-btn-wrap { position: relative; display: inline-flex; }
+        .cart-badge { position: absolute; top: -7px; right: -7px; background: #2563eb; color: white; font-size: 9px; font-weight: 900; border-radius: 999px; min-width: 18px; height: 18px; display: none; align-items: center; justify-content: center; padding: 0 4px; pointer-events: none; }
+        .cart-badge.visible { display: flex; }
+        .cart-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .qty-btn { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; transition: all 0.2s; line-height: 1; }
+        .qty-btn:hover { background: rgba(37,99,235,0.35); border-color: rgba(37,99,235,0.5); }
+        .btn-add-cart { display: block; width: 100%; background: linear-gradient(135deg,#2563eb 0%,#7c3aed 100%); color: white; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 32px rgba(37,99,235,0.28); text-align: center; }
+        .btn-add-cart:hover { box-shadow: 0 0 56px rgba(37,99,235,0.48); transform: translateY(-2px); opacity: 0.92; }
     </style>
 </head>
 <body class="antialiased min-h-screen">
@@ -312,12 +326,27 @@
         <div class="hidden md:flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
             <a href="#faq" class="hover:text-white transition">FAQ</a>
             <a href="#contact" class="hover:text-white transition">Contact</a>
+            <div class="cart-btn-wrap">
+                <button onclick="openCart()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(59,130,246,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Cart
+                </button>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </div>
             <a href="#shop" class="btn-primary px-5 py-2.5 text-[10px]">Shop Now</a>
         </div>
 
-        <button class="hamburger md:hidden flex flex-col gap-1.5 p-2" onclick="toggleMenu()">
+        <div class="md:hidden flex items-center gap-3">
+        <div class="cart-btn-wrap">
+            <button onclick="openCart()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:9px;padding:7px 10px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            </button>
+            <span class="cart-badge" id="cart-badge-mobile">0</span>
+        </div>
+        <button class="hamburger flex flex-col gap-1.5 p-2" onclick="toggleMenu()">
             <span></span><span></span><span></span>
         </button>
+        </div>
     </div>
     <div id="mobile-menu" class="md:hidden border-t border-white/5 px-6 py-4 space-y-1">
         <div class="currency-switcher mb-3" style="display:inline-flex">
@@ -494,7 +523,7 @@
                     <li><span class="check">&#10003;</span> Non-toxic, wear-resistant &amp; safe for kids and pets</li>
                 </ul>
 
-                <a id="p1-order-btn" href="https://buy.stripe.com/cNieVe8FN3b98yY8312sM00" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <button onclick="addCurrentToCart('p1')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
             </div>
         </div>
 
@@ -568,7 +597,7 @@
                     <li><span class="check">&#10003;</span> Waterproof, odorless 100% polyester fiber</li>
                 </ul>
 
-                <a id="p2-order-btn" href="https://buy.stripe.com/8x228sf4bbHF4iIab92sM03" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <button onclick="addCurrentToCart('p2')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
             </div>
         </div>
     </div>
@@ -641,7 +670,7 @@
                     <li><span class="check">&#10003;</span> Cuttable to any length for a perfect custom fit</li>
                 </ul>
 
-                <a id="p3-order-btn" href="https://buy.stripe.com/6oUeVe3lt4fdeXmcjh2sM07" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <button onclick="addCurrentToCart('p3')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
             </div>
         </div>
 
@@ -711,7 +740,7 @@
                     <li><span class="check">&#10003;</span> Anti-slip, corrosion &amp; fade resistant</li>
                 </ul>
 
-                <a id="p4-order-btn" href="https://buy.stripe.com/eVq14oaNV3b9dTidnl2sM08" target="_blank" class="btn-primary py-3.5 text-sm mt-auto">Order Now &rarr;</a>
+                <button onclick="addCurrentToCart('p4')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
             </div>
         </div>
     </div>
@@ -804,7 +833,7 @@
                     </ul>
                 </div>
 
-                <a id="p5-order-btn" href="https://buy.stripe.com/14A4gA5tB8vt6qQ0Az2sM0c" target="_blank" class="btn-primary py-3.5 text-sm">Order Now &rarr;</a>
+                <button onclick="addCurrentTapeToCart()" class="btn-add-cart py-3.5 text-sm">Add to Cart &rarr;</button>
             </div>
         </div>
     </div>
@@ -1095,6 +1124,45 @@
 </footer>
 
 <!-- ================================================================
+     CART OVERLAY + DRAWER
+================================================================ -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:10px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span style="font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:0.05em">Your Cart</span>
+        </div>
+        <button onclick="closeCart()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;border-radius:8px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">&times;</button>
+    </div>
+
+    <!-- Items -->
+    <div style="flex:1;overflow-y:auto;padding:0 1.5rem">
+        <!-- Empty state -->
+        <div id="cart-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:3rem 0">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <p style="color:#4b5563;font-size:13px;font-weight:600;text-align:center">Your cart is empty.<br>Add some products to get started.</p>
+            <button onclick="closeCart();document.getElementById('shop').scrollIntoView({behavior:'smooth'})" style="background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);color:#60a5fa;border-radius:8px;padding:8px 20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s">Browse Products</button>
+        </div>
+        <!-- Cart items rendered by JS -->
+        <div id="cart-items"></div>
+    </div>
+
+    <!-- Footer -->
+    <div style="border-top:1px solid rgba(255,255,255,0.08);padding:1.25rem 1.5rem;flex-shrink:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280">Total</span>
+            <span id="cart-total" style="font-size:1.5rem;font-weight:900;color:#f5f5f5">£0.00</span>
+        </div>
+        <button id="cart-checkout-btn" onclick="checkout()" disabled class="btn-add-cart py-4 text-sm mb-3" style="opacity:0.5;transition:opacity 0.2s,transform 0.3s,box-shadow 0.3s" onmouseover="if(!this.disabled)this.style.opacity='0.92'" onmouseout="this.style.opacity=this.disabled?'0.5':'1'">
+            Checkout &rarr;
+        </button>
+        <p style="font-size:10px;color:#4b5563;text-align:center;line-height:1.6">Secure checkout via Stripe. Free delivery to UK &amp; Australia.</p>
+    </div>
+</div>
+
+<!-- ================================================================
      JAVASCRIPT
 ================================================================ -->
 <script>
@@ -1132,6 +1200,207 @@ function updateOrderLink(pid, pack) {
     var btn = document.getElementById(pid + '-order-btn');
     if (btn && STRIPE_LINKS[pid] && STRIPE_LINKS[pid][pack] && STRIPE_LINKS[pid][pack][activeCurrency]) {
         btn.href = STRIPE_LINKS[pid][pack][activeCurrency];
+    }
+}
+
+// ---- CLOUDFLARE WORKER URL ----
+// After deploying checkout-worker.js, replace the URL below with your Worker URL
+const WORKER_URL = 'spring-firefly-f9c7.exceldaily7.workers.dev';
+
+// ---- STRIPE PRICE IDs (for cart checkout sessions) ----
+const PRICE_IDS = {
+    p1: {
+        '12 Pack': { GBP: 'price_1TYh8HJcTL0QukOFppTrMgyb', AUD: 'price_1TYh8HJcTL0QukOFjSpNEZts' },
+        '18 Pack': { GBP: 'price_1TYh8qJcTL0QukOFjfoiDOBv', AUD: 'price_1TYh8qJcTL0QukOF3Dpyz9bH' }
+    },
+    p2: {
+        '12 Pack': { GBP: 'price_1TYh9jJcTL0QukOFe80Gp3ng', AUD: 'price_1TYh9jJcTL0QukOFuLl4a50L' },
+        '18 Pack': { GBP: 'price_1TYhAcJcTL0QukOFgUxVMlTS', AUD: 'price_1TYhAcJcTL0QukOFyV9pINqL' },
+        '36 Pack': { GBP: 'price_1TYhJJJcTL0QukOFTdle67kP', AUD: 'price_1TYhJkJcTL0QukOFa4W991UT' },
+        '48 Pack': { GBP: 'price_1TYhKUJcTL0QukOFhxWbGKxW', AUD: 'price_1TYhKUJcTL0QukOFRIcrHqhC' }
+    },
+    p3: {
+        '2 Pack': { GBP: 'price_1TYhL9JcTL0QukOFBoTdWWn0', AUD: 'price_1TYhL9JcTL0QukOFsEcENR2B' },
+        '4 Pack': { GBP: 'price_1TYhLlJcTL0QukOFwRNZAS9k', AUD: 'price_1TYhLlJcTL0QukOFyujuqdZP' }
+    },
+    p4: {
+        '12 Pack': { GBP: 'price_1TYhMeJcTL0QukOF0iwapbVe', AUD: 'price_1TYhMeJcTL0QukOFeGMCN8T2' },
+        '18 Pack': { GBP: 'price_1TYhONJcTL0QukOF488EgHlw', AUD: 'price_1TYhONJcTL0QukOFQSIpvcgJ' },
+        '36 Pack': { GBP: 'price_1TYhP7JcTL0QukOFxMadVayN', AUD: 'price_1TYhP7JcTL0QukOF9Ke4Hjbi' },
+        '48 Pack': { GBP: 'price_1TYhPoJcTL0QukOFzzYHTA2G', AUD: 'price_1TYhPoJcTL0QukOFo7JnnzfB' }
+    },
+    p5: {
+        '1cm':   { GBP: 'price_1TYhSYJcTL0QukOFGQkWNUv5', AUD: 'price_1TYhSXJcTL0QukOFncgJHLHQ' },
+        '1.5cm': { GBP: 'price_1TYhYHJcTL0QukOFagzpEU2O', AUD: 'price_1TYhYHJcTL0QukOFSkJTKCa7' },
+        '2cm':   { GBP: 'price_1TYha8JcTL0QukOFHHfG4JOA', AUD: 'price_1TYhZCJcTL0QukOFZf5Y15pI' },
+        '2.5cm': { GBP: 'price_1TYhZuJcTL0QukOFX7aaDvV1', AUD: 'price_1TYhZuJcTL0QukOFlvhiZKBd' }
+    }
+};
+
+const PRODUCT_NAMES = {
+    p1: 'Soundsbay Honeycomb',
+    p2: 'TONOR Hexagon',
+    p3: 'TONOR Wood Panels',
+    p4: 'TONOR Square',
+    p5: 'FIXCHORD Tape'
+};
+
+// ---- CART STATE ----
+var cart = [];
+
+function addCurrentToCart(pid) {
+    var selColor = document.querySelector('#' + pid + '-colors .color-swatch.selected');
+    var selPack  = document.querySelector('#' + pid + '-packs .pack-btn.selected');
+    if (!selColor || !selPack) return;
+    var color = selColor.dataset.color;
+    var pack  = selPack.dataset.pack;
+    var priceId = PRICE_IDS[pid] && PRICE_IDS[pid][pack] && PRICE_IDS[pid][pack][activeCurrency];
+    var base    = PRODUCTS[pid].colors[color].packs[pack];
+    var priceVal = (base * RATES[activeCurrency]).toFixed(2);
+    _addToCart(pid, pack, color, priceId, priceVal);
+}
+
+function addCurrentTapeToCart() {
+    var selTape = document.querySelector('#p5-sizes .tape-size-card.selected');
+    if (!selTape) return;
+    var size    = selTape.querySelector('.size-label').textContent.replace('Width: ', '').trim();
+    var priceId = PRICE_IDS.p5[size] && PRICE_IDS.p5[size][activeCurrency];
+    var priceVal = (TAPE_BASE[size] * RATES[activeCurrency]).toFixed(2);
+    _addToCart('p5', size, null, priceId, priceVal);
+}
+
+function _addToCart(pid, pack, color, priceId, priceVal) {
+    var key = pid + '|' + pack + (color ? '|' + color : '');
+    var existing = null;
+    for (var i = 0; i < cart.length; i++) {
+        if (cart[i].key === key) { existing = cart[i]; break; }
+    }
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({ key: key, pid: pid, pack: pack, color: color, priceId: priceId, price: priceVal, qty: 1 });
+    }
+    renderCart();
+    openCart();
+}
+
+function removeFromCart(key) {
+    cart = cart.filter(function(i) { return i.key !== key; });
+    renderCart();
+}
+
+function updateQty(key, delta) {
+    for (var i = 0; i < cart.length; i++) {
+        if (cart[i].key === key) {
+            cart[i].qty += delta;
+            if (cart[i].qty <= 0) { cart.splice(i, 1); }
+            break;
+        }
+    }
+    renderCart();
+}
+
+function getCartTotal() {
+    return cart.reduce(function(s, i) { return s + parseFloat(i.price) * i.qty; }, 0).toFixed(2);
+}
+
+function renderCart() {
+    var list       = document.getElementById('cart-items');
+    var totalEl    = document.getElementById('cart-total');
+    var emptyEl    = document.getElementById('cart-empty');
+    var checkoutBtn = document.getElementById('cart-checkout-btn');
+    var badge      = document.getElementById('cart-badge');
+    var badgeMob   = document.getElementById('cart-badge-mobile');
+
+    var totalQty = cart.reduce(function(s, i) { return s + i.qty; }, 0);
+
+    [badge, badgeMob].forEach(function(b) {
+        if (!b) return;
+        if (totalQty > 0) { b.textContent = totalQty; b.classList.add('visible'); }
+        else { b.classList.remove('visible'); }
+    });
+
+    if (!list) return;
+
+    if (cart.length === 0) {
+        list.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = 'flex';
+        if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.style.opacity = '0.5'; }
+        if (totalEl) totalEl.textContent = SYMBOLS[activeCurrency] + '0.00';
+        return;
+    }
+
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.style.opacity = '1'; }
+
+    list.innerHTML = cart.map(function(item) {
+        var name  = PRODUCT_NAMES[item.pid] || item.pid;
+        var label = name + ' — ' + item.pack + (item.color ? ' · ' + item.color : '');
+        var line  = (parseFloat(item.price) * item.qty).toFixed(2);
+        var k = item.key.replace(/'/g, "\\'");
+        return '<div class="cart-item">' +
+            '<div style="flex:1;min-width:0">' +
+                '<div style="font-size:12px;font-weight:700;color:#e5e7eb;line-height:1.4">' + label + '</div>' +
+                '<div style="font-size:11px;color:#6b7280;margin-top:2px">' + SYMBOLS[activeCurrency] + item.price + ' each</div>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:7px;flex-shrink:0">' +
+                '<button class="qty-btn" onclick="updateQty(\'' + k + '\',-1)">&#8722;</button>' +
+                '<span style="font-size:13px;font-weight:700;min-width:18px;text-align:center">' + item.qty + '</span>' +
+                '<button class="qty-btn" onclick="updateQty(\'' + k + '\',1)">+</button>' +
+                '<span style="font-size:13px;font-weight:800;color:#f5f5f5;min-width:52px;text-align:right">' + SYMBOLS[activeCurrency] + line + '</span>' +
+                '<button onclick="removeFromCart(\'' + k + '\')" style="background:none;border:none;color:#4b5563;cursor:pointer;font-size:18px;padding:2px 4px;line-height:1;transition:color 0.2s;flex-shrink:0" onmouseover="this.style.color=\'#ef4444\'" onmouseout="this.style.color=\'#4b5563\'">&#215;</button>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+
+    if (totalEl) totalEl.textContent = SYMBOLS[activeCurrency] + getCartTotal();
+}
+
+function openCart() {
+    document.getElementById('cart-drawer').classList.add('open');
+    document.getElementById('cart-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+    document.getElementById('cart-drawer').classList.remove('open');
+    document.getElementById('cart-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+async function checkout() {
+    if (cart.length === 0) return;
+    var btn = document.getElementById('cart-checkout-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing…';
+    btn.style.opacity = '0.7';
+    try {
+        var items = cart.map(function(item) {
+            return { price: item.priceId, quantity: item.qty };
+        });
+        var resp = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                items: items,
+                successUrl: window.location.href + '?order=success',
+                cancelUrl: window.location.href
+            })
+        });
+        var data = await resp.json();
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert('Checkout error: ' + (data.error || 'Unknown error. Please try again.'));
+            btn.disabled = false;
+            btn.textContent = 'Checkout →';
+            btn.style.opacity = '1';
+        }
+    } catch (err) {
+        alert('Network error. Please check your connection and try again.');
+        btn.disabled = false;
+        btn.textContent = 'Checkout →';
+        btn.style.opacity = '1';
     }
 }
 
@@ -1195,6 +1464,21 @@ function setCurrency(curr) {
         var sz = selTape.querySelector('.size-label').textContent.replace('Width: ', '').trim();
         updateOrderLink('p5', sz);
     }
+
+    // Re-price any items already in the cart when currency switches
+    cart.forEach(function(item) {
+        if (item.pid === 'p5') {
+            item.price = (TAPE_BASE[item.pack] * RATES[curr]).toFixed(2);
+            item.priceId = PRICE_IDS.p5[item.pack] && PRICE_IDS.p5[item.pack][curr];
+        } else {
+            var prod = PRODUCTS[item.pid];
+            if (prod && prod.colors[item.color] && prod.colors[item.color].packs[item.pack]) {
+                item.price = (prod.colors[item.color].packs[item.pack] * RATES[curr]).toFixed(2);
+                item.priceId = PRICE_IDS[item.pid] && PRICE_IDS[item.pid][item.pack] && PRICE_IDS[item.pid][item.pack][curr];
+            }
+        }
+    });
+    renderCart();
 }
 
 // ---- PRODUCT DATA ----
