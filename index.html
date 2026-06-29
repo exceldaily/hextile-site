@@ -248,4 +248,416 @@ var TREES = [
       possibleCauses:["Seized or locked rotor","Open or shorted windings","Open internal overload (compressor is hot)"],
       nextStep:"Ohm the windings C-R-S and check each to ground. Let a hot compressor cool and re-test in case the internal overload is open. A hard-start kit can be used as a diagnostic only.",
       recommendedParts:["Hard-start kit (test)","Compressor"],
-      safety:["High ampera
+      safety:["High amperage — discharge caps, lock out power, watch for hot surfaces"],
+      commonMistakes:["Condemning a compressor that is only on a tripped internal overload — let it cool first"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_cond_fan:{id:"r_cond_fan",kind:"result",stage:"Result",title:"Condenser fan not running",
+      diagnosis:"The compressor runs but the condenser fan does not, which will drive head pressure up and produce warm air.",
+      possibleCauses:["Failed fan capacitor","Open or burned fan motor","Seized bearing","Blade obstruction"],
+      nextStep:"Test the fan's capacitor, spin-test for free bearings, and ohm the motor windings.",
+      recommendedParts:["Condenser fan motor","Fan capacitor"],
+      safety:["The blade can spin up once powered — keep hands and tools clear"],
+      commonMistakes:["Replacing the motor when only the capacitor is bad"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_low_charge:{id:"r_low_charge",kind:"result",stage:"Result",title:"Low refrigerant charge or restriction",
+      diagnosis:"Suction pressure is below range with the electrical side proven good, pointing to undercharge or a restriction.",
+      possibleCauses:["Refrigerant leak","Undercharge","Restriction (TXV or filter drier)"],
+      nextStep:"Confirm superheat and subcooling together, leak-search, then weigh in to spec. Do not just top it off.",
+      recommendedParts:["Refrigerant","Filter drier","Leak repair materials"],
+      safety:["Follow EPA recovery rules, wear PPE, never vent refrigerant"],
+      commonMistakes:["Adding refrigerant without finding and fixing the leak"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_high_suction:{id:"r_high_suction",kind:"result",stage:"Result",title:"High suction pressure",
+      diagnosis:"Suction pressure is above range, which can indicate overcharge or a compressor that is not pumping.",
+      possibleCauses:["Overcharge","Compressor valves not sealing","TXV overfeeding"],
+      nextStep:"Read subcooling and superheat together, verify the charge by weight, and run a compression test.",
+      recommendedParts:["TXV","Compressor"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Assuming overcharge when the compressor simply isn't pumping"],
+      estimatedTime:"45–60 min",difficulty:"Advanced"},
+    r_charge_ok:{id:"r_charge_ok",kind:"result",stage:"Result",title:"No electrical or mechanical fault found — verify airflow",
+      diagnosis:"The electrical and mechanical path checks out. A weak temperature split is most likely an airflow or marginal-charge issue.",
+      possibleCauses:["Dirty filter or coil","Low airflow / blower issue","Marginal charge","Duct problems"],
+      nextStep:"Check the filter and coil, measure the return-to-supply temperature split (target ~18–22°F), and verify blower amperage.",
+      recommendedParts:["Air filters"],
+      safety:["Standard PPE"],
+      commonMistakes:["Chasing the refrigerant circuit when airflow is the real limiter"],
+      estimatedTime:"30–45 min",difficulty:"Easy"}
+  }
+},
+{
+  id:"walkin-cooler-generic-not-cooling", equipment:"Walk-In Cooler", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_box_temp",
+  causes:[
+    {id:"iced_coil",label:"Iced evaporator / defrost"},
+    {id:"evap_fan",label:"Evaporator fan failure"},
+    {id:"condensing",label:"Condensing unit not running"},
+    {id:"lowcharge",label:"Low refrigerant charge"}
+  ],
+  nodes:{
+    q_box_temp:{id:"q_box_temp",kind:"question",inputType:"yes_no",stage:"Box",
+      title:"Is the box temperature above setpoint with the door closed?",
+      why:"Rule out the simple stuff first. A propped door, a recent big product load, or a defrost cycle in progress can all read as 'not cooling' without a real fault.",
+      options:[
+        {id:"yes",label:"Yes, above setpoint",next:"q_evap_iced"},
+        {id:"no",label:"No, it's holding",next:"r_holding"}
+      ]},
+    q_evap_iced:{id:"q_evap_iced",kind:"question",inputType:"yes_no",stage:"Evaporator",
+      title:"Is the evaporator coil iced over?",
+      why:"A fully iced coil blocks airflow and kills capacity. It usually points to a defrost fault (timer, heater, or termination), low charge, or a stuck evaporator fan letting the coil freeze.",
+      options:[
+        {id:"yes",label:"Yes, iced",next:"r_defrost",weights:{iced_coil:65,lowcharge:20}},
+        {id:"no",label:"No",next:"q_evap_fan"}
+      ]},
+    q_evap_fan:{id:"q_evap_fan",kind:"question",inputType:"yes_no",stage:"Evaporator",
+      title:"Are the evaporator fans running?",
+      why:"No air moving across a cold coil means no cooling delivered to the box. Check the fan motors and that nothing is holding them off, like a defrost contact stuck open.",
+      options:[
+        {id:"yes",label:"Yes",next:"q_cond_running"},
+        {id:"no",label:"No",next:"r_evap_fan",weights:{evap_fan:70}}
+      ]},
+    q_cond_running:{id:"q_cond_running",kind:"question",inputType:"yes_no",stage:"Condensing Unit",
+      title:"Is the condensing unit running?",
+      why:"If the box is warm, the coil is clear, and the evap fans run, the condensing unit is the next suspect — no compressor or condenser fan means no heat is being pumped out of the box.",
+      options:[
+        {id:"yes",label:"Yes",next:"r_check_charge",weights:{lowcharge:35}},
+        {id:"no",label:"No",next:"r_condensing",weights:{condensing:70}}
+      ]},
+    r_holding:{id:"r_holding",kind:"result",stage:"Result",title:"Box is holding setpoint",
+      diagnosis:"No active cooling fault — the box is at or below setpoint. The original complaint may have been a temporary load, an open door, or a defrost cycle.",
+      nextStep:"Confirm with the customer, verify the door seals, and log the box temp over a full cycle.",
+      estimatedTime:"15 min",difficulty:"Easy"},
+    r_defrost:{id:"r_defrost",kind:"result",stage:"Result",title:"Iced evaporator — defrost or charge fault",
+      diagnosis:"The coil is iced, blocking airflow and capacity.",
+      possibleCauses:["Failed defrost timer/board","Open defrost heater","Bad termination/limit switch","Low charge causing a frozen coil"],
+      nextStep:"Clear the ice, then test the defrost components and verify charge before returning to service.",
+      recommendedParts:["Defrost heater","Defrost termination switch","Defrost timer/board"],
+      safety:["Defrost heaters run on line voltage — lock out before testing"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_evap_fan:{id:"r_evap_fan",kind:"result",stage:"Result",title:"Evaporator fans not running",
+      diagnosis:"The evaporator fans are stopped, so no cold air reaches the box.",
+      possibleCauses:["Failed fan motor","Defrost contact stuck open","Control/wiring fault"],
+      nextStep:"Confirm voltage at the fan motors and ohm the windings; check the defrost relay/contacts.",
+      recommendedParts:["Evaporator fan motor"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_condensing:{id:"r_condensing",kind:"result",stage:"Result",title:"Condensing unit not running",
+      diagnosis:"The condensing unit is not operating, so heat is not being removed from the box.",
+      possibleCauses:["Loss of power / tripped breaker","Failed contactor","Failed compressor or cap","Open high-pressure safety"],
+      nextStep:"Branch into the condensing-unit electrical path: power, contactor, capacitor, compressor.",
+      recommendedParts:["Contactor","Run capacitor"],
+      safety:["Discharge caps and lock out line power"],
+      estimatedTime:"45–60 min",difficulty:"Moderate"},
+    r_check_charge:{id:"r_check_charge",kind:"result",stage:"Result",title:"Everything running — verify charge and airflow",
+      diagnosis:"Box warm with the coil clear, fans running, and the condensing unit going points to charge or a capacity issue.",
+      possibleCauses:["Low refrigerant charge","Restriction","Dirty condenser coil","Undersized for load"],
+      nextStep:"Check superheat/subcooling, clean the condenser coil, and verify charge by weight.",
+      recommendedParts:["Refrigerant","Filter drier"],
+      safety:["Follow EPA recovery rules"],
+      estimatedTime:"60+ min",difficulty:"Advanced"}
+  }
+}
+];
+
+var EQUIPMENT=["RTU","Split System","Heat Pump","Walk-In Cooler","Walk-In Freezer","Reach-In Cooler","Reach-In Freezer","Ice Machine","Package Unit","Mini Split","Air Handler","Condensing Unit"];
+var MANUFACTURERS=["Carrier","Trane","Lennox","York","Daikin","AAON","Goodman","Mitsubishi","Copeland","Generic"];
+var SYMPTOMS=["No Cooling","No Heating","Breaker Trips","Compressor Will Not Start","Compressor Starts Then Stops","Outdoor Fan Not Running","Indoor Fan Not Running","Frozen Evaporator","High Head Pressure","Low Suction Pressure","High Superheat","Low Superheat","No 24 Volt Control Voltage","Short Cycling","Water Leak","Blowing Warm Air","Poor Airflow","Strange Noise","High Amp Draw","Low Voltage","No Power"];
+
+function findTree(eq,man,sym){
+  return TREES.find(function(t){return t.equipment===eq&&t.manufacturer===man&&t.symptom===sym;})
+    || TREES.find(function(t){return t.equipment===eq&&t.manufacturer==="Generic"&&t.symptom===sym;});
+}
+function hasTree(eq,man,sym){return !!findTree(eq,man,sym);}
+
+/* ============================================================
+   ENGINE — pure functions over a session object
+   ============================================================ */
+function createSession(tree){
+  var scores={};
+  tree.causes.forEach(function(c){scores[c.id]=c.baseline||0;});
+  return {tree:tree,currentId:tree.rootId,trail:[],log:[],scores:scores};
+}
+function currentNode(s){return s.tree.nodes[s.currentId];}
+function applyWeights(scores,w){if(!w)return;Object.keys(w).forEach(function(k){scores[k]=(scores[k]||0)+(w[k]||0);});}
+function answerQuestion(s,opt){
+  var node=currentNode(s); if(node.kind!=="question")return;
+  applyWeights(s.scores,opt.weights);
+  s.log.push({nodeId:node.id,title:node.title,stage:node.stage,response:opt.label});
+  s.trail.push(node.id); s.currentId=opt.next;
+}
+function evaluateMeasurement(node,v){
+  var e=node.expected,lo=e.min,hi=e.max;
+  if(e.nominal!=null&&e.tolerancePct!=null){var band=Math.abs(e.nominal)*(e.tolerancePct/100);lo=e.nominal-band;hi=e.nominal+band;}
+  if(lo!=null&&v<lo)return"belowRange";
+  if(hi!=null&&v>hi)return"aboveRange";
+  return"inRange";
+}
+function deviationPct(node,v){var n=node.expected.nominal;if(n==null||n===0)return null;return Math.round((v-n)/n*100);}
+function submitMeasurement(s,v){
+  var node=currentNode(s); if(node.kind!=="measurement")return;
+  var outcome=evaluateMeasurement(node,v);
+  if(node.weights&&node.weights[outcome])applyWeights(s.scores,node.weights[outcome]);
+  var next=(node.branches[outcome]!=null)?node.branches[outcome]:node.branches.default;
+  s.log.push({nodeId:node.id,title:node.title,stage:node.stage,response:v+" "+node.unit,outcome:outcome});
+  s.trail.push(node.id); s.currentId=next;
+}
+function recomputeScores(tree,log){
+  var scores={}; tree.causes.forEach(function(c){scores[c.id]=c.baseline||0;});
+  log.forEach(function(e){
+    var node=tree.nodes[e.nodeId]; if(!node)return;
+    if(node.kind==="question"){var o=node.options.find(function(x){return x.label===e.response;});if(o)applyWeights(scores,o.weights);}
+    else if(node.kind==="measurement"&&e.outcome&&node.weights)applyWeights(scores,node.weights[e.outcome]);
+  });
+  return scores;
+}
+function goBack(s){
+  if(s.trail.length===0)return;
+  var prev=s.trail.pop(); s.log.pop();
+  s.scores=recomputeScores(s.tree,s.log); s.currentId=prev;
+}
+function likelihoods(s){
+  return s.tree.causes.map(function(c){
+    return {id:c.id,label:c.label,confidence:Math.max(0,Math.min(99,Math.round(s.scores[c.id]||0)))};
+  }).filter(function(l){return l.confidence>0;}).sort(function(a,b){return b.confidence-a.confidence;});
+}
+
+/* ============================================================
+   ICONS
+   ============================================================ */
+function svg(inner,w){w=w||20;return '<svg width="'+w+'" height="'+w+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>';}
+var IC={
+  play:function(w){return svg('<path d="m7 4 12 8-12 8V4Z"/>',w);},
+  wrench:function(w){return svg('<path d="M14.7 6.3a4 4 0 0 0-5.2 5.2L4 17l3 3 5.5-5.5a4 4 0 0 0 5.2-5.2l-2.4 2.4-2.3-.6-.6-2.3 2.6-2.5Z"/>',w);},
+  star:function(w){return svg('<path d="m12 3 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8 6.8 19l1-5.8L3.6 9.1l5.8-.8L12 3Z"/>',w);},
+  list:function(w){return svg('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',w);},
+  book:function(w){return svg('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',w);},
+  info:function(w){return svg('<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',w);},
+  arrow:function(w){return svg('<path d="M5 12h14M13 6l6 6-6 6"/>',w);},
+  back:function(w){return svg('<path d="M19 12H5M11 18l-6-6 6-6"/>',w);},
+  q:function(w){return svg('<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 2.5M12 17h.01"/>',w);},
+  gauge:function(w){return svg('<path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="m13.4 10.6 3.6-3.6"/><path d="M4 18a8 8 0 1 1 16 0"/>',w);},
+  print:function(w){return svg('<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v8H6v-8Z"/>',w);},
+  refresh:function(w){return svg('<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',w);},
+  bolt:function(w){return svg('<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>',w);}
+};
+
+/* ============================================================
+   STATE + RENDER
+   ============================================================ */
+var state={screen:"home",mode:"fast",equipment:"RTU",manufacturer:"Generic",symptom:"No Cooling",session:null,whyOpen:false};
+var root=document.getElementById("root");
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function topbar(){
+  return '<header class="topbar">'
+    +'<button class="brand" data-action="home" aria-label="Home">'
+    +'<span class="brand__mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff7a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2" stroke="#3b9eff"/><circle cx="12" cy="12" r="4.2"/></svg></span>'
+    +'<span><span class="brand__name">HVAC Assist</span><span class="brand__sub">Interactive Troubleshooting</span></span></button>'
+    +'<div class="topbar__spacer"></div>'
+    +'<div class="modeToggle" role="tablist" aria-label="Learning mode">'
+    +'<button class="modeToggle__btn is-fast" data-active="'+(state.mode==="fast")+'" data-action="mode" data-mode="fast">'+IC.bolt(14)+' Fast</button>'
+    +'<button class="modeToggle__btn" data-active="'+(state.mode==="training")+'" data-action="mode" data-mode="training">'+IC.book(14)+' Training</button>'
+    +'</div></header>';
+}
+
+function homeHTML(){
+  var cards=[
+    {k:"start",t:"Start New Diagnostic",d:"Pick equipment, brand, and symptom — then work the tree.",i:IC.play(),primary:true},
+    {k:"faults",t:"Common Faults",d:"Jump straight to the most frequent failures by equipment.",i:IC.wrench()},
+    {k:"favorites",t:"Favorites",d:"Your pinned workflows and parts.",i:IC.star()},
+    {k:"saved",t:"Saved Diagnostics",d:"Resume or review past jobs.",i:IC.list(),soon:true},
+    {k:"guides",t:"Manufacturer Guides",d:"Brand-specific service notes and bulletins.",i:IC.book(),soon:true},
+    {k:"about",t:"About",d:"How the diagnostic engine works.",i:IC.info()}
+  ];
+  var cardHTML=cards.map(function(c){
+    return '<button class="card" data-primary="'+(!!c.primary)+'" '+(c.soon?'data-soon="true" disabled':'')+' '+(c.k==="start"?'data-action="start-setup"':'')+'>'
+      +'<span class="card__icon">'+c.i+'</span>'
+      +'<span class="card__title">'+c.t+'</span>'
+      +'<span class="card__desc">'+c.d+'</span>'
+      +(c.soon?'<span class="card__soon">Coming soon</span>':'')+'</button>';
+  }).join("");
+  return '<p class="eyebrow">Field Diagnostics</p>'
+    +'<h1 class="h1">Work the problem like a senior tech.</h1>'
+    +'<p class="lede">Every answer narrows the next question. No guessing, no chatbot — a guided path that cuts dead-end checks while showing newer techs the reasoning behind each test.</p>'
+    +'<div class="cards">'+cardHTML+'</div>';
+}
+
+function chipRow(field,options,value){
+  return '<div class="chips">'+options.map(function(o){
+    var eq=field==="equipment"?o:state.equipment;
+    var man=field==="manufacturer"?o:state.manufacturer;
+    var sym=field==="symptom"?o:state.symptom;
+    var has=hasTree(eq,man,sym);
+    return '<button class="chip" data-active="'+(value===o)+'" '+(has?'data-has="true"':'')+' data-action="pick" data-field="'+field+'" data-value="'+esc(o)+'">'+esc(o)+'</button>';
+  }).join("")+'</div>';
+}
+function setupHTML(){
+  var ready=hasTree(state.equipment,state.manufacturer,state.symptom);
+  return '<button class="linkbtn" data-action="home">'+IC.back(16)+' Home</button>'
+    +'<p class="eyebrow" style="margin-top:10px">New Diagnostic</p><h1 class="h1">Set up the job</h1>'
+    +'<div class="setup__steps">'
+    +'<div><div class="step__head"><span class="step__num">01</span><h2 class="h2">Equipment</h2></div>'+chipRow("equipment",EQUIPMENT,state.equipment)+'</div>'
+    +'<div><div class="step__head"><span class="step__num">02</span><h2 class="h2">Manufacturer</h2></div>'+chipRow("manufacturer",MANUFACTURERS,state.manufacturer)+'</div>'
+    +'<div><div class="step__head"><span class="step__num">03</span><h2 class="h2">Primary symptom</h2></div>'+chipRow("symptom",SYMPTOMS,state.symptom)+'</div>'
+    +'</div>'
+    +'<div class="setup__cta"><button class="btn btn--primary" '+(ready?'':'disabled')+' data-action="go-diag">Start diagnostic '+IC.arrow(18)+'</button>'
+    +(ready?'':'<span class="setup__warn">No tree for this combination yet — the green dot marks combinations that are loaded.</span>')+'</div>';
+}
+
+function livePanelHTML(s){
+  var items=likelihoods(s);
+  var body;
+  if(items.length===0){body='<p class="panel__hint">Confidence updates as you answer. No leading suspects yet.</p>';}
+  else{
+    body='<div style="margin-top:12px">'+items.map(function(it){
+      var c=it.confidence>=70?"#ff7a1a":it.confidence>=40?"#f5b942":"#3b9eff";
+      return '<div class="gauge"><div class="gauge__row"><span class="gauge__label">'+esc(it.label)+'</span><span class="gauge__val" style="color:'+c+'">'+it.confidence+'%</span></div>'
+        +'<div class="gauge__track"><div class="gauge__fill" style="width:'+it.confidence+'%;background:'+c+'"></div></div></div>';
+    }).join("")+'</div>';
+  }
+  return '<div class="panel"><div class="panel__head"><span class="live__pulse"></span>'+IC.gauge(16)+'<span class="panel__title">Live Diagnosis</span></div>'+body+'</div>';
+}
+function logPanelHTML(s){
+  var body;
+  if(s.log.length===0){body='<p class="panel__hint">Every step you take is recorded here for the job record.</p>';}
+  else{
+    body='<div class="log__list">'+s.log.map(function(e){
+      var tone=e.outcome==="inRange"?"good":(e.outcome==="belowRange"||e.outcome==="aboveRange")?"bad":"";
+      return '<div class="log__item"><span class="log__q">'+esc(e.title)+'</span><span class="log__a" data-tone="'+tone+'">'+esc(e.response)+'</span></div>';
+    }).join("")+'</div>';
+  }
+  return '<div class="panel"><div class="panel__head">'+IC.list(16)+'<span class="panel__title">Diagnostic Log</span></div>'+body+'</div>';
+}
+
+function expectedText(node){
+  var e=node.expected;
+  if(e.nominal!=null&&e.tolerancePct!=null){
+    var lo=Math.round(e.nominal*(1-e.tolerancePct/100)*10)/10, hi=Math.round(e.nominal*(1+e.tolerancePct/100)*10)/10;
+    return "Expected "+e.nominal+" "+node.unit+" \u00B1"+e.tolerancePct+"% ("+lo+"\u2013"+hi+")";
+  }
+  if(e.min!=null||e.max!=null)return "Expected range "+(e.min!=null?e.min:"\u2013")+"\u2013"+(e.max!=null?e.max:"\u2013")+" "+node.unit;
+  return "";
+}
+function verdictHTML(node,v){
+  if(v===""||isNaN(Number(v)))return"";
+  var num=Number(v),outcome=evaluateMeasurement(node,num);
+  if(outcome==="inRange")return '<div class="measure__verdict" data-tone="good">'+num+' '+node.unit+' is within the expected range.</div>';
+  var dev=deviationPct(node,num),where=outcome==="belowRange"?"below":"above";
+  var devText=dev!=null?(" ("+Math.abs(dev)+"% "+(dev<0?"below":"above")+" rated)"):"";
+  return '<div class="measure__verdict" data-tone="bad">'+num+' '+node.unit+' is '+where+' the expected range'+devText+'.</div>';
+}
+
+function questionCardHTML(node){
+  var top='<div class="qcard__top"><div>'+(node.stage?'<div class="qcard__stage">'+esc(node.stage)+'</div>':'')
+    +'<h2 class="qcard__title">'+esc(node.title)+'</h2></div>'
+    +(node.why?'<button class="whyBtn" data-open="'+state.whyOpen+'" data-action="why-toggle">'+IC.q(15)+' Why?</button>':'')+'</div>';
+  var why=(node.why&&state.whyOpen)?'<div class="why"><span class="why__tag">Why am I checking this?</span>'+esc(node.why)+'</div>':'';
+  var bottom;
+  if(node.kind==="question"){
+    bottom='<div class="answers">'+node.options.map(function(o){
+      return '<button class="answer" data-action="answer" data-opt="'+esc(o.id)+'">'+esc(o.label)+'<span class="answer__arrow">'+IC.arrow(18)+'</span></button>';
+    }).join("")+'</div>';
+  }else{
+    var ex=expectedText(node);
+    bottom='<div class="measure"><div class="measure__row">'
+      +'<div class="measure__field"><input id="mInput" class="measure__input" inputmode="decimal" type="number" placeholder="0.0" autofocus /><span class="measure__unit">'+esc(node.unit)+'</span></div>'
+      +'<button class="btn btn--primary" id="mSubmit" data-action="measure-submit" disabled>Enter '+IC.arrow(18)+'</button></div>'
+      +(ex?'<div class="measure__expected">'+ex+'</div>':'')
+      +'<div id="mVerdict"></div></div>';
+  }
+  return '<div class="qcard">'+top+why+bottom+'</div>';
+}
+
+function diagHTML(){
+  var s=state.session,node=currentNode(s);
+  if(node.kind==="result")return resultHTML(node);
+  var fill=Math.min(0.92,0.12+s.log.length*0.16);
+  return '<button class="linkbtn" data-action="exit">'+IC.back(16)+' Exit diagnostic</button>'
+    +'<div class="progress" style="margin-top:10px"><div class="progress__meta">'
+    +'<span class="progress__stage">'+esc(node.stage||"Diagnostic")+'</span>'
+    +'<span class="progress__count">'+esc(s.tree.equipment)+' \u00B7 '+esc(s.tree.symptom)+' \u00B7 Step '+(s.log.length+1)+'</span></div>'
+    +'<div class="progress__track"><div class="progress__fill" style="width:'+(fill*100)+'%"></div></div></div>'
+    +'<div class="diag">'+questionCardHTML(node)+'<div class="rail">'+livePanelHTML(s)+logPanelHTML(s)+'</div></div>'
+    +(s.trail.length>0?'<div class="diag__nav"><button class="linkbtn" data-action="back">'+IC.back(15)+' Back one step</button></div>':'');
+}
+
+function block(title,inner,variant){return '<div class="block'+(variant?' block--'+variant:'')+'"><h3 class="block__title">'+title+'</h3>'+inner+'</div>';}
+function ul(items){return '<ul>'+items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ul>';}
+function resultHTML(node){
+  var s=state.session;
+  var grid='';
+  if(node.possibleCauses&&node.possibleCauses.length)grid+=block("Possible causes",ul(node.possibleCauses));
+  if(node.nextStep)grid+=block("Recommended next step",'<p>'+esc(node.nextStep)+'</p>');
+  if(node.recommendedParts&&node.recommendedParts.length)grid+=block("Recommended parts",ul(node.recommendedParts),"parts");
+  if(node.commonMistakes&&node.commonMistakes.length)grid+=block("Common mistakes",ul(node.commonMistakes));
+  if(node.safety&&node.safety.length)grid+=block("Safety reminders",ul(node.safety),"safety");
+  return '<button class="linkbtn" data-action="back">'+IC.back(16)+' Back a step</button>'
+    +'<div class="result__head" style="margin-top:10px"><p class="eyebrow" style="margin:0">Most likely diagnosis</p>'
+    +(node.difficulty?'<span class="badge" data-tone="'+node.difficulty+'">'+node.difficulty+'</span>':'')
+    +(node.estimatedTime?'<span class="badge">'+esc(node.estimatedTime)+'</span>':'')+'</div>'
+    +'<h1 class="h1">'+esc(node.title)+'</h1>'
+    +'<p class="panel__hint" style="font-size:13px">'+esc(s.tree.equipment)+' \u00B7 '+esc(s.tree.manufacturer)+' \u00B7 '+esc(s.tree.symptom)+'</p>'
+    +'<div class="result__diag">'+esc(node.diagnosis)+'</div>'
+    +'<div class="result__grid">'+grid+'</div>'
+    +'<div class="result__actions"><button class="btn btn--primary" data-action="print">'+IC.print(18)+' Print / save log</button>'
+    +'<button class="btn" data-action="restart">'+IC.refresh(18)+' New diagnostic</button></div>'
+    +'<div style="margin-top:24px;max-width:520px">'+logPanelHTML(s)+'</div>';
+}
+
+function render(){
+  var body;
+  if(state.screen==="home")body=homeHTML();
+  else if(state.screen==="setup")body=setupHTML();
+  else body=diagHTML();
+  root.innerHTML='<div class="app">'+topbar()+body+'</div>';
+
+  // measurement input wiring (avoids full re-render on each keystroke)
+  var input=document.getElementById("mInput");
+  if(input){
+    var node=currentNode(state.session);
+    var submitBtn=document.getElementById("mSubmit");
+    var verdict=document.getElementById("mVerdict");
+    function sync(){
+      var raw=input.value.trim();
+      var valid=raw!==""&&!isNaN(Number(raw));
+      submitBtn.disabled=!valid;
+      verdict.innerHTML=verdictHTML(node,raw);
+    }
+    input.addEventListener("input",sync);
+    input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!submitBtn.disabled)doMeasure();});
+    setTimeout(function(){input.focus();},0);
+  }
+}
+
+function navigatedToNewNode(){state.whyOpen=(state.mode==="training");}
+function doMeasure(){
+  var input=document.getElementById("mInput");
+  if(!input)return;
+  var v=Number(input.value);
+  if(isNaN(v))return;
+  submitMeasurement(state.session,v);
+  navigatedToNewNode();
+  render();
+}
+
+document.addEventListener("click",function(ev){
+  var el=ev.target.closest("[data-action]");
+  if(!el)return;
+  var a=el.getAttribute("data-action");
+  if(a==="home"){state.screen="home";render();}
+  else if(a==="start-setup"){state.screen="setup";render();}
+  else if(a==="mode"){state.mode=el.getAttribute("data-mode");if(state.screen==="diag"&&state.session){var n=currentNode(state.session);if(n.kind!=="result")state.whyOpen=(state.mode==="training");}render();}
+  else if(a==="pick"){state[el.getAttribute("data-field")]=el.getAttribute("data-value");render();}
+  else if(a==="go-diag"){var t=findTree(state.equipment,state.manufacturer,state.symptom);if(t){state.session=createSession(t);state.screen="diag";navigatedToNewNode();render();}}
+  else if(a==="answer"){var node=currentNode(state.session);var opt=node.options.find(function(o){return o.id===el.getAttribute("data-opt");});if(opt){answerQuestion(state.session,opt);navigatedToNewNode();render();}}
+  else if(a==="measure-submit"){doMeasure();}
+  else if(a==="why-toggle"){state.whyOpen=!state.whyOpen;render();}
+  else if(a==="back"){goBack(state.session);navigatedToNewNode();render();}
+  else if(a==="exit"){state.screen="setup";render();}
+  else if(a==="restart"){state.screen="setup";state.session=null;render();}
+  else if(a==="print"){window.print();}
+});
+
+render();
+</script>
+</body>
+</html>
