@@ -117,7 +117,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .log__list{display:flex;flex-direction:column;margin-top:10px}
 .log__item{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:13.5px}
 .log__item:first-child{border-top:0}
-.log__q{color:var(--muted)}
+.log__q{color:var(--muted);flex:1;min-width:0}
 .log__a{font-family:var(--mono);color:var(--text);white-space:nowrap;margin-left:auto}
 .log__a[data-tone='bad']{color:var(--red)}
 .log__a[data-tone='good']{color:var(--green)}
@@ -136,18 +136,52 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .block li{margin-bottom:6px;font-size:14px}
 .block p{margin:0;font-size:14.5px}
 .result__actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.starBtn{display:inline-flex;align-items:center;gap:7px;height:48px;padding:0 16px;border-radius:10px;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-weight:600;font-size:13.5px;transition:.15s}
+.starBtn:hover{border-color:#3a5570;color:var(--text)}
+.starBtn[data-on='true']{background:var(--orange-soft);border-color:rgba(255,122,26,.4);color:var(--orange)}
+.starBtn[data-on='true'] svg{fill:var(--orange)}
+.card__meta{margin-top:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
+.card__row{display:flex;align-items:center;gap:8px;margin-top:auto;flex-wrap:wrap}
+.miniBtn{height:38px;padding:0 13px;border-radius:9px;border:1px solid var(--line);background:var(--panel-3);color:var(--text);font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.miniBtn:hover{border-color:#3a5570}
+.miniBtn[data-on='true']{background:var(--orange-soft);border-color:rgba(255,122,26,.4);color:var(--orange)}
+.miniBtn[data-on='true'] svg{fill:var(--orange)}
+.miniBtn--danger:hover{border-color:var(--red);color:var(--red)}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:var(--r-lg);padding:38px 24px;text-align:center;color:var(--muted)}
+.empty__icon{color:var(--muted-2);margin-bottom:12px;display:inline-flex}
+.prose{max-width:64ch;color:var(--muted);line-height:1.7;font-size:15px}
+.prose h3{font-family:var(--display);color:var(--text);font-size:17px;letter-spacing:.02em;margin:24px 0 8px}
+.prose strong{color:var(--text)}
+.statRow{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0 8px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;min-width:120px}
+.stat__num{font-family:var(--display);font-weight:700;font-size:28px;color:var(--blue);line-height:1.1}
+.stat__label{font-size:12px;color:var(--muted);letter-spacing:.04em;margin-top:2px}
+/* Toast notification */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 20px;font-size:14px;font-weight:500;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;opacity:0;z-index:100;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast[data-tone='good']{border-color:rgba(56,193,114,.4);color:#bdeccc}
+.toast[data-tone='bad']{border-color:rgba(255,93,93,.4);color:#ffd0d0}
+/* Scroll-to-top hint on mobile during long chip rows */
+@media(max-width:600px){
+  .chip{min-height:42px;padding:0 14px;font-size:13.5px}
+  .modeToggle__btn{padding:7px 10px;font-size:11.5px}
+  .qcard__title{font-size:21px}
+  .measure__input{font-size:22px}
+  .result__actions{gap:8px}
+  .result__actions .btn{min-height:46px;font-size:14px;padding:0 16px}
+}
 @media print{body{background:#fff;color:#000}.topbar,.rail,.result__actions,.whyBtn,.diag__nav{display:none!important}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div id="root"></div>
+<div class="toast" id="toast"></div>
 <script>
 "use strict";
 
 /* ============================================================
-   KNOWLEDGE BASE — each workflow is pure data.
-   Add a tree to TREES and it appears in the pickers automatically.
+   KNOWLEDGE BASE
    ============================================================ */
 var TREES = [
 {
@@ -210,7 +244,6 @@ var TREES = [
       expected:{nominal:118,tolerancePct:25},
       branches:{inRange:"r_charge_ok",belowRange:"r_low_charge",aboveRange:"r_high_suction",default:"r_charge_ok"},
       weights:{belowRange:{lowcharge:60},aboveRange:{compressor:25,lowcharge:-10}}},
-
     r_no_call:{id:"r_no_call",kind:"result",stage:"Result",title:"Thermostat is not calling for cooling",
       diagnosis:"No cooling call is reaching the equipment. The fault is at the thermostat or its low-voltage wiring, not the unit.",
       possibleCauses:["Thermostat in the wrong mode or setpoint above room temp","Dead thermostat batteries or unpowered stat","Broken or loose thermostat wire (Y or R)","Tripped condensate float switch wired at the stat"],
@@ -286,7 +319,179 @@ var TREES = [
   }
 },
 {
-  id:"walkin-cooler-generic-not-cooling", equipment:"Walk-In Cooler", manufacturer:"Generic", symptom:"No Cooling",
+  id:"rtu-generic-no-heating", equipment:"RTU", manufacturer:"Generic", symptom:"No Heating",
+  rootId:"q_heat_call",
+  causes:[
+    {id:"thermostat",label:"Thermostat / no call"},
+    {id:"transformer",label:"Transformer / 24V supply"},
+    {id:"ignition",label:"Ignition or pilot failure"},
+    {id:"gas",label:"Gas valve / gas supply"},
+    {id:"heatexch",label:"Cracked heat exchanger / limit trip"},
+    {id:"indfan",label:"Induced draft / combustion fan"},
+    {id:"flameprove",label:"Flame sensor / proving failure"},
+    {id:"safety",label:"Open safety or limit switch"}
+  ],
+  nodes:{
+    q_heat_call:{id:"q_heat_call",kind:"question",inputType:"yes_no",stage:"Control Circuit",
+      title:"Is the thermostat calling for heat (W terminal energized)?",
+      why:"Same as cooling — confirm the call exists before chasing the unit. Set HEAT mode and raise the setpoint above room temp. Check for 24V on the W wire at the board.",
+      options:[
+        {id:"yes",label:"Yes",next:"q_idf_runs"},
+        {id:"no",label:"No",next:"r_no_heat_call",weights:{thermostat:65}}
+      ]},
+    q_idf_runs:{id:"q_idf_runs",kind:"question",inputType:"yes_no",stage:"Combustion",
+      title:"Does the induced draft fan (IDF) start when heat is called?",
+      why:"The IDF must prove airflow before the ignition sequence starts. No IDF means a control board issue, a failed draft motor, or a tripped pressure switch — the board won't even attempt ignition without it.",
+      options:[
+        {id:"yes",label:"Yes, IDF runs",next:"q_ignites"},
+        {id:"no",label:"No",next:"r_idf_fail",weights:{indfan:60,safety:20}}
+      ]},
+    q_ignites:{id:"q_ignites",kind:"question",inputType:"yes_no",stage:"Ignition",
+      title:"Does the unit attempt ignition (spark or glow) and light?",
+      why:"After IDF pre-purge, the board energizes the igniter and opens the gas valve. Watch for glow (HSI) or spark, then a flame. No flame after 3 tries means gas, ignition, or flame-proving issue.",
+      options:[
+        {id:"yes",label:"Yes, lights and stays on",next:"r_heat_ok"},
+        {id:"no",label:"No ignition or lights then lockout",next:"q_gas_present",weights:{ignition:35,gas:30,flameprove:20}}
+      ]},
+    q_gas_present:{id:"q_gas_present",kind:"question",inputType:"yes_no",stage:"Gas",
+      title:"Is gas supply present and the manual shutoff open?",
+      why:"The most common 'no ignition' call is simply a closed manual shutoff or a meter not re-opened after work. Confirm gas pressure at the valve inlet before blaming ignition hardware.",
+      options:[
+        {id:"yes",label:"Yes, gas confirmed",next:"q_igniter_ok"},
+        {id:"no",label:"No / unsure",next:"r_no_gas",weights:{gas:75}}
+      ]},
+    q_igniter_ok:{id:"q_igniter_ok",kind:"question",inputType:"yes_no",stage:"Ignition",
+      title:"Does the HSI glow orange/white, or does the spark igniter fire?",
+      why:"If gas is present but there's no flame, split the problem: igniter vs. gas valve vs. flame sensor. Watching the igniter tell you which half to chase.",
+      options:[
+        {id:"yes",label:"Yes, igniter looks good",next:"r_gas_valve_or_flame",weights:{gas:30,flameprove:35}},
+        {id:"no",label:"No glow / no spark",next:"r_igniter_fail",weights:{ignition:65}}
+      ]},
+    r_no_heat_call:{id:"r_no_heat_call",kind:"result",stage:"Result",title:"Thermostat not calling for heat",
+      diagnosis:"No W signal is reaching the unit. The fault is in the thermostat, wiring, or settings.",
+      possibleCauses:["Thermostat in COOL or OFF mode","Setpoint below room temperature","Broken W wire","Dead thermostat batteries"],
+      nextStep:"Set to HEAT, raise setpoint. Jumper R to W at the board (power off first) to force a call and confirm the unit tries to fire.",
+      recommendedParts:["Thermostat","Thermostat batteries"],
+      safety:["Kill power before jumpering at the control board"],
+      commonMistakes:["Ignoring mode/setpoint before opening the unit"],
+      estimatedTime:"15–30 min",difficulty:"Easy"},
+    r_idf_fail:{id:"r_idf_fail",kind:"result",stage:"Result",title:"Induced draft fan not starting",
+      diagnosis:"The IDF must run and prove pressure before ignition is allowed. No IDF means the sequence stops here.",
+      possibleCauses:["Failed draft motor or capacitor","Open pressure switch (blocked flue or failed switch)","Board not sending 24V to IDF relay","Locked bearing"],
+      nextStep:"Check for 24V at the IDF motor on a heat call. Spin-test the motor. Measure pressure switch differential with a manometer.",
+      recommendedParts:["Induced draft motor","Pressure switch"],
+      safety:["Keep hands clear of moving parts; flue gases are present during operation"],
+      commonMistakes:["Replacing a pressure switch without cleaning a blocked condensate port first"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_no_gas:{id:"r_no_gas",kind:"result",stage:"Result",title:"No gas supply",
+      diagnosis:"Gas is not reaching the unit — the ignition sequence cannot light regardless of the igniter condition.",
+      possibleCauses:["Manual shutoff closed","Meter off or tripped","Regulator failure","Supply pressure too low"],
+      nextStep:"Confirm inlet pressure with a manometer (typical: 7\" W.C. natural gas). Open shutoff and re-test.",
+      recommendedParts:["Gas pressure regulator (if failed)"],
+      safety:["Never attempt to bypass a gas valve — if you smell gas, evacuate and call the gas company"],
+      commonMistakes:["Replacing the gas valve when supply pressure is simply absent"],
+      estimatedTime:"15–30 min",difficulty:"Easy"},
+    r_igniter_fail:{id:"r_igniter_fail",kind:"result",stage:"Result",title:"Igniter not firing",
+      diagnosis:"Gas is present but the igniter (HSI or spark) is not activating or is too weak to light the burner.",
+      possibleCauses:["Cracked or failed HSI element","Weak HSI (check µA or resistance)","Failed spark module","Board not sending ignition voltage"],
+      nextStep:"Measure HSI resistance (typical: 40–90Ω cold). Check for 120V at the HSI during the ignition trial. Replace if cracked or open.",
+      recommendedParts:["Hot surface igniter","Spark module"],
+      safety:["HSI runs at 120V and reaches 1800°F — do not touch when energized"],
+      commonMistakes:["Touching HSI with bare fingers — skin oils crack the element when it heats"],
+      estimatedTime:"20–40 min",difficulty:"Easy"},
+    r_gas_valve_or_flame:{id:"r_gas_valve_or_flame",kind:"result",stage:"Result",title:"Gas valve or flame sensor suspect",
+      diagnosis:"The igniter fires but the burner won't stay lit — suspect the gas valve not opening or the flame sensor not proving the flame.",
+      possibleCauses:["Failed gas valve (no 24V or coil open)","Dirty or oxidized flame sensor rod","Reversed polarity (flame sensor needs good earth ground)","Low µA flame signal"],
+      nextStep:"Measure 24V to the gas valve during trial. Clean the flame sensor with fine steel wool. Measure µA (typical: >1.5µA). Check ground polarity.",
+      recommendedParts:["Flame sensor","Gas valve"],
+      safety:["Confirm gas is off before removing the valve; purge before re-lighting"],
+      commonMistakes:["Replacing the gas valve when a dirty flame sensor is the cause — clean it first"],
+      estimatedTime:"20–45 min",difficulty:"Moderate"},
+    r_heat_ok:{id:"r_heat_ok",kind:"result",stage:"Result",title:"Unit lights and runs — verify heat delivery",
+      diagnosis:"Combustion is working. If the customer still reports no heat, check the heat exchanger, limit switches, and duct system.",
+      possibleCauses:["Tripped high-limit (dirty filter, blocked return)","Cracked heat exchanger causing limit nuisance trip","Low airflow / blower fault","Duct disconnection"],
+      nextStep:"Check supply air temperature, verify the blower runs in heat mode, and inspect limit switch history on the board.",
+      recommendedParts:["Air filters"],
+      safety:["If you suspect a cracked heat exchanger, red-tag the unit — CO is a life-safety issue"],
+      commonMistakes:["Missing a cracked heat exchanger and returning a CO-risk unit to service"],
+      estimatedTime:"20–40 min",difficulty:"Moderate"}
+  }
+},
+{
+  id:"rtu-generic-breaker-trips", equipment:"RTU", manufacturer:"Generic", symptom:"Breaker Trips",
+  rootId:"q_trip_timing",
+  causes:[
+    {id:"compressor",label:"Compressor locked rotor / shorted"},
+    {id:"wiring",label:"Wiring short or ground fault"},
+    {id:"capacitor",label:"Failed capacitor causing high amps"},
+    {id:"condfan",label:"Condenser fan motor shorted"},
+    {id:"breaker",label:"Weak or undersized breaker"},
+    {id:"overload",label:"Sustained overload / high ambient"}
+  ],
+  nodes:{
+    q_trip_timing:{id:"q_trip_timing",kind:"question",inputType:"yes_no",stage:"Circuit",
+      title:"Does the breaker trip immediately when reset (within seconds)?",
+      why:"Immediate trips point to a dead short or ground fault. Delayed trips (minutes) suggest a sustained overload — usually a struggling compressor, high ambient, or a weak breaker that's tired.",
+      options:[
+        {id:"yes",label:"Yes, immediately",next:"q_ground_fault"},
+        {id:"no",label:"No, trips after running a while",next:"q_high_amps",weights:{overload:30,breaker:20}}
+      ]},
+    q_ground_fault:{id:"q_ground_fault",kind:"question",inputType:"yes_no",stage:"Circuit",
+      title:"With power off, do you measure a short to ground on any load (compressor, fan motor)?",
+      why:"A megohm test or even a continuity check between each leg and ground identifies which device is faulted. A shorted compressor winding to ground will immediately trip the breaker every time.",
+      options:[
+        {id:"yes",label:"Yes, found a ground fault",next:"r_ground_fault",weights:{compressor:50,wiring:30,condfan:20}},
+        {id:"no",label:"No ground fault found",next:"r_weak_breaker",weights:{breaker:55,capacitor:20}}
+      ]},
+    m_rla:{id:"m_rla",kind:"measurement",stage:"Amps",
+      title:"Measure compressor RLA with clamp meter",unit:"A",
+      why:"Running Load Amps tells you if the compressor is working too hard. Compare to the nameplate RLA. Anything above FLA (Full Load Amps) sustained will trip the breaker — a bad cap, high head pressure, or a dying compressor will all push amps up.",
+      expected:{nominal:18,tolerancePct:15},
+      branches:{inRange:"r_check_ambient",belowRange:"r_check_ambient",aboveRange:"r_high_amp_draw",default:"r_check_ambient"},
+      weights:{aboveRange:{compressor:35,capacitor:25,overload:20}}},
+    q_high_amps:{id:"q_high_amps",kind:"question",inputType:"yes_no",stage:"Amps",
+      title:"Are compressor amps above nameplate RLA?",
+      why:"If amps are high and it trips on a delay, rule out the cap (raises start amps), high head pressure (hard work), and high ambient before condemning the compressor.",
+      options:[
+        {id:"yes",label:"Yes, above RLA",next:"r_high_amp_draw",weights:{compressor:35,capacitor:25,overload:20}},
+        {id:"no",label:"No, amps look normal",next:"r_weak_breaker",weights:{breaker:55}}
+      ]},
+    r_ground_fault:{id:"r_ground_fault",kind:"result",stage:"Result",title:"Ground fault on a load device",
+      diagnosis:"A winding or wiring has shorted to ground, causing an immediate trip every time the circuit is energized.",
+      possibleCauses:["Shorted compressor winding to ground","Burned fan motor winding","Chafed wire touching cabinet"],
+      nextStep:"Isolate each load (disconnect compressor, fan) and megohm-test each. Replace the faulted device.",
+      recommendedParts:["Compressor","Condenser fan motor"],
+      safety:["Lock out / tag out before any wiring work — a faulted circuit can arc violently"],
+      commonMistakes:["Resetting and running the unit to 'see what happens' — this damages more wiring"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_high_amp_draw:{id:"r_high_amp_draw",kind:"result",stage:"Result",title:"High amp draw — overload condition",
+      diagnosis:"The unit is drawing more current than the breaker can sustain. This is usually a mechanical or refrigerant problem, not a straight electrical fault.",
+      possibleCauses:["Weak run capacitor driving high start/run amps","High head pressure (dirty condenser, hot ambient)","Refrigerant overcharge","Compressor beginning to fail mechanically"],
+      nextStep:"Test capacitor µF, clean condenser coil, check head pressure, verify charge. If amps are still high with everything else correct, the compressor is suspect.",
+      recommendedParts:["Run capacitor","Compressor"],
+      safety:["Check for hot surfaces — a laboring compressor runs extremely hot"],
+      commonMistakes:["Upsizing the breaker to make the trip go away — this masks a real overload and is a fire hazard"],
+      estimatedTime:"45–90 min",difficulty:"Moderate"},
+    r_weak_breaker:{id:"r_weak_breaker",kind:"result",stage:"Result",title:"Weak or nuisance-tripping breaker",
+      diagnosis:"No ground fault, normal amps — the breaker itself is likely worn or was undersized from the start.",
+      possibleCauses:["Breaker weakened by repeated trips","Undersized for unit MCA/MOP","Loose connection causing heat at the lug"],
+      nextStep:"Check the unit's nameplate MCA and MOP, verify the breaker size matches, check for warm/loose lug connections, and replace if worn.",
+      recommendedParts:["Circuit breaker (match MOP on nameplate)"],
+      safety:["Work inside the main panel with a qualified electrician — panel is always energized upstream"],
+      commonMistakes:["Installing a larger breaker than MOP to 'fix' the trip — this is a code violation and fire risk"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_check_ambient:{id:"r_check_ambient",kind:"result",stage:"Result",title:"Amps in range — check ambient and condenser",
+      diagnosis:"Amps are acceptable. The delayed trip is likely environmental — high ambient or a dirty condenser coil pushing the unit to its thermal limit.",
+      possibleCauses:["Dirty condenser coil","High ambient temperature","Restricted airflow around the condenser","Unit cycling at high load for extended period"],
+      nextStep:"Clean the condenser coil, verify 18\" clearance on all sides, check that the condenser fan runs, and monitor amps over a full cycle.",
+      recommendedParts:["Coil cleaner"],
+      safety:["Standard PPE"],
+      commonMistakes:["Condemning the compressor when the condenser just needs cleaning"],
+      estimatedTime:"30–45 min",difficulty:"Easy"}
+  }
+},
+{
+  id:"walkin-cooler-generic-no-cooling", equipment:"Walk-In Cooler", manufacturer:"Generic", symptom:"No Cooling",
   rootId:"q_box_temp",
   causes:[
     {id:"iced_coil",label:"Iced evaporator / defrost"},
@@ -330,9 +535,10 @@ var TREES = [
     r_defrost:{id:"r_defrost",kind:"result",stage:"Result",title:"Iced evaporator — defrost or charge fault",
       diagnosis:"The coil is iced, blocking airflow and capacity.",
       possibleCauses:["Failed defrost timer/board","Open defrost heater","Bad termination/limit switch","Low charge causing a frozen coil"],
-      nextStep:"Clear the ice, then test the defrost components and verify charge before returning to service.",
+      nextStep:"Clear the ice with a heat gun (never chip), then test the defrost components and verify charge before returning to service.",
       recommendedParts:["Defrost heater","Defrost termination switch","Defrost timer/board"],
       safety:["Defrost heaters run on line voltage — lock out before testing"],
+      commonMistakes:["Chipping ice off the coil and damaging the tubing"],
       estimatedTime:"60+ min",difficulty:"Advanced"},
     r_evap_fan:{id:"r_evap_fan",kind:"result",stage:"Result",title:"Evaporator fans not running",
       diagnosis:"The evaporator fans are stopped, so no cold air reaches the box.",
@@ -355,6 +561,163 @@ var TREES = [
       safety:["Follow EPA recovery rules"],
       estimatedTime:"60+ min",difficulty:"Advanced"}
   }
+},
+{
+  id:"split-generic-no-cooling", equipment:"Split System", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_split_tstat",
+  causes:[
+    {id:"thermostat",label:"Thermostat / no call"},
+    {id:"capacitor",label:"Failed run capacitor"},
+    {id:"contactor",label:"Failed contactor"},
+    {id:"lowcharge",label:"Low refrigerant charge"},
+    {id:"txv",label:"TXV / metering device"},
+    {id:"compressor",label:"Compressor failure"},
+    {id:"airflow",label:"Airflow / filter / coil"}
+  ],
+  nodes:{
+    q_split_tstat:{id:"q_split_tstat",kind:"question",inputType:"yes_no",stage:"Control Circuit",
+      title:"Is the thermostat calling for cooling (Y energized at air handler)?",
+      why:"Confirm the call reaches the air handler board. On a split, Y travels from the stat to the air handler, then a Y signal goes out to the outdoor unit. A break anywhere kills cooling.",
+      options:[
+        {id:"yes",label:"Yes",next:"q_outdoor_runs"},
+        {id:"no",label:"No",next:"r_split_no_call",weights:{thermostat:65}}
+      ]},
+    q_outdoor_runs:{id:"q_outdoor_runs",kind:"question",inputType:"yes_no",stage:"Outdoor Unit",
+      title:"Does the outdoor unit (condenser) try to run?",
+      why:"If the air handler is running but the outdoor unit won't start, focus on the outdoor contactor, capacitor, and 24V control circuit to the unit.",
+      options:[
+        {id:"yes",label:"Yes, outdoor runs",next:"m_split_suction"},
+        {id:"no",label:"No, outdoor dead",next:"q_contactor_in",weights:{contactor:40,capacitor:25}}
+      ]},
+    q_contactor_in:{id:"q_contactor_in",kind:"question",inputType:"yes_no",stage:"Contactor",
+      title:"Is the contactor pulled in when Y is present?",
+      why:"24V on Y should pull in the contactor and send line power to the compressor and fan. If 24V is present at the coil and the contactor won't pull, the coil is open. If no 24V, walk the safety string.",
+      options:[
+        {id:"yes",label:"Yes, pulled in but nothing runs",next:"r_cap_or_comp",weights:{capacitor:50,compressor:30}},
+        {id:"no",label:"No",next:"r_split_no_contactor",weights:{contactor:55,thermostat:15}}
+      ]},
+    m_split_suction:{id:"m_split_suction",kind:"measurement",stage:"Refrigerant",
+      title:"Measure suction pressure (low side)",unit:"PSIG",
+      why:"With both sections running, suction pressure gives you a quick read on charge and airflow. R-410A target ~120–140 PSIG at typical conditions. Low pressure with high superheat means undercharge or restriction; high means overcharge or a non-pumping compressor.",
+      expected:{nominal:130,tolerancePct:20},
+      branches:{inRange:"r_split_airflow",belowRange:"r_split_low_charge",aboveRange:"r_split_high_suction",default:"r_split_airflow"},
+      weights:{belowRange:{lowcharge:55,txv:20},aboveRange:{compressor:30}}},
+    r_split_no_call:{id:"r_split_no_call",kind:"result",stage:"Result",title:"No cooling call at air handler",
+      diagnosis:"The cooling call is not reaching the equipment. Check the thermostat, wiring, and the air handler board.",
+      possibleCauses:["Thermostat mode or setpoint","Broken Y wire","Blown low-voltage fuse on air handler board","Tripped float switch"],
+      nextStep:"Jumper R to Y at the air handler board (power off first) to confirm the outdoor unit responds.",
+      recommendedParts:["Thermostat","Low-voltage fuse"],
+      safety:["Kill power before jumpering"],
+      commonMistakes:["Ignoring the float switch in the condensate pan"],
+      estimatedTime:"15–30 min",difficulty:"Easy"},
+    r_split_no_contactor:{id:"r_split_no_contactor",kind:"result",stage:"Result",title:"Outdoor contactor not pulling in",
+      diagnosis:"24V is not making it to the contactor coil, or the coil itself is open.",
+      possibleCauses:["Open high- or low-pressure switch","Broken Y wire to outdoor unit","Failed contactor coil","Float switch open"],
+      nextStep:"Measure 24V at the contactor coil terminals. If present, replace contactor. If absent, trace the 24V string back.",
+      recommendedParts:["Contactor"],
+      safety:["Discharge capacitors — line power is on the load side of the contactor"],
+      commonMistakes:["Replacing the contactor without checking for a tripped pressure switch"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_cap_or_comp:{id:"r_cap_or_comp",kind:"result",stage:"Result",title:"Contactor pulled — capacitor or compressor suspect",
+      diagnosis:"Line power is present at the compressor but it won't start. Test the capacitor first before condemning the compressor.",
+      possibleCauses:["Weak or failed run capacitor","Compressor seized or open winding","Tripped internal overload (hot compressor)"],
+      nextStep:"Test capacitor µF. Ohm C-R-S windings. If cap is good and windings check out, let a hot compressor cool and retest.",
+      recommendedParts:["Run capacitor","Hard-start kit","Compressor"],
+      safety:["Discharge caps before touching terminals"],
+      commonMistakes:["Condemning a compressor on a tripped internal overload — it may just need to cool down"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_split_low_charge:{id:"r_split_low_charge",kind:"result",stage:"Result",title:"Low suction pressure — undercharge or restriction",
+      diagnosis:"Low suction with high superheat points to undercharge or a restriction (TXV, filter drier).",
+      possibleCauses:["Refrigerant leak","Undercharge","Stuck TXV","Plugged filter drier"],
+      nextStep:"Measure superheat and subcooling, leak-search, weigh in to spec. Check drier and TXV if charge is correct.",
+      recommendedParts:["Refrigerant","Filter drier","TXV"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Adding refrigerant without finding the leak"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_split_high_suction:{id:"r_split_high_suction",kind:"result",stage:"Result",title:"High suction — overcharge or non-pumping compressor",
+      diagnosis:"High suction with low superheat often means overcharge; high suction with high superheat means the compressor isn't pumping.",
+      possibleCauses:["Overcharge","Compressor valves not sealing","TXV overfeeding"],
+      nextStep:"Measure subcooling and superheat together. Run a compression test if subcooling/superheat point to the compressor.",
+      recommendedParts:["TXV","Compressor"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Adding refrigerant to a system that's already overcharged"],
+      estimatedTime:"45–60 min",difficulty:"Advanced"},
+    r_split_airflow:{id:"r_split_airflow",kind:"result",stage:"Result",title:"Pressures in range — check airflow and temperature split",
+      diagnosis:"The refrigerant circuit looks good. A weak temperature split points to airflow or marginal charge.",
+      possibleCauses:["Dirty air filter or evaporator coil","Blower running slow or wrong speed tap","Duct leaks","Marginal charge"],
+      nextStep:"Measure return-to-supply temperature split (target 18–22°F). Check filter and indoor coil. Verify blower speed tap.",
+      recommendedParts:["Air filters"],
+      safety:["Standard PPE"],
+      commonMistakes:["Chasing the refrigerant circuit when a dirty filter is the real culprit"],
+      estimatedTime:"20–40 min",difficulty:"Easy"}
+  }
+},
+{
+  id:"ice-machine-generic-no-cooling", equipment:"Ice Machine", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_ice_harvest",
+  causes:[
+    {id:"watersys",label:"Water system fault"},
+    {id:"lowcharge",label:"Low refrigerant charge"},
+    {id:"condenser",label:"Dirty condenser / high head pressure"},
+    {id:"compressor",label:"Compressor failure"},
+    {id:"controls",label:"Control board / sensor fault"},
+    {id:"waterfilt",label:"Water filter / scale buildup"}
+  ],
+  nodes:{
+    q_ice_harvest:{id:"q_ice_harvest",kind:"question",inputType:"yes_no",stage:"Operation",
+      title:"Is the machine attempting to make ice (compressor running, water flowing)?",
+      why:"First determine if the machine is in a fault/lockout state vs. actually trying to run. Many ice machines have a control board that will halt the cycle after multiple failed attempts and display a fault code.",
+      options:[
+        {id:"yes",label:"Yes, running but ice production is poor or zero",next:"q_ice_head_press"},
+        {id:"no",label:"No, locked out or not starting",next:"r_ice_lockout",weights:{controls:45,waterfilt:20}}
+      ]},
+    q_ice_head_press:{id:"q_ice_head_press",kind:"question",inputType:"yes_no",stage:"Refrigerant",
+      title:"Is the condenser coil clean and airflow unrestricted?",
+      why:"A dirty condenser is the #1 cause of poor ice production. High head pressure causes the compressor to work harder, cuts capacity, and can trigger high-pressure safeties.",
+      options:[
+        {id:"yes",label:"Yes, condenser is clean",next:"q_ice_water"},
+        {id:"no",label:"No, dirty or blocked",next:"r_ice_dirty_cond",weights:{condenser:70}}
+      ]},
+    q_ice_water:{id:"q_ice_water",kind:"question",inputType:"yes_no",stage:"Water System",
+      title:"Is water flowing properly over the evaporator plate/grid?",
+      why:"Ice machines are extremely sensitive to water quality and flow. Scale buildup on the evaporator, a clogged water filter, or a bad water pump all kill ice production without a refrigerant fault.",
+      options:[
+        {id:"yes",label:"Yes, water looks good",next:"r_ice_refrigerant",weights:{lowcharge:40,compressor:25}},
+        {id:"no",label:"No — scale, poor flow, or pump issue",next:"r_ice_water",weights:{waterfilt:55,watersys:30}}
+      ]},
+    r_ice_lockout:{id:"r_ice_lockout",kind:"result",stage:"Result",title:"Machine in lockout or fault state",
+      diagnosis:"The control board has stopped the cycle, usually after multiple failed attempts.",
+      possibleCauses:["High-pressure lockout (dirty condenser)","Harvest timeout (scale or refrigerant)","Sensor fault (thermistor)","Control board failure"],
+      nextStep:"Check the display for a fault code. Reset per the manufacturer procedure (usually hold a button 3 seconds). Identify why it locked out before resetting blindly.",
+      recommendedParts:["Thermistor/sensor kit","Control board"],
+      safety:["Note the fault code before clearing it — it is your diagnostic history"],
+      commonMistakes:["Resetting without diagnosing the root cause — the lockout will recur"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_ice_dirty_cond:{id:"r_ice_dirty_cond",kind:"result",stage:"Result",title:"Dirty condenser coil",
+      diagnosis:"A fouled condenser coil is driving head pressure up, cutting capacity and likely triggering safeties.",
+      possibleCauses:["Dust and debris buildup","Grease-laden kitchen air coating the coil","Inadequate clearance or recirculating hot air"],
+      nextStep:"Clean coil with coil cleaner and low-pressure water. Verify all fans run. Check clearances — minimum 6\" on intake, 12\" on discharge typically.",
+      recommendedParts:["Coil cleaner"],
+      safety:["Fins are sharp — wear gloves"],
+      commonMistakes:["Cleaning only the visible face — clean both sides"],
+      estimatedTime:"20–40 min",difficulty:"Easy"},
+    r_ice_water:{id:"r_ice_water",kind:"result",stage:"Result",title:"Water system issue — scale or flow fault",
+      diagnosis:"Water is not flowing correctly over the evaporator, preventing proper ice formation.",
+      possibleCauses:["Clogged water filter","Scale on evaporator plate","Failed water pump","Low water pressure at inlet"],
+      nextStep:"Replace water filter, run a clean cycle with ice machine cleaner, and verify pump output pressure.",
+      recommendedParts:["Water filter","Ice machine cleaner","Water pump"],
+      safety:["Use manufacturer-approved ice machine cleaner only"],
+      commonMistakes:["Skipping the clean cycle and jumping straight to refrigerant work"],
+      estimatedTime:"30–60 min",difficulty:"Easy"},
+    r_ice_refrigerant:{id:"r_ice_refrigerant",kind:"result",stage:"Result",title:"Refrigerant or compressor fault",
+      diagnosis:"Water and condenser are good — the refrigerant side is the remaining suspect.",
+      possibleCauses:["Low refrigerant charge","TXV or metering device fault","Compressor not pumping","Harvest valve stuck"],
+      nextStep:"Connect gauges, check suction/discharge pressure during freeze and harvest cycles, measure superheat, check harvest valve operation.",
+      recommendedParts:["Refrigerant","TXV","Harvest valve"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Adding charge to a system with a failing compressor — it will just leak out again"],
+      estimatedTime:"60+ min",difficulty:"Advanced"}
+  }
 }
 ];
 
@@ -369,7 +732,7 @@ function findTree(eq,man,sym){
 function hasTree(eq,man,sym){return !!findTree(eq,man,sym);}
 
 /* ============================================================
-   ENGINE — pure functions over a session object
+   ENGINE
    ============================================================ */
 function createSession(tree){
   var scores={};
@@ -437,13 +800,67 @@ var IC={
   gauge:function(w){return svg('<path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="m13.4 10.6 3.6-3.6"/><path d="M4 18a8 8 0 1 1 16 0"/>',w);},
   print:function(w){return svg('<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v8H6v-8Z"/>',w);},
   refresh:function(w){return svg('<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',w);},
-  bolt:function(w){return svg('<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>',w);}
+  bolt:function(w){return svg('<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>',w);},
+  check:function(w){return svg('<path d="M20 6 9 17l-5-5"/>',w);}
 };
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+var toastTimer=null;
+function showToast(msg,tone){
+  var t=document.getElementById("toast");
+  if(!t)return;
+  t.textContent=msg;
+  t.setAttribute("data-tone",tone||"");
+  t.classList.add("show");
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove("show");},2600);
+}
+
+/* ============================================================
+   PERSISTENCE
+   ============================================================ */
+function loadJSON(key,fallback){try{var v=JSON.parse(localStorage.getItem(key));return v||fallback;}catch(e){return fallback;}}
+function saveJSON(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+function favKey(eq,man,sym){return eq+"|"+man+"|"+sym;}
+function getFavs(){return loadJSON("hvac.favs",[]);}
+function isFav(eq,man,sym){var k=favKey(eq,man,sym);return getFavs().some(function(f){return f.key===k;});}
+function toggleFav(eq,man,sym){
+  var favs=getFavs(),k=favKey(eq,man,sym),i=-1;
+  favs.forEach(function(f,idx){if(f.key===k)i=idx;});
+  var added;
+  if(i>=0){favs.splice(i,1);added=false;}else{favs.unshift({key:k,equipment:eq,manufacturer:man,symptom:sym,ts:Date.now()});added=true;}
+  saveJSON("hvac.favs",favs);
+  showToast(added?"Added to favorites":"Removed from favorites",added?"good":"");
+}
+function getSaved(){return loadJSON("hvac.saved",[]);}
+function saveDiagnostic(s,node){
+  var saved=getSaved();
+  saved.unshift({
+    id:"d"+Date.now(),ts:Date.now(),
+    equipment:s.tree.equipment,manufacturer:s.tree.manufacturer,symptom:s.tree.symptom,
+    title:node.title,diagnosis:node.diagnosis,difficulty:node.difficulty||"",estimatedTime:node.estimatedTime||"",
+    log:s.log.map(function(e){return {title:e.title,response:e.response,outcome:e.outcome||""};})
+  });
+  saveJSON("hvac.saved",saved.slice(0,50));
+  showToast("Saved to job log","good");
+}
+function deleteSaved(id){
+  saveJSON("hvac.saved",getSaved().filter(function(d){return d.id!==id;}));
+  showToast("Deleted","");
+}
+function fmtDate(ts){
+  try{var d=new Date(ts);
+    return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})+" · "+d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+  }catch(e){return"";}
+}
+function treeList(){return TREES.map(function(t){return {equipment:t.equipment,manufacturer:t.manufacturer,symptom:t.symptom};});}
 
 /* ============================================================
    STATE + RENDER
    ============================================================ */
-var state={screen:"home",mode:"fast",equipment:"RTU",manufacturer:"Generic",symptom:"No Cooling",session:null,whyOpen:false};
+var state={screen:"home",mode:"fast",equipment:"RTU",manufacturer:"Generic",symptom:"No Cooling",session:null,whyOpen:false,viewId:null,resultSaved:false};
 var root=document.getElementById("root");
 function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
@@ -460,19 +877,21 @@ function topbar(){
 }
 
 function homeHTML(){
+  var favN=getFavs().length, savedN=getSaved().length;
   var cards=[
-    {k:"start",t:"Start New Diagnostic",d:"Pick equipment, brand, and symptom — then work the tree.",i:IC.play(),primary:true},
-    {k:"faults",t:"Common Faults",d:"Jump straight to the most frequent failures by equipment.",i:IC.wrench()},
-    {k:"favorites",t:"Favorites",d:"Your pinned workflows and parts.",i:IC.star()},
-    {k:"saved",t:"Saved Diagnostics",d:"Resume or review past jobs.",i:IC.list(),soon:true},
+    {k:"start",t:"Start New Diagnostic",d:"Pick equipment, brand, and symptom — then work the tree.",i:IC.play(),primary:true,action:"start-setup"},
+    {k:"faults",t:"Common Faults",d:"Jump straight to the most frequent failures by equipment.",i:IC.wrench(),action:"open-faults",meta:treeList().length+" loaded"},
+    {k:"favorites",t:"Favorites",d:"Your pinned workflows for one-tap access.",i:IC.star(),action:"open-favorites",meta:favN?favN+" pinned":"None pinned"},
+    {k:"saved",t:"Saved Diagnostics",d:"Review the job log from past diagnostics.",i:IC.list(),action:"open-saved",meta:savedN?savedN+(savedN===1?" job":" jobs"):"No jobs yet"},
     {k:"guides",t:"Manufacturer Guides",d:"Brand-specific service notes and bulletins.",i:IC.book(),soon:true},
-    {k:"about",t:"About",d:"How the diagnostic engine works.",i:IC.info()}
+    {k:"about",t:"About",d:"How the diagnostic engine works.",i:IC.info(),action:"open-about"}
   ];
   var cardHTML=cards.map(function(c){
-    return '<button class="card" data-primary="'+(!!c.primary)+'" '+(c.soon?'data-soon="true" disabled':'')+' '+(c.k==="start"?'data-action="start-setup"':'')+'>'
+    return '<button class="card" data-primary="'+(!!c.primary)+'" '+(c.soon?'data-soon="true" disabled':'data-action="'+c.action+'"')+'>'
       +'<span class="card__icon">'+c.i+'</span>'
       +'<span class="card__title">'+c.t+'</span>'
       +'<span class="card__desc">'+c.d+'</span>'
+      +(c.meta?'<span class="card__meta">'+esc(c.meta)+'</span>':'')
       +(c.soon?'<span class="card__soon">Coming soon</span>':'')+'</button>';
   }).join("");
   return '<p class="eyebrow">Field Diagnostics</p>'
@@ -481,6 +900,105 @@ function homeHTML(){
     +'<div class="cards">'+cardHTML+'</div>';
 }
 
+function backHome(){return '<button class="linkbtn" data-action="home">'+IC.back(16)+' Home</button>';}
+function pageHead(eyebrow,title,lede){
+  return '<p class="eyebrow" style="margin-top:10px">'+esc(eyebrow)+'</p><h1 class="h1">'+esc(title)+'</h1>'
+    +(lede?'<p class="lede">'+esc(lede)+'</p>':'');
+}
+function emptyState(icon,title,text,actionLabel,action){
+  return '<div class="empty"><span class="empty__icon">'+icon+'</span>'
+    +'<h2 class="h2" style="color:var(--text)">'+esc(title)+'</h2>'
+    +'<p style="margin:8px auto 0;max-width:42ch">'+esc(text)+'</p>'
+    +(action?'<div style="margin-top:18px"><button class="btn btn--primary" data-action="'+action+'">'+esc(actionLabel)+'</button></div>':'')
+    +'</div>';
+}
+function dataAttrs(t){
+  return 'data-eq="'+esc(t.equipment)+'" data-man="'+esc(t.manufacturer)+'" data-sym="'+esc(t.symptom)+'"';
+}
+function faultCard(t){
+  var on=isFav(t.equipment,t.manufacturer,t.symptom);
+  var brand=(t.manufacturer&&t.manufacturer!=="Generic")?t.manufacturer:"Generic";
+  return '<div class="card">'
+    +'<span class="card__icon">'+IC.wrench()+'</span>'
+    +'<span class="card__title">'+esc(t.symptom)+'</span>'
+    +'<span class="card__desc">'+esc(t.equipment)+' · '+esc(brand)+'</span>'
+    +'<div class="card__row">'
+    +'<button class="miniBtn" data-action="launch" '+dataAttrs(t)+'>'+IC.play(14)+' Start</button>'
+    +'<button class="miniBtn" data-on="'+on+'" data-action="fav-toggle" '+dataAttrs(t)+'>'+IC.star(14)+(on?' Pinned':' Pin')+'</button>'
+    +'</div></div>';
+}
+function faultsHTML(){
+  return backHome()
+    +pageHead("Common Faults","Frequent failures, ready to work","These are the diagnostic trees currently loaded. Pick one to jump straight in.")
+    +'<div class="cards">'+treeList().map(faultCard).join("")+'</div>';
+}
+function favoritesHTML(){
+  var favs=getFavs();
+  var body=favs.length
+    ? '<div class="cards">'+favs.map(function(f){return faultCard({equipment:f.equipment,manufacturer:f.manufacturer,symptom:f.symptom});}).join("")+'</div>'
+    : emptyState(IC.star(28),"No favorites yet","Tap Pin on any fault or the star on a result to keep it here for one-tap access.","Browse common faults","open-faults");
+  return backHome()+pageHead("Favorites","Your pinned workflows","")+body;
+}
+function savedCard(d){
+  return '<div class="card">'
+    +'<span class="card__icon">'+IC.list()+'</span>'
+    +'<span class="card__title" style="font-size:18px">'+esc(d.title)+'</span>'
+    +'<span class="card__desc">'+esc(d.equipment)+' · '+esc(d.symptom)+'</span>'
+    +'<span class="card__meta">'+esc(fmtDate(d.ts))+(d.difficulty?' · '+esc(d.difficulty):'')+'</span>'
+    +'<div class="card__row">'
+    +'<button class="miniBtn" data-action="view-saved" data-id="'+esc(d.id)+'">'+IC.info(14)+' Review</button>'
+    +'<button class="miniBtn" data-action="launch" '+dataAttrs(d)+'>'+IC.refresh(14)+' Run again</button>'
+    +'<button class="miniBtn miniBtn--danger" data-action="delete-saved" data-id="'+esc(d.id)+'">Delete</button>'
+    +'</div></div>';
+}
+function savedHTML(){
+  var saved=getSaved();
+  var body=saved.length
+    ? '<div class="cards">'+saved.map(savedCard).join("")+'</div>'
+    : emptyState(IC.list(28),"No saved diagnostics","Finish a diagnostic and tap Save to job log to keep the full step record here.","Start a diagnostic","start-setup");
+  return backHome()+pageHead("Saved Diagnostics","Your job log","")+body;
+}
+function savedLogPanel(d){
+  var rows=d.log.map(function(e){
+    var tone=e.outcome==="inRange"?"good":(e.outcome==="belowRange"||e.outcome==="aboveRange")?"bad":"";
+    return '<div class="log__item"><span class="log__q">'+esc(e.title)+'</span><span class="log__a" data-tone="'+tone+'">'+esc(e.response)+'</span></div>';
+  }).join("");
+  return '<div class="panel"><div class="panel__head">'+IC.list(16)+'<span class="panel__title">Diagnostic Log</span></div>'
+    +(rows?'<div class="log__list">'+rows+'</div>':'<p class="panel__hint">No steps recorded.</p>')+'</div>';
+}
+function savedViewHTML(){
+  var d=getSaved().find(function(x){return x.id===state.viewId;});
+  if(!d)return savedHTML();
+  return '<button class="linkbtn" data-action="open-saved">'+IC.back(16)+' All saved</button>'
+    +'<div class="result__head" style="margin-top:10px"><p class="eyebrow" style="margin:0">Saved diagnosis</p>'
+    +(d.difficulty?'<span class="badge" data-tone="'+esc(d.difficulty)+'">'+esc(d.difficulty)+'</span>':'')
+    +(d.estimatedTime?'<span class="badge">'+esc(d.estimatedTime)+'</span>':'')+'</div>'
+    +'<h1 class="h1">'+esc(d.title)+'</h1>'
+    +'<p class="panel__hint" style="font-size:13px">'+esc(d.equipment)+' · '+esc(d.manufacturer)+' · '+esc(d.symptom)+' · '+esc(fmtDate(d.ts))+'</p>'
+    +(d.diagnosis?'<div class="result__diag">'+esc(d.diagnosis)+'</div>':'')
+    +'<div style="max-width:520px">'+savedLogPanel(d)+'</div>'
+    +'<div class="result__actions"><button class="btn btn--primary" data-action="launch" '+dataAttrs(d)+'>'+IC.refresh(18)+' Run this again</button>'
+    +'<button class="btn miniBtn--danger" data-action="delete-saved" data-id="'+esc(d.id)+'">Delete</button></div>';
+}
+function aboutHTML(){
+  var stats='<div class="statRow">'
+    +'<div class="stat"><div class="stat__num">'+treeList().length+'</div><div class="stat__label">Diagnostic trees</div></div>'
+    +'<div class="stat"><div class="stat__num">'+EQUIPMENT.length+'</div><div class="stat__label">Equipment types</div></div>'
+    +'<div class="stat"><div class="stat__num">'+SYMPTOMS.length+'</div><div class="stat__label">Symptoms</div></div>'
+    +'</div>';
+  var prose='<div class="prose">'
+    +'<p>HVAC Assist is a guided, decision-tree diagnostic tool — not a chatbot. Every workflow is a structured tree of <strong>questions</strong> and <strong>measurements</strong>. Each answer you give branches to the next most useful check and adjusts the confidence behind each suspected cause, so you reach a diagnosis the way a senior tech would: by elimination, not guesswork.</p>'
+    +'<h3>Two ways to work</h3>'
+    +'<p><strong>Fast</strong> mode keeps the screen lean for techs who just want the next step. <strong>Training</strong> mode opens the "Why am I checking this?" note on every step so newer techs see the reasoning behind each test. Flip between them any time from the toggle up top.</p>'
+    +'<h3>Live confidence</h3>'
+    +'<p>The Live Diagnosis panel weighs each suspected fault as you go. Measurements are scored against expected ranges (with tolerance), and the running tally shifts toward the most likely cause — fully visible, never a black box.</p>'
+    +'<h3>Favorites &amp; job log</h3>'
+    +'<p>Pin the workflows you hit most for one-tap access, and save any finished diagnostic to your job log to review the full step record later. Both are stored on this device.</p>'
+    +'<h3>Built to grow</h3>'
+    +'<p>Every workflow is pure data. New equipment, brands, and symptoms drop straight into the pickers as trees are added — the green dot on the setup screen marks the combinations that are loaded today.</p>'
+    +'</div>';
+  return backHome()+pageHead("About","How the diagnostic engine works","")+stats+prose;
+}
 function chipRow(field,options,value){
   return '<div class="chips">'+options.map(function(o){
     var eq=field==="equipment"?o:state.equipment;
@@ -500,6 +1018,7 @@ function setupHTML(){
     +'<div><div class="step__head"><span class="step__num">03</span><h2 class="h2">Primary symptom</h2></div>'+chipRow("symptom",SYMPTOMS,state.symptom)+'</div>'
     +'</div>'
     +'<div class="setup__cta"><button class="btn btn--primary" '+(ready?'':'disabled')+' data-action="go-diag">Start diagnostic '+IC.arrow(18)+'</button>'
+    +(ready?'<button class="starBtn" data-on="'+isFav(state.equipment,state.manufacturer,state.symptom)+'" data-action="fav-toggle" data-eq="'+esc(state.equipment)+'" data-man="'+esc(state.manufacturer)+'" data-sym="'+esc(state.symptom)+'">'+IC.star(15)+(isFav(state.equipment,state.manufacturer,state.symptom)?' Favorited':' Favorite')+'</button>':'')
     +(ready?'':'<span class="setup__warn">No tree for this combination yet — the green dot marks combinations that are loaded.</span>')+'</div>';
 }
 
@@ -532,25 +1051,26 @@ function expectedText(node){
   var e=node.expected;
   if(e.nominal!=null&&e.tolerancePct!=null){
     var lo=Math.round(e.nominal*(1-e.tolerancePct/100)*10)/10, hi=Math.round(e.nominal*(1+e.tolerancePct/100)*10)/10;
-    return "Expected "+e.nominal+" "+node.unit+" \u00B1"+e.tolerancePct+"% ("+lo+"\u2013"+hi+")";
+    return "Expected "+e.nominal+" "+node.unit+" ±"+e.tolerancePct+"% ("+lo+"–"+hi+")";
   }
-  if(e.min!=null||e.max!=null)return "Expected range "+(e.min!=null?e.min:"\u2013")+"\u2013"+(e.max!=null?e.max:"\u2013")+" "+node.unit;
+  if(e.min!=null||e.max!=null)return "Expected range "+(e.min!=null?e.min:"–")+"–"+(e.max!=null?e.max:"–")+" "+node.unit;
   return "";
 }
 function verdictHTML(node,v){
   if(v===""||isNaN(Number(v)))return"";
   var num=Number(v),outcome=evaluateMeasurement(node,num);
-  if(outcome==="inRange")return '<div class="measure__verdict" data-tone="good">'+num+' '+node.unit+' is within the expected range.</div>';
+  if(outcome==="inRange")return '<div class="measure__verdict" data-tone="good">'+IC.check(14)+' '+num+' '+node.unit+' is within the expected range.</div>';
   var dev=deviationPct(node,num),where=outcome==="belowRange"?"below":"above";
   var devText=dev!=null?(" ("+Math.abs(dev)+"% "+(dev<0?"below":"above")+" rated)"):"";
   return '<div class="measure__verdict" data-tone="bad">'+num+' '+node.unit+' is '+where+' the expected range'+devText+'.</div>';
 }
 
 function questionCardHTML(node){
+  var showWhy=node.why&&(state.mode==="training"||state.whyOpen);
   var top='<div class="qcard__top"><div>'+(node.stage?'<div class="qcard__stage">'+esc(node.stage)+'</div>':'')
     +'<h2 class="qcard__title">'+esc(node.title)+'</h2></div>'
-    +(node.why?'<button class="whyBtn" data-open="'+state.whyOpen+'" data-action="why-toggle">'+IC.q(15)+' Why?</button>':'')+'</div>';
-  var why=(node.why&&state.whyOpen)?'<div class="why"><span class="why__tag">Why am I checking this?</span>'+esc(node.why)+'</div>':'';
+    +(node.why?'<button class="whyBtn" data-open="'+(state.whyOpen||state.mode==="training")+'" data-action="why-toggle">'+IC.q(15)+' Why?</button>':'')+'</div>';
+  var why=showWhy?'<div class="why"><span class="why__tag">Why am I checking this?</span>'+esc(node.why)+'</div>':'';
   var bottom;
   if(node.kind==="question"){
     bottom='<div class="answers">'+node.options.map(function(o){
@@ -574,7 +1094,7 @@ function diagHTML(){
   return '<button class="linkbtn" data-action="exit">'+IC.back(16)+' Exit diagnostic</button>'
     +'<div class="progress" style="margin-top:10px"><div class="progress__meta">'
     +'<span class="progress__stage">'+esc(node.stage||"Diagnostic")+'</span>'
-    +'<span class="progress__count">'+esc(s.tree.equipment)+' \u00B7 '+esc(s.tree.symptom)+' \u00B7 Step '+(s.log.length+1)+'</span></div>'
+    +'<span class="progress__count">'+esc(s.tree.equipment)+' · '+esc(s.tree.symptom)+' · Step '+(s.log.length+1)+'</span></div>'
     +'<div class="progress__track"><div class="progress__fill" style="width:'+(fill*100)+'%"></div></div></div>'
     +'<div class="diag">'+questionCardHTML(node)+'<div class="rail">'+livePanelHTML(s)+logPanelHTML(s)+'</div></div>'
     +(s.trail.length>0?'<div class="diag__nav"><button class="linkbtn" data-action="back">'+IC.back(15)+' Back one step</button></div>':'');
@@ -584,6 +1104,7 @@ function block(title,inner,variant){return '<div class="block'+(variant?' block-
 function ul(items){return '<ul>'+items.map(function(i){return '<li>'+esc(i)+'</li>';}).join("")+'</ul>';}
 function resultHTML(node){
   var s=state.session;
+  var saved=state.resultSaved;
   var grid='';
   if(node.possibleCauses&&node.possibleCauses.length)grid+=block("Possible causes",ul(node.possibleCauses));
   if(node.nextStep)grid+=block("Recommended next step",'<p>'+esc(node.nextStep)+'</p>');
@@ -595,22 +1116,31 @@ function resultHTML(node){
     +(node.difficulty?'<span class="badge" data-tone="'+node.difficulty+'">'+node.difficulty+'</span>':'')
     +(node.estimatedTime?'<span class="badge">'+esc(node.estimatedTime)+'</span>':'')+'</div>'
     +'<h1 class="h1">'+esc(node.title)+'</h1>'
-    +'<p class="panel__hint" style="font-size:13px">'+esc(s.tree.equipment)+' \u00B7 '+esc(s.tree.manufacturer)+' \u00B7 '+esc(s.tree.symptom)+'</p>'
+    +'<p class="panel__hint" style="font-size:13px">'+esc(s.tree.equipment)+' · '+esc(s.tree.manufacturer)+' · '+esc(s.tree.symptom)+'</p>'
     +'<div class="result__diag">'+esc(node.diagnosis)+'</div>'
     +'<div class="result__grid">'+grid+'</div>'
-    +'<div class="result__actions"><button class="btn btn--primary" data-action="print">'+IC.print(18)+' Print / save log</button>'
-    +'<button class="btn" data-action="restart">'+IC.refresh(18)+' New diagnostic</button></div>'
+    +'<div class="result__actions">'
+    +'<button class="btn" data-action="save-diag" '+(saved?'disabled':'')+' style="'+(saved?'border-color:rgba(56,193,114,.4);color:#bdeccc':'')+'">'+IC.list(18)+(saved?' Saved to job log':' Save to job log')+'</button>'
+    +'<button class="starBtn" data-on="'+isFav(s.tree.equipment,s.tree.manufacturer,s.tree.symptom)+'" data-action="fav-toggle" data-eq="'+esc(s.tree.equipment)+'" data-man="'+esc(s.tree.manufacturer)+'" data-sym="'+esc(s.tree.symptom)+'">'+IC.star(16)+(isFav(s.tree.equipment,s.tree.manufacturer,s.tree.symptom)?' Favorited':' Favorite')+'</button>'
+    +'<button class="btn" data-action="print">'+IC.print(18)+' Print</button>'
+    +'<button class="btn btn--primary" data-action="restart">'+IC.refresh(18)+' New diagnostic</button></div>'
     +'<div style="margin-top:24px;max-width:520px">'+logPanelHTML(s)+'</div>';
 }
 
 function render(){
+  var scrollY=window.scrollY||0;
   var body;
   if(state.screen==="home")body=homeHTML();
   else if(state.screen==="setup")body=setupHTML();
+  else if(state.screen==="faults")body=faultsHTML();
+  else if(state.screen==="favorites")body=favoritesHTML();
+  else if(state.screen==="saved")body=savedHTML();
+  else if(state.screen==="saved-view")body=savedViewHTML();
+  else if(state.screen==="about")body=aboutHTML();
   else body=diagHTML();
   root.innerHTML='<div class="app">'+topbar()+body+'</div>';
 
-  // measurement input wiring (avoids full re-render on each keystroke)
+  // measurement input wiring
   var input=document.getElementById("mInput");
   if(input){
     var node=currentNode(state.session);
@@ -624,11 +1154,14 @@ function render(){
     }
     input.addEventListener("input",sync);
     input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!submitBtn.disabled)doMeasure();});
-    setTimeout(function(){input.focus();},0);
+    setTimeout(function(){try{input.focus();}catch(e){}},0);
   }
+
+  // restore scroll position on re-renders that don't change screen
+  if(state._sameScreen){window.scrollTo(0,scrollY);state._sameScreen=false;}
 }
 
-function navigatedToNewNode(){state.whyOpen=(state.mode==="training");}
+function navigatedToNewNode(){state.whyOpen=(state.mode==="training");state.resultSaved=false;}
 function doMeasure(){
   var input=document.getElementById("mInput");
   if(!input)return;
@@ -645,16 +1178,67 @@ document.addEventListener("click",function(ev){
   var a=el.getAttribute("data-action");
   if(a==="home"){state.screen="home";render();}
   else if(a==="start-setup"){state.screen="setup";render();}
-  else if(a==="mode"){state.mode=el.getAttribute("data-mode");if(state.screen==="diag"&&state.session){var n=currentNode(state.session);if(n.kind!=="result")state.whyOpen=(state.mode==="training");}render();}
-  else if(a==="pick"){state[el.getAttribute("data-field")]=el.getAttribute("data-value");render();}
-  else if(a==="go-diag"){var t=findTree(state.equipment,state.manufacturer,state.symptom);if(t){state.session=createSession(t);state.screen="diag";navigatedToNewNode();render();}}
-  else if(a==="answer"){var node=currentNode(state.session);var opt=node.options.find(function(o){return o.id===el.getAttribute("data-opt");});if(opt){answerQuestion(state.session,opt);navigatedToNewNode();render();}}
+  else if(a==="mode"){
+    state.mode=el.getAttribute("data-mode");
+    if(state.screen==="diag"&&state.session){
+      var n=currentNode(state.session);
+      if(n.kind!=="result")state.whyOpen=(state.mode==="training");
+    }
+    state._sameScreen=true;
+    render();
+  }
+  else if(a==="pick"){
+    state[el.getAttribute("data-field")]=el.getAttribute("data-value");
+    state._sameScreen=true;
+    render();
+  }
+  else if(a==="go-diag"){
+    var t=findTree(state.equipment,state.manufacturer,state.symptom);
+    if(t){state.session=createSession(t);state.screen="diag";navigatedToNewNode();render();}
+  }
+  else if(a==="answer"){
+    var node=currentNode(state.session);
+    var opt=node.options.find(function(o){return o.id===el.getAttribute("data-opt");});
+    if(opt){answerQuestion(state.session,opt);navigatedToNewNode();window.scrollTo(0,0);render();}
+  }
   else if(a==="measure-submit"){doMeasure();}
-  else if(a==="why-toggle"){state.whyOpen=!state.whyOpen;render();}
+  else if(a==="why-toggle"){state.whyOpen=!state.whyOpen;state._sameScreen=true;render();}
   else if(a==="back"){goBack(state.session);navigatedToNewNode();render();}
   else if(a==="exit"){state.screen="setup";render();}
   else if(a==="restart"){state.screen="setup";state.session=null;render();}
   else if(a==="print"){window.print();}
+  else if(a==="open-faults"){state.screen="faults";render();}
+  else if(a==="open-favorites"){state.screen="favorites";render();}
+  else if(a==="open-saved"){state.screen="saved";render();}
+  else if(a==="open-about"){state.screen="about";render();}
+  else if(a==="launch"){
+    state.equipment=el.getAttribute("data-eq");
+    state.manufacturer=el.getAttribute("data-man");
+    state.symptom=el.getAttribute("data-sym");
+    var lt=findTree(state.equipment,state.manufacturer,state.symptom);
+    if(lt){state.session=createSession(lt);state.screen="diag";navigatedToNewNode();}
+    else{state.screen="setup";}
+    render();
+  }
+  else if(a==="fav-toggle"){
+    toggleFav(el.getAttribute("data-eq"),el.getAttribute("data-man"),el.getAttribute("data-sym"));
+    state._sameScreen=true;
+    render();
+  }
+  else if(a==="save-diag"){
+    if(state.session&&!state.resultSaved){
+      saveDiagnostic(state.session,currentNode(state.session));
+      state.resultSaved=true;
+      state._sameScreen=true;
+      render();
+    }
+  }
+  else if(a==="view-saved"){state.viewId=el.getAttribute("data-id");state.screen="saved-view";render();}
+  else if(a==="delete-saved"){
+    deleteSaved(el.getAttribute("data-id"));
+    if(state.screen==="saved-view")state.screen="saved";
+    render();
+  }
 });
 
 render();
