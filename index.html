@@ -156,6 +156,23 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;min-width:120px}
 .stat__num{font-family:var(--display);font-weight:700;font-size:28px;color:var(--blue);line-height:1.1}
 .stat__label{font-size:12px;color:var(--muted);letter-spacing:.04em;margin-top:2px}
+/* Manufacturer guides */
+.gfacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0 6px}
+.gfact{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.gfact__label{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);display:block;margin-bottom:5px}
+.gfact__val{font-size:13.5px;line-height:1.45}
+.gsection{margin-top:26px}
+.gsection__title{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.codeTableWrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+.codeTable{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+.codeTable th{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+.codeTable td{padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.codeTable tr:last-child td{border-bottom:0}
+.codeTable .codeCell{font-family:var(--mono);font-weight:700;color:var(--orange);white-space:nowrap}
+.gnote{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:14px 16px;margin-bottom:12px}
+.gnote__title{font-family:var(--display);font-weight:600;font-size:15px;margin:0 0 6px}
+.gnote__body{color:var(--muted);font-size:14px;line-height:1.6;margin:0}
+.gdisclaimer{margin-top:28px;color:var(--muted-2);font-size:12.5px;border-top:1px solid var(--line-soft);padding-top:14px;max-width:70ch}
 /* Toast notification */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 20px;font-size:14px;font-weight:500;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;opacity:0;z-index:100;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
@@ -434,7 +451,7 @@ var TREES = [
       why:"Immediate trips point to a dead short or ground fault. Delayed trips (minutes) suggest a sustained overload — usually a struggling compressor, high ambient, or a weak breaker that's tired.",
       options:[
         {id:"yes",label:"Yes, immediately",next:"q_ground_fault"},
-        {id:"no",label:"No, trips after running a while",next:"q_high_amps",weights:{overload:30,breaker:20}}
+        {id:"no",label:"No, trips after running a while",next:"m_rla",weights:{overload:30,breaker:20}}
       ]},
     q_ground_fault:{id:"q_ground_fault",kind:"question",inputType:"yes_no",stage:"Circuit",
       title:"With power off, do you measure a short to ground on any load (compressor, fan motor)?",
@@ -449,13 +466,6 @@ var TREES = [
       expected:{nominal:18,tolerancePct:15},
       branches:{inRange:"r_check_ambient",belowRange:"r_check_ambient",aboveRange:"r_high_amp_draw",default:"r_check_ambient"},
       weights:{aboveRange:{compressor:35,capacitor:25,overload:20}}},
-    q_high_amps:{id:"q_high_amps",kind:"question",inputType:"yes_no",stage:"Amps",
-      title:"Are compressor amps above nameplate RLA?",
-      why:"If amps are high and it trips on a delay, rule out the cap (raises start amps), high head pressure (hard work), and high ambient before condemning the compressor.",
-      options:[
-        {id:"yes",label:"Yes, above RLA",next:"r_high_amp_draw",weights:{compressor:35,capacitor:25,overload:20}},
-        {id:"no",label:"No, amps look normal",next:"r_weak_breaker",weights:{breaker:55}}
-      ]},
     r_ground_fault:{id:"r_ground_fault",kind:"result",stage:"Result",title:"Ground fault on a load device",
       diagnosis:"A winding or wiring has shorted to ground, causing an immediate trip every time the circuit is energized.",
       possibleCauses:["Shorted compressor winding to ground","Burned fan motor winding","Chafed wire touching cabinet"],
@@ -718,12 +728,1207 @@ var TREES = [
       commonMistakes:["Adding charge to a system with a failing compressor — it will just leak out again"],
       estimatedTime:"60+ min",difficulty:"Advanced"}
   }
+},
+{
+  id:"heatpump-generic-no-heating", equipment:"Heat Pump", manufacturer:"Generic", symptom:"No Heating",
+  rootId:"q_hp_call",
+  causes:[
+    {id:"thermostat",label:"Thermostat / no call"},
+    {id:"odu",label:"Outdoor unit not running"},
+    {id:"defrost",label:"Defrost fault / iced coil"},
+    {id:"revvalve",label:"Reversing valve stuck"},
+    {id:"lowcharge",label:"Low refrigerant charge"},
+    {id:"auxheat",label:"Aux heat not staging"}
+  ],
+  nodes:{
+    q_hp_call:{id:"q_hp_call",kind:"question",inputType:"yes_no",stage:"Control Circuit",
+      title:"Is the thermostat calling for heat?",
+      why:"On a heat pump the first stage of heat is the compressor, not the strips. Confirm a real call exists — HEAT mode, setpoint above room temp — before opening the unit. Note that some stats energize O/B in cooling and others in heating, so know the brand convention.",
+      options:[
+        {id:"yes",label:"Yes",next:"q_hp_odu"},
+        {id:"no",label:"No",next:"r_hp_no_call",weights:{thermostat:65}}
+      ]},
+    q_hp_odu:{id:"q_hp_odu",kind:"question",inputType:"yes_no",stage:"Outdoor Unit",
+      title:"Is the outdoor unit running in heat mode (compressor and fan)?",
+      why:"A heat pump makes heat by running the compressor. If the outdoor unit is dead, the strips may be carrying the whole load — the house feels lukewarm and the bill doubles. Focus on the contactor, capacitor, defrost board, and 24V circuit outside.",
+      options:[
+        {id:"yes",label:"Yes, it's running",next:"q_hp_iced"},
+        {id:"no",label:"No",next:"r_hp_odu",weights:{odu:60}}
+      ]},
+    q_hp_iced:{id:"q_hp_iced",kind:"question",inputType:"yes_no",stage:"Defrost",
+      title:"Is the outdoor coil heavily iced or frosted solid?",
+      why:"Light frost is normal in heating. A coil that is a solid block of ice means defrost is not working — the coil can't absorb heat and capacity collapses. Suspect the defrost board, defrost sensor/thermostat, or a reversing valve that won't shift into defrost.",
+      options:[
+        {id:"yes",label:"Yes, iced solid",next:"r_hp_defrost",weights:{defrost:70}},
+        {id:"no",label:"No, normal or light frost",next:"m_hp_supply"}
+      ]},
+    m_hp_supply:{id:"m_hp_supply",kind:"measurement",stage:"Performance",
+      title:"Measure supply air temperature at the closest register",unit:"°F",
+      why:"Heat pump supply air runs cooler than gas heat — 90–105°F is typical in mild weather. Below ~85°F supply, the machine is moving too little heat: think reversing valve bypassing, low charge, or a compressor not pumping.",
+      expected:{nominal:95,tolerancePct:15},
+      branches:{inRange:"r_hp_verify",belowRange:"q_hp_mode",aboveRange:"r_hp_verify",default:"r_hp_verify"},
+      weights:{belowRange:{revvalve:25,lowcharge:30},inRange:{revvalve:-15,lowcharge:-15}}},
+    q_hp_mode:{id:"q_hp_mode",kind:"question",inputType:"yes_no",stage:"Reversing Valve",
+      title:"Switch to cooling mode — does the unit cool normally?",
+      why:"This splits the problem cleanly. A unit that cools fine but heats poorly points at the reversing valve or its solenoid not shifting. A unit that is weak in both modes points at charge or compressor — the valve is off the hook.",
+      options:[
+        {id:"yes",label:"Cools fine, won't heat",next:"r_hp_revvalve",weights:{revvalve:55}},
+        {id:"no",label:"Weak in both modes",next:"r_hp_charge",weights:{lowcharge:55}}
+      ]},
+    r_hp_no_call:{id:"r_hp_no_call",kind:"result",stage:"Result",title:"Thermostat not calling for heat",
+      diagnosis:"No heat call is reaching the equipment. Check the thermostat mode, setpoint, batteries, and the O/B configuration before touching the unit.",
+      possibleCauses:["Wrong mode or setpoint","O/B terminal configured backwards for the brand","Dead stat batteries","Broken low-voltage wire"],
+      nextStep:"Set HEAT with the setpoint well above room temp. Verify the O/B convention (most brands energize O/B in cooling; some in heating). Jumper R to Y at the board (power off first) to force the compressor.",
+      recommendedParts:["Thermostat","Thermostat batteries"],
+      safety:["Kill power before jumpering at the control board"],
+      commonMistakes:["Swapping a stat without setting the O/B orientation — the unit then heats when it should cool"],
+      estimatedTime:"15–30 min",difficulty:"Easy"},
+    r_hp_odu:{id:"r_hp_odu",kind:"result",stage:"Result",title:"Outdoor unit not running",
+      diagnosis:"The compressor section is down, so the only heat available is the electric strips. Work the outdoor electrical path.",
+      possibleCauses:["Failed contactor or coil","Weak run capacitor","Open pressure switch","Defrost board not passing the call","Tripped breaker"],
+      nextStep:"Verify 24V at the contactor coil, test the capacitor, and check the defrost board — on many heat pumps the compressor call routes through it, so a dead board kills the outdoor unit.",
+      recommendedParts:["Contactor","Run capacitor","Defrost control board"],
+      safety:["Discharge capacitors and lock out line power before working in the panel"],
+      commonMistakes:["Overlooking the defrost board as the reason the contactor never gets 24V"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_hp_defrost:{id:"r_hp_defrost",kind:"result",stage:"Result",title:"Defrost failure — coil iced solid",
+      diagnosis:"The outdoor coil is blocked with ice, so it cannot absorb heat. The defrost cycle is not initiating or not completing.",
+      possibleCauses:["Failed defrost board or timer","Open/misplaced defrost sensor or thermostat","Reversing valve not shifting into defrost","Low charge causing constant coil freezing"],
+      nextStep:"Force a defrost cycle from the board (jump the test pins per the board label). Verify the defrost sensor is clamped to the correct circuit and closes when cold. Melt the ice fully before returning to service.",
+      recommendedParts:["Defrost control board","Defrost sensor/thermostat"],
+      safety:["Never chip ice off the coil — you will puncture the tubing. Use water or time."],
+      commonMistakes:["Replacing the board when the defrost sensor fell off its tube"],
+      estimatedTime:"45–90 min",difficulty:"Moderate"},
+    r_hp_revvalve:{id:"r_hp_revvalve",kind:"result",stage:"Result",title:"Reversing valve stuck or not shifting",
+      diagnosis:"The unit cools but will not heat — the reversing valve is staying in the cooling position or bypassing internally.",
+      possibleCauses:["Failed reversing valve solenoid coil","Valve mechanically stuck","No O/B signal from the stat","Valve bypassing hot gas internally"],
+      nextStep:"Confirm 24V at the solenoid in the mode that should energize it, ohm the coil, and feel all four valve lines — a stuck or bypassing valve shows similar temperatures on lines that should be hot and cold.",
+      recommendedParts:["Reversing valve solenoid coil","Reversing valve"],
+      safety:["Valve replacement means recovering the charge — EPA rules apply"],
+      commonMistakes:["Condemning the valve when only the $20 solenoid coil is open"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_hp_charge:{id:"r_hp_charge",kind:"result",stage:"Result",title:"Low charge or compressor capacity fault",
+      diagnosis:"Weak performance in both modes points at the refrigerant circuit — undercharge, a leak, or a compressor that isn't pumping.",
+      possibleCauses:["Refrigerant leak / undercharge","Compressor valves worn","Restriction at the metering device"],
+      nextStep:"Connect gauges and read pressures against charging tables for the outdoor temperature. Heat-mode charging is tricky — weigh in the charge if in doubt.",
+      recommendedParts:["Refrigerant","Filter drier","Compressor"],
+      safety:["Follow EPA recovery rules, never vent refrigerant"],
+      commonMistakes:["Charging to cooling-mode targets while running in heat mode"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_hp_verify:{id:"r_hp_verify",kind:"result",stage:"Result",title:"Heat pump performing — check aux heat and expectations",
+      diagnosis:"The heat pump side is producing normal supply temperatures. If the space still won't hold, look at the auxiliary heat staging and the load.",
+      possibleCauses:["Aux/strip heat not staging on (sequencer, breaker, stat config)","Balance point set wrong","Undersized for the weather","Duct losses"],
+      nextStep:"Force second-stage heat and confirm the strips pull amps. Check the stat's aux heat configuration and verify supply temp rises when strips engage.",
+      recommendedParts:["Heat sequencer/relay","Heat strip element"],
+      safety:["Strip heat circuits pull heavy amperage — inspect lugs for heat damage"],
+      commonMistakes:["Blaming the compressor when the strips never stage on in cold snaps"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"}
+  }
+},
+{
+  id:"walkin-freezer-generic-no-cooling", equipment:"Walk-In Freezer", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_wf_temp",
+  causes:[
+    {id:"iced_coil",label:"Iced evaporator / defrost fault"},
+    {id:"drainheat",label:"Drain line / heater ice buildup"},
+    {id:"evap_fan",label:"Evaporator fan failure"},
+    {id:"condensing",label:"Condensing unit fault"},
+    {id:"lowcharge",label:"Low refrigerant charge"},
+    {id:"infiltration",label:"Door / gasket infiltration"}
+  ],
+  nodes:{
+    q_wf_temp:{id:"q_wf_temp",kind:"question",inputType:"yes_no",stage:"Box",
+      title:"Is the box temperature above setpoint with the door closed?",
+      why:"Freezers ride through defrost cycles and door openings with temporary temperature bumps. Confirm a sustained problem — box well above setpoint and not recovering — before condemning anything.",
+      options:[
+        {id:"yes",label:"Yes, warm and not recovering",next:"q_wf_iced"},
+        {id:"no",label:"No, it's holding",next:"r_wf_holding"}
+      ]},
+    q_wf_iced:{id:"q_wf_iced",kind:"question",inputType:"yes_no",stage:"Evaporator",
+      title:"Is the evaporator coil iced over?",
+      why:"Freezer coils frost constantly and depend entirely on electric defrost to stay clear. Ice is the #1 walk-in freezer failure and almost always a defrost component: heater, termination switch, timer/board, or a drain that froze and backed up.",
+      options:[
+        {id:"yes",label:"Yes, iced",next:"r_wf_defrost",weights:{iced_coil:60,drainheat:25}},
+        {id:"no",label:"No, coil is clear",next:"q_wf_fans"}
+      ]},
+    q_wf_fans:{id:"q_wf_fans",kind:"question",inputType:"yes_no",stage:"Evaporator",
+      title:"Are the evaporator fans running?",
+      why:"Freezer fan motors live in a brutal environment and fail often. Remember many systems hold the fans off during and right after defrost until the coil re-chills — confirm the unit is in refrigeration mode before condemning a motor.",
+      options:[
+        {id:"yes",label:"Yes",next:"q_wf_cond"},
+        {id:"no",label:"No",next:"r_wf_evapfan",weights:{evap_fan:70}}
+      ]},
+    q_wf_cond:{id:"q_wf_cond",kind:"question",inputType:"yes_no",stage:"Condensing Unit",
+      title:"Is the condensing unit running?",
+      why:"Warm box, clear coil, fans turning — now prove the condensing unit is actually pumping heat out. Check that the compressor and condenser fan both run and that no safety has it locked out.",
+      options:[
+        {id:"yes",label:"Yes",next:"m_wf_suction"},
+        {id:"no",label:"No",next:"r_wf_condensing",weights:{condensing:70}}
+      ]},
+    m_wf_suction:{id:"m_wf_suction",kind:"measurement",stage:"Refrigerant",
+      title:"Measure suction pressure at the condensing unit",unit:"PSIG",
+      why:"For a typical -10°F box on R-404A/R-448A, suction lands roughly in the 8–28 PSIG window depending on box temp. Very low suction means the coil is being starved — leak, undercharge, or restriction. High suction with a warm box means heavy load or a compressor not pumping.",
+      expected:{min:8,max:28},
+      branches:{inRange:"r_wf_infiltration",belowRange:"r_wf_charge",aboveRange:"r_wf_highsuction",default:"r_wf_infiltration"},
+      weights:{belowRange:{lowcharge:55},inRange:{infiltration:40},aboveRange:{condensing:30}}},
+    r_wf_holding:{id:"r_wf_holding",kind:"result",stage:"Result",title:"Box is holding setpoint",
+      diagnosis:"No active fault — the box is at or recovering to setpoint. The complaint was likely a defrost cycle, product loading, or door traffic.",
+      nextStep:"Verify door seals and closer operation, and log the box temperature across a full defrost cycle to confirm.",
+      estimatedTime:"15 min",difficulty:"Easy"},
+    r_wf_defrost:{id:"r_wf_defrost",kind:"result",stage:"Result",title:"Iced coil — defrost system failure",
+      diagnosis:"The evaporator is blocked with ice. In a freezer this is a defrost failure until proven otherwise.",
+      possibleCauses:["Open defrost heater element","Failed defrost termination/limit switch","Failed timer or defrost board","Frozen drain line or failed drain heater flooding the coil"],
+      nextStep:"Melt the coil clear (heat gun or hot water — never chip). Ohm the heaters, verify the termination switch closes cold, force a defrost, and confirm the drain line and its heat tape are open and warm.",
+      recommendedParts:["Defrost heater","Defrost termination switch","Drain line heater","Defrost timer/board"],
+      safety:["Defrost heaters run on line voltage — lock out before testing","Water and ice on the floor is a slip hazard"],
+      commonMistakes:["Clearing the ice and leaving without finding which defrost component failed — it will be iced again in a week"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_wf_evapfan:{id:"r_wf_evapfan",kind:"result",stage:"Result",title:"Evaporator fans not running",
+      diagnosis:"No air across the coil means no cooling delivered, and the coil will ice besides.",
+      possibleCauses:["Failed fan motor (cold-environment failure)","Fan delay/defrost contact stuck open","Broken fan blade","Wiring fault"],
+      nextStep:"Verify the system is in refrigeration mode (not post-defrost fan delay), then check voltage at the motors and ohm the windings.",
+      recommendedParts:["Evaporator fan motor","Fan blade"],
+      safety:["Fans can restart automatically after defrost — disconnect power before reaching in"],
+      commonMistakes:["Condemning a motor during the normal post-defrost fan delay"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_wf_condensing:{id:"r_wf_condensing",kind:"result",stage:"Result",title:"Condensing unit not running",
+      diagnosis:"The condensing unit is down, so no heat is being removed from the box.",
+      possibleCauses:["Tripped breaker / power loss","Failed contactor","Open high- or low-pressure safety","Failed compressor or start components","Oil pressure safety (semi-hermetic)"],
+      nextStep:"Work the condensing unit electrical path: line power, contactor, safeties, start gear, compressor. Note why a safety opened before resetting it.",
+      recommendedParts:["Contactor","Run capacitor","Start relay"],
+      safety:["Discharge caps and lock out line power"],
+      commonMistakes:["Resetting a low-pressure switch repeatedly instead of finding the leak that tripped it"],
+      estimatedTime:"45–60 min",difficulty:"Moderate"},
+    r_wf_charge:{id:"r_wf_charge",kind:"result",stage:"Result",title:"Low suction — undercharge or restriction",
+      diagnosis:"Suction pressure is below the expected window: the coil is being starved by a leak, undercharge, or a restriction.",
+      possibleCauses:["Refrigerant leak (valves, flare joints, coil)","Plugged filter drier or expansion valve","Low charge from a prior top-off"],
+      nextStep:"Check superheat, leak-search the whole circuit including the evaporator, feel across the drier for a temperature drop, and weigh in the charge after repair.",
+      recommendedParts:["Refrigerant","Filter drier","Leak repair materials"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Topping off a freezer every month instead of finding the leak"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_wf_highsuction:{id:"r_wf_highsuction",kind:"result",stage:"Result",title:"High suction — heavy load or compressor not pumping",
+      diagnosis:"Suction is above the expected window with a warm box: either the load is overwhelming the system or the compressor has lost capacity.",
+      possibleCauses:["Compressor valves/rings worn (not pumping)","Hot product recently loaded","Defrost heater stuck on (energized during refrigeration)","Door standing open"],
+      nextStep:"Clamp the defrost heater circuit to confirm it is OFF during refrigeration, check discharge pressure and amps, and run a pump-down test to evaluate the compressor.",
+      recommendedParts:["Compressor","Defrost contactor"],
+      safety:["Lock out before clamping line-voltage heater circuits"],
+      commonMistakes:["Missing a stuck defrost contactor that quietly heats the coil 24/7"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_wf_infiltration:{id:"r_wf_infiltration",kind:"result",stage:"Result",title:"System healthy — check door, gaskets, and load",
+      diagnosis:"Pressures and equipment check out. A box that still creeps warm is usually losing the battle to infiltration or load, not machinery.",
+      possibleCauses:["Torn or flattened door gaskets","Door closer/hinges not sealing","Strip curtains missing","Excess warm product loading","Box undersized for current use"],
+      nextStep:"Do a dollar-bill pull test around the gasket, check the door sweep and closer, and log box temp vs. door traffic.",
+      recommendedParts:["Door gasket","Strip curtains","Door closer"],
+      safety:["Standard PPE"],
+      commonMistakes:["Adding refrigerant to 'fix' a box that just has a bad door gasket"],
+      estimatedTime:"30–45 min",difficulty:"Easy"}
+  }
+},
+{
+  id:"reachin-cooler-generic-no-cooling", equipment:"Reach-In Cooler", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_ric_comp",
+  causes:[
+    {id:"startcomp",label:"Start relay / capacitor / overload"},
+    {id:"controls",label:"Control / thermostat fault"},
+    {id:"condenser",label:"Dirty condenser coil"},
+    {id:"evap_fan",label:"Evaporator fan failure"},
+    {id:"defrost",label:"Frosted coil / defrost fault"},
+    {id:"lowcharge",label:"Low refrigerant charge"}
+  ],
+  nodes:{
+    q_ric_comp:{id:"q_ric_comp",kind:"question",inputType:"yes_no",stage:"Compressor",
+      title:"Is the compressor running?",
+      why:"Reach-ins use small hermetic compressors with a start relay and overload on the shell. First split the problem: compressor running (capacity problem) vs. not running (electrical/start problem).",
+      options:[
+        {id:"yes",label:"Yes, running",next:"q_ric_cond"},
+        {id:"no",label:"No",next:"q_ric_click"}
+      ]},
+    q_ric_click:{id:"q_ric_click",kind:"question",inputType:"yes_no",stage:"Start Components",
+      title:"Does it hum or click, then shut off within a few seconds?",
+      why:"A hum-click-off pattern is the overload tripping because the compressor can't start — classic failed start relay/capacitor or a locked rotor. Dead silence means no power is reaching the compressor at all: control, thermostat, or wiring.",
+      options:[
+        {id:"yes",label:"Yes, hums and clicks off",next:"r_ric_start",weights:{startcomp:65}},
+        {id:"no",label:"No, completely silent",next:"r_ric_controls",weights:{controls:60}}
+      ]},
+    q_ric_cond:{id:"q_ric_cond",kind:"question",inputType:"yes_no",stage:"Condenser",
+      title:"Is the condenser coil clean and the fan running?",
+      why:"Reach-in condensers sit near the floor sucking in dust, flour, and grease. A matted coil is the single most common reach-in failure — head pressure climbs, capacity drops, and the compressor cooks itself.",
+      options:[
+        {id:"yes",label:"Yes, clean with fan running",next:"q_ric_evap"},
+        {id:"no",label:"No, dirty or fan dead",next:"r_ric_cond",weights:{condenser:70}}
+      ]},
+    q_ric_evap:{id:"q_ric_evap",kind:"question",inputType:"yes_no",stage:"Evaporator",
+      title:"Is the evaporator fan running inside the cabinet?",
+      why:"No air across the coil means the cabinet warms even though the system is cold. Listen for the fan with the door switch held (many reach-ins stop the fan when the door opens).",
+      options:[
+        {id:"yes",label:"Yes",next:"q_ric_frost"},
+        {id:"no",label:"No",next:"r_ric_evapfan",weights:{evap_fan:65}}
+      ]},
+    q_ric_frost:{id:"q_ric_frost",kind:"question",inputType:"yes_no",stage:"Evaporator",
+      title:"Is the evaporator coil frosted or iced over?",
+      why:"A frosted coil blocks airflow and points to a defrost problem, a door left ajar loading the coil with moist air, or low charge freezing the coil at low pressure.",
+      options:[
+        {id:"yes",label:"Yes, frosted/iced",next:"r_ric_defrost",weights:{defrost:60}},
+        {id:"no",label:"No, coil is clear",next:"r_ric_charge",weights:{lowcharge:45}}
+      ]},
+    r_ric_start:{id:"r_ric_start",kind:"result",stage:"Result",title:"Start components or locked rotor",
+      diagnosis:"The compressor tries to start, can't, and trips its overload. Test the start gear before condemning the compressor.",
+      possibleCauses:["Failed start relay","Failed start/run capacitor","Weak overload","Locked rotor / seized compressor","Low voltage at the receptacle"],
+      nextStep:"Replace the relay/capacitor/overload as a kit (a 3-in-1 is a valid test), verify line voltage under load, and ohm the compressor windings C-R-S. If it still won't start with new start gear, the compressor is done.",
+      recommendedParts:["Start relay","Start capacitor","Overload protector","3-in-1 hard start (diagnostic)"],
+      safety:["Unplug the unit and discharge capacitors before working at the compressor terminals"],
+      commonMistakes:["Condemning the compressor without first replacing the cheap start components"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_ric_controls:{id:"r_ric_controls",kind:"result",stage:"Result",title:"No power reaching the compressor",
+      diagnosis:"The compressor is silent — the control circuit is not delivering power to it.",
+      possibleCauses:["Cold control/thermostat failed open","Electronic controller fault or in defrost/delay","Unplugged or tripped receptacle/GFCI","Broken wire or failed door switch interlock"],
+      nextStep:"Verify the receptacle is live, then jumper the cold control (or check the controller display/parameters). If the compressor starts on the jumper, replace the control.",
+      recommendedParts:["Cold control / thermostat","Electronic temperature controller"],
+      safety:["Unplug before opening the control housing"],
+      commonMistakes:["Missing a tripped GFCI outlet behind the unit"],
+      estimatedTime:"20–40 min",difficulty:"Easy"},
+    r_ric_cond:{id:"r_ric_cond",kind:"result",stage:"Result",title:"Dirty condenser coil or dead condenser fan",
+      diagnosis:"The condenser can't reject heat — capacity collapses and the compressor runs hot and long.",
+      possibleCauses:["Coil matted with dust/grease","Condenser fan motor failed","Cardboard or product blocking the intake"],
+      nextStep:"Clean the coil with a brush and coil cleaner, confirm the condenser fan spins freely and runs, and educate the owner on monthly coil cleaning.",
+      recommendedParts:["Coil cleaner","Condenser fan motor"],
+      safety:["Unplug before cleaning — fins are sharp, wear gloves"],
+      commonMistakes:["Cleaning only the visible face of the coil and leaving the buried side matted"],
+      estimatedTime:"20–30 min",difficulty:"Easy"},
+    r_ric_evapfan:{id:"r_ric_evapfan",kind:"result",stage:"Result",title:"Evaporator fan not running",
+      diagnosis:"The coil is cold but no air is moving through the cabinet.",
+      possibleCauses:["Failed evaporator fan motor","Door switch stuck (thinks the door is open)","Ice binding the blade","Wiring fault"],
+      nextStep:"Hold the door switch closed and listen. Check voltage at the fan, spin-test the blade, and replace the motor or door switch as found.",
+      recommendedParts:["Evaporator fan motor","Door switch"],
+      safety:["Unplug before reaching past the fan guard"],
+      commonMistakes:["Replacing the fan when a stuck door switch was holding it off"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_ric_defrost:{id:"r_ric_defrost",kind:"result",stage:"Result",title:"Frosted coil — defrost or infiltration fault",
+      diagnosis:"Frost is choking the evaporator. Find why moisture is winning: failed defrost, bad gasket, or low charge.",
+      possibleCauses:["Failed defrost timer/heater (on models with electric defrost)","Torn door gasket loading the coil with moist air","Door left ajar / bad closer","Low charge freezing the coil"],
+      nextStep:"Defrost the coil fully, test defrost components if equipped, and do a gasket inspection. Recheck after a day of normal use.",
+      recommendedParts:["Door gasket","Defrost timer","Defrost heater"],
+      safety:["Lock out before testing line-voltage defrost heaters"],
+      commonMistakes:["Blaming defrost when a torn gasket is feeding the coil humid air all day"],
+      estimatedTime:"45–60 min",difficulty:"Moderate"},
+    r_ric_charge:{id:"r_ric_charge",kind:"result",stage:"Result",title:"Capacity fault — check charge and compressor",
+      diagnosis:"Everything runs and the coil is clear, but the cabinet won't pull down — the refrigerant circuit is the remaining suspect.",
+      possibleCauses:["Low charge (leak in a critically charged system)","Restriction in the cap tube or drier","Compressor not pumping","Inefficient compressor valves"],
+      nextStep:"These systems are critically charged — install a piercing valve only as a last resort, check frost pattern on the evaporator inlet, and weigh the charge if the system is opened.",
+      recommendedParts:["Refrigerant","Filter drier","Compressor"],
+      safety:["Follow EPA recovery rules — even small systems"],
+      commonMistakes:["Guess-charging a critically charged system by pressure alone"],
+      estimatedTime:"60+ min",difficulty:"Advanced"}
+  }
+},
+{
+  id:"reachin-freezer-generic-no-cooling", equipment:"Reach-In Freezer", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_rif_comp",
+  causes:[
+    {id:"startcomp",label:"Start relay / capacitor / overload"},
+    {id:"controls",label:"Control / thermostat fault"},
+    {id:"defrost",label:"Defrost system failure"},
+    {id:"gasket",label:"Door gasket / infiltration"},
+    {id:"condenser",label:"Dirty condenser coil"},
+    {id:"lowcharge",label:"Low refrigerant charge"}
+  ],
+  nodes:{
+    q_rif_comp:{id:"q_rif_comp",kind:"question",inputType:"yes_no",stage:"Compressor",
+      title:"Is the compressor running?",
+      why:"Split the problem first: a running compressor means a capacity, defrost, or airflow issue; a dead compressor means start components or controls.",
+      options:[
+        {id:"yes",label:"Yes, running",next:"q_rif_iced"},
+        {id:"no",label:"No",next:"q_rif_click"}
+      ]},
+    q_rif_click:{id:"q_rif_click",kind:"question",inputType:"yes_no",stage:"Start Components",
+      title:"Does it hum or click, then shut off within a few seconds?",
+      why:"Hum-click-off is the overload protecting a compressor that can't start — usually the start relay or capacitor. Total silence means the control circuit isn't even trying.",
+      options:[
+        {id:"yes",label:"Yes, hums and clicks off",next:"r_rif_start",weights:{startcomp:65}},
+        {id:"no",label:"No, completely silent",next:"r_rif_controls",weights:{controls:60}}
+      ]},
+    q_rif_iced:{id:"q_rif_iced",kind:"question",inputType:"yes_no",stage:"Evaporator",
+      title:"Is the evaporator coil iced over?",
+      why:"Reach-in freezers depend on electric defrost. An iced coil is a defrost failure or a door-seal problem letting humid air in — either way the coil suffocates and the cabinet warms.",
+      options:[
+        {id:"yes",label:"Yes, iced",next:"q_rif_gasket"},
+        {id:"no",label:"No, coil is clear",next:"q_rif_cond"}
+      ]},
+    q_rif_gasket:{id:"q_rif_gasket",kind:"question",inputType:"yes_no",stage:"Cabinet",
+      title:"Is there heavy frost around the door frame or gasket line?",
+      why:"Frost concentrated at the door perimeter means warm moist air is leaking in — a gasket or door alignment problem. Ice spread evenly across the coil with a clean door points at the defrost system itself.",
+      options:[
+        {id:"yes",label:"Yes, frost at the door line",next:"r_rif_gasket",weights:{gasket:60}},
+        {id:"no",label:"No, ice only at the coil",next:"r_rif_defrost",weights:{defrost:60}}
+      ]},
+    q_rif_cond:{id:"q_rif_cond",kind:"question",inputType:"yes_no",stage:"Condenser",
+      title:"Is the condenser coil clean and its fan running?",
+      why:"Same as any reach-in: a matted condenser kills capacity and eventually the compressor. Freezers run higher compression ratios, so they are even less forgiving of a dirty coil.",
+      options:[
+        {id:"yes",label:"Yes, clean",next:"r_rif_charge",weights:{lowcharge:45}},
+        {id:"no",label:"No, dirty or fan dead",next:"r_rif_cond",weights:{condenser:70}}
+      ]},
+    r_rif_start:{id:"r_rif_start",kind:"result",stage:"Result",title:"Start components or locked rotor",
+      diagnosis:"The compressor trips its overload trying to start. Test and replace the start gear before condemning the compressor.",
+      possibleCauses:["Failed start relay","Failed start capacitor","Weak overload protector","Locked rotor","Low supply voltage"],
+      nextStep:"Replace relay/cap/overload as a set, confirm voltage under load, ohm windings C-R-S. Still no start with fresh components = compressor.",
+      recommendedParts:["Start relay","Start capacitor","Overload protector"],
+      safety:["Unplug and discharge capacitors before touching compressor terminals"],
+      commonMistakes:["Skipping the start-gear test and quoting a compressor the unit doesn't need"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_rif_controls:{id:"r_rif_controls",kind:"result",stage:"Result",title:"No power reaching the compressor",
+      diagnosis:"The control circuit is not delivering power to the compressor at all.",
+      possibleCauses:["Cold control failed open","Electronic controller fault or defrost/delay mode","Tripped GFCI or dead receptacle","Broken wiring"],
+      nextStep:"Verify the receptacle, then jumper the cold control or read the controller state. Replace the control if the jumper starts the compressor.",
+      recommendedParts:["Cold control / thermostat","Electronic controller"],
+      safety:["Unplug before opening the control housing"],
+      commonMistakes:["Missing that the controller is simply in its defrost cycle"],
+      estimatedTime:"20–40 min",difficulty:"Easy"},
+    r_rif_gasket:{id:"r_rif_gasket",kind:"result",stage:"Result",title:"Door gasket or alignment — infiltration icing",
+      diagnosis:"Humid air is leaking past the door seal, freezing on everything, and overwhelming the defrost cycle.",
+      possibleCauses:["Torn, flattened, or hardened gasket","Sagging door / worn hinges","Failed frame heater (frost sticking door shut)","Door left ajar by staff"],
+      nextStep:"Replace the gasket (dollar-bill test around the full perimeter), adjust hinges, and verify the frame heater is warm to the touch.",
+      recommendedParts:["Door gasket","Frame/mullion heater","Hinge kit"],
+      safety:["Frame heaters are line voltage — lock out before replacement"],
+      commonMistakes:["Repeatedly melting the ice without fixing the seal that lets the moisture in"],
+      estimatedTime:"30–60 min",difficulty:"Easy"},
+    r_rif_defrost:{id:"r_rif_defrost",kind:"result",stage:"Result",title:"Defrost system failure",
+      diagnosis:"Even coil icing with a good door seal means the electric defrost is not doing its job.",
+      possibleCauses:["Open defrost heater","Failed defrost termination switch","Failed timer or control board","Defrost frequency set too low for usage"],
+      nextStep:"Melt the coil clear, ohm the heater, verify the termination switch closes cold, force a defrost cycle and watch it complete.",
+      recommendedParts:["Defrost heater","Defrost termination switch","Defrost timer"],
+      safety:["Line-voltage heaters — lock out before testing","Never chip ice off the coil"],
+      commonMistakes:["Replacing the timer when the heater element is what's open"],
+      estimatedTime:"45–90 min",difficulty:"Moderate"},
+    r_rif_cond:{id:"r_rif_cond",kind:"result",stage:"Result",title:"Dirty condenser coil or dead condenser fan",
+      diagnosis:"The condenser can't reject heat. Freezer compression ratios make this fatal to capacity fast.",
+      possibleCauses:["Coil matted with dust and grease","Condenser fan failed","Airflow blocked by product or wall placement"],
+      nextStep:"Clean the coil thoroughly, verify fan operation, and confirm clearance around the unit.",
+      recommendedParts:["Coil cleaner","Condenser fan motor"],
+      safety:["Unplug before cleaning; fins are sharp"],
+      commonMistakes:["Treating a chronic dirty-coil unit without setting up a cleaning schedule"],
+      estimatedTime:"20–30 min",difficulty:"Easy"},
+    r_rif_charge:{id:"r_rif_charge",kind:"result",stage:"Result",title:"Capacity fault — check charge and compressor",
+      diagnosis:"Everything runs, coil clear, condenser clean — the sealed system is the remaining suspect.",
+      possibleCauses:["Low charge / leak","Cap tube or drier restriction","Compressor not pumping efficiently"],
+      nextStep:"Check the frost line on the evaporator inlet, evaluate compressor amps vs. nameplate, and open the sealed system only with proper recovery and a new drier.",
+      recommendedParts:["Refrigerant","Filter drier","Compressor"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Piercing the sealed system before eliminating every external cause"],
+      estimatedTime:"60+ min",difficulty:"Advanced"}
+  }
+},
+{
+  id:"package-generic-no-cooling", equipment:"Package Unit", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_pk_call",
+  causes:[
+    {id:"thermostat",label:"Thermostat / no call"},
+    {id:"transformer",label:"Transformer / 24V supply"},
+    {id:"contactor",label:"Failed contactor"},
+    {id:"capacitor",label:"Failed run capacitor"},
+    {id:"condfan",label:"Condenser fan failure"},
+    {id:"lowcharge",label:"Low refrigerant charge"},
+    {id:"airflow",label:"Airflow / filter / blower"}
+  ],
+  nodes:{
+    q_pk_call:{id:"q_pk_call",kind:"question",inputType:"yes_no",stage:"Control Circuit",
+      title:"Is the thermostat calling for cooling?",
+      why:"A package unit has everything in one cabinet, but the call still starts at the stat. Confirm COOL mode with the setpoint below room temp and verify the call reaches the unit before opening panels.",
+      options:[
+        {id:"yes",label:"Yes",next:"m_pk_24v"},
+        {id:"no",label:"No",next:"r_pk_no_call",weights:{thermostat:65}}
+      ]},
+    m_pk_24v:{id:"m_pk_24v",kind:"measurement",stage:"Control Circuit",
+      title:"Measure 24 VAC between Y and C at the unit control board",unit:"VAC",
+      why:"Proves the call and control power arrive at the unit. Low or missing 24V means the transformer, low-voltage fuse, stat wiring, or an open safety — all upstream of the loads.",
+      expected:{nominal:24,tolerancePct:20},
+      branches:{inRange:"q_pk_contactor",belowRange:"r_pk_ctrl",aboveRange:"q_pk_contactor",default:"q_pk_contactor"},
+      weights:{belowRange:{transformer:50},inRange:{transformer:-10}}},
+    q_pk_contactor:{id:"q_pk_contactor",kind:"question",inputType:"yes_no",stage:"Contactor",
+      title:"Is the compressor contactor pulled in?",
+      why:"24V is present, so the contactor should be closed. If it isn't, either the coil is open or a safety (high/low pressure, float) is interrupting the coil circuit.",
+      options:[
+        {id:"yes",label:"Yes, pulled in",next:"q_pk_running"},
+        {id:"no",label:"No",next:"r_pk_contactor",weights:{contactor:45,transformer:10}}
+      ]},
+    q_pk_running:{id:"q_pk_running",kind:"question",inputType:"yes_no",stage:"Loads",
+      title:"With the contactor closed, do the compressor and condenser fan both run?",
+      why:"One answer, three paths: both running moves you to performance checks; a compressor that hums or a dead fan sends you to the capacitor and motors. Watch and listen at startup.",
+      options:[
+        {id:"both",label:"Both run",next:"m_pk_split"},
+        {id:"noc",label:"Compressor runs, fan doesn't",next:"r_pk_condfan",weights:{condfan:60}},
+        {id:"none",label:"Hums or nothing runs",next:"r_pk_cap",weights:{capacitor:55}}
+      ]},
+    m_pk_split:{id:"m_pk_split",kind:"measurement",stage:"Performance",
+      title:"Measure return-to-supply temperature split",unit:"°F",
+      why:"With everything running, the temp split is the fastest health check. 16–24°F is the healthy window. A weak split points at charge; an oversized split points at low airflow (dirty filter/coil, slow blower).",
+      expected:{nominal:20,tolerancePct:20},
+      branches:{inRange:"r_pk_ok",belowRange:"r_pk_charge",aboveRange:"r_pk_airflow",default:"r_pk_ok"},
+      weights:{belowRange:{lowcharge:50},aboveRange:{airflow:50},inRange:{lowcharge:-15,airflow:-15}}},
+    r_pk_no_call:{id:"r_pk_no_call",kind:"result",stage:"Result",title:"Thermostat not calling for cooling",
+      diagnosis:"No cooling call is reaching the unit — the problem is the stat, its settings, or the low-voltage wiring run to the roof/pad.",
+      possibleCauses:["Wrong mode or setpoint","Dead stat batteries","Broken Y or R conductor in the stat cable","Tripped float switch wired into the call"],
+      nextStep:"Set COOL, drop the setpoint, and jumper R to Y at the unit (power off first) to prove the unit runs when told to.",
+      recommendedParts:["Thermostat","Thermostat wire"],
+      safety:["Kill power before jumpering"],
+      commonMistakes:["Condemning the unit when the stat cable was cut by a landscaper"],
+      estimatedTime:"15–30 min",difficulty:"Easy"},
+    r_pk_ctrl:{id:"r_pk_ctrl",kind:"result",stage:"Result",title:"Low or missing 24V control power",
+      diagnosis:"Control power is being lost before the loads — transformer, fuse, or an open safety.",
+      possibleCauses:["Failed control transformer","Blown low-voltage fuse (look for a short first)","Open safety in the 24V string","Chafed stat cable shorting to the cabinet"],
+      nextStep:"Check transformer secondary, inspect the board fuse, and walk the safety string. If the fuse is blown, find the short before replacing it.",
+      recommendedParts:["24V transformer","3A automotive-style fuse"],
+      safety:["Transformer primary is line voltage"],
+      commonMistakes:["Replacing a blown fuse without finding the short that took it out"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_pk_contactor:{id:"r_pk_contactor",kind:"result",stage:"Result",title:"Contactor not energizing",
+      diagnosis:"24V is available but the contactor stays open — the coil circuit is interrupted or the coil is dead.",
+      possibleCauses:["Open high- or low-pressure switch","Failed contactor coil","Broken wire between board and coil","Anti-short-cycle timer still timing"],
+      nextStep:"Measure 24V across the coil. Present = replace the contactor. Absent = trace the coil circuit through the safeties and any lockout timer.",
+      recommendedParts:["Contactor"],
+      safety:["Line power on the load side — discharge caps and lock out"],
+      commonMistakes:["Missing a 5-minute anti-short-cycle delay and condemning good parts"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_pk_condfan:{id:"r_pk_condfan",kind:"result",stage:"Result",title:"Condenser fan not running",
+      diagnosis:"The compressor is pumping but the condenser fan is down — head pressure will spike and trip the high-pressure switch shortly.",
+      possibleCauses:["Failed fan capacitor","Burned fan motor","Seized bearings","Blade jammed by debris"],
+      nextStep:"Test the fan capacitor, spin-test the motor, and ohm the windings. Replace what failed and verify head pressure afterwards.",
+      recommendedParts:["Condenser fan motor","Fan capacitor"],
+      safety:["The blade can start without warning — keep clear until locked out"],
+      commonMistakes:["Replacing the motor when only the capacitor is dead"],
+      estimatedTime:"30–45 min",difficulty:"Moderate"},
+    r_pk_cap:{id:"r_pk_cap",kind:"result",stage:"Result",title:"Run capacitor or compressor fault",
+      diagnosis:"Power reaches the loads but nothing (or only a hum) happens — the run capacitor is the first suspect, then the compressor itself.",
+      possibleCauses:["Failed dual run capacitor","Compressor locked rotor","Open internal overload (hot shell)","Loose spade connections"],
+      nextStep:"Discharge and test the capacitor µF against its rating. If good, ohm the compressor and let a hot shell cool before final judgment.",
+      recommendedParts:["Dual run capacitor","Hard-start kit (diagnostic)","Compressor"],
+      safety:["ALWAYS discharge the capacitor before handling"],
+      commonMistakes:["Condemning the compressor while its internal overload is simply open from heat"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_pk_charge:{id:"r_pk_charge",kind:"result",stage:"Result",title:"Weak temperature split — charge suspect",
+      diagnosis:"Everything runs but the split is weak — the classic signature of low charge or a metering problem.",
+      possibleCauses:["Refrigerant leak / undercharge","Restriction at drier or metering device","Compressor losing capacity"],
+      nextStep:"Connect gauges, read superheat and subcooling together, leak-search, and weigh in the correct charge after repair.",
+      recommendedParts:["Refrigerant","Filter drier"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Topping off without finding the leak"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_pk_airflow:{id:"r_pk_airflow",kind:"result",stage:"Result",title:"High temperature split — airflow restriction",
+      diagnosis:"A split above the window means air is moving too slowly across the coil — the refrigerant side is fine but airflow is choked.",
+      possibleCauses:["Plugged filter","Dirty evaporator coil","Blower on the wrong speed tap or belt slipping","Crushed or blocked duct"],
+      nextStep:"Replace the filter, inspect and clean the indoor coil, check blower belt tension/speed, and verify duct static.",
+      recommendedParts:["Air filters","Blower belt"],
+      safety:["Lock out before reaching into the blower compartment"],
+      commonMistakes:["Adding refrigerant to a system that just needs a filter"],
+      estimatedTime:"30–45 min",difficulty:"Easy"},
+    r_pk_ok:{id:"r_pk_ok",kind:"result",stage:"Result",title:"Unit performing to spec — verify the complaint",
+      diagnosis:"The unit checks out end to end. Recheck the original complaint — it may be a load, zoning, or duct distribution issue rather than the equipment.",
+      possibleCauses:["Building load exceeds capacity on design days","Duct leakage into unconditioned space","Zone dampers or economizer misbehaving","Setpoint expectations"],
+      nextStep:"Log supply/return temps over a full cycle, inspect duct connections at the curb, and confirm the economizer isn't dumping outdoor air.",
+      recommendedParts:["Duct sealing materials"],
+      safety:["Standard PPE"],
+      commonMistakes:["Missing an economizer stuck open flooding the return with hot outdoor air"],
+      estimatedTime:"30–45 min",difficulty:"Easy"}
+  }
+},
+{
+  id:"minisplit-generic-no-cooling", equipment:"Mini Split", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_ms_blink",
+  causes:[
+    {id:"faultcode",label:"Active fault code"},
+    {id:"settings",label:"Remote / settings issue"},
+    {id:"comm",label:"Indoor–outdoor communication"},
+    {id:"board",label:"Inverter / control board"},
+    {id:"airflow",label:"Filters / blower wheel / coil"},
+    {id:"lowcharge",label:"Low refrigerant charge"}
+  ],
+  nodes:{
+    q_ms_blink:{id:"q_ms_blink",kind:"question",inputType:"yes_no",stage:"Fault Codes",
+      title:"Is the indoor unit flashing an LED pattern or showing an error code?",
+      why:"Mini splits are self-diagnosing. A blinking timer/operation LED is the unit telling you exactly what's wrong — count the blinks and look up the code before doing anything else. Guessing past an active code wastes the visit.",
+      options:[
+        {id:"yes",label:"Yes, blinking/code shown",next:"r_ms_code",weights:{faultcode:70}},
+        {id:"no",label:"No, no code",next:"q_ms_settings"}
+      ]},
+    q_ms_settings:{id:"q_ms_settings",kind:"question",inputType:"yes_no",stage:"Settings",
+      title:"Is the remote set to COOL (not DRY/FAN/AUTO) with a low setpoint and good batteries?",
+      why:"The most common mini-split 'no cooling' call is a remote on DRY or FAN mode, or a dead remote. Confirm mode, setpoint, and that the indoor unit beeps when it receives a command.",
+      options:[
+        {id:"yes",label:"Yes, settings confirmed",next:"q_ms_odu"},
+        {id:"no",label:"No / not sure",next:"r_ms_settings",weights:{settings:55}}
+      ]},
+    q_ms_odu:{id:"q_ms_odu",kind:"question",inputType:"yes_no",stage:"Outdoor Unit",
+      title:"Does the outdoor unit start within a few minutes of the call?",
+      why:"Inverter units ramp gently — give it 3–5 minutes. If the outdoor unit never starts, suspect the communication line between sections or the outdoor inverter board. Most brands run power plus a communication signal on the interconnect wiring, and it is polarity/terminal sensitive.",
+      options:[
+        {id:"yes",label:"Yes, outdoor runs",next:"q_ms_airflow"},
+        {id:"no",label:"No, outdoor never starts",next:"r_ms_comm",weights:{comm:45,board:30}}
+      ]},
+    q_ms_airflow:{id:"q_ms_airflow",kind:"question",inputType:"yes_no",stage:"Airflow",
+      title:"Are the filters, blower wheel, and indoor coil clean?",
+      why:"Mini-split blower wheels load up with dust and biofilm that cuts airflow dramatically while the unit sounds normal. Pull the filters and shine a light into the wheel — if the fins are bridged with grime, that's your capacity loss.",
+      options:[
+        {id:"yes",label:"Yes, clean",next:"m_ms_split"},
+        {id:"no",label:"No, dirty",next:"r_ms_airflow",weights:{airflow:60}}
+      ]},
+    m_ms_split:{id:"m_ms_split",kind:"measurement",stage:"Performance",
+      title:"Measure return-to-supply temperature split at the indoor unit",unit:"°F",
+      why:"After 10+ minutes at full call, a healthy mini split delivers roughly a 14–22°F split. A weak split with clean airflow points to charge — and mini splits are notorious for flare-fitting leaks.",
+      expected:{nominal:18,tolerancePct:25},
+      branches:{inRange:"r_ms_ok",belowRange:"r_ms_charge",aboveRange:"r_ms_ok",default:"r_ms_ok"},
+      weights:{belowRange:{lowcharge:55},inRange:{lowcharge:-15}}},
+    r_ms_code:{id:"r_ms_code",kind:"result",stage:"Result",title:"Active fault code — decode it first",
+      diagnosis:"The unit has already diagnosed itself. Count the LED blinks (or read the display code) and match it to the brand's fault table before replacing anything.",
+      possibleCauses:["Communication error between sections","Inverter/IPM overcurrent","Thermistor out of range","Fan motor fault","High/low pressure protection"],
+      nextStep:"Record the code, look it up in the service manual for the exact model, and test the specific circuit it names. Power-cycle only after recording — a cleared code erases your evidence.",
+      recommendedParts:["Per fault code"],
+      safety:["Inverter boards hold high-voltage DC after power-off — wait for bus capacitors to discharge and verify with a meter"],
+      commonMistakes:["Power-cycling the code away and leaving without the root cause — it will be back"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_ms_settings:{id:"r_ms_settings",kind:"result",stage:"Result",title:"Remote or settings issue",
+      diagnosis:"The unit was never asked to cool properly — mode, setpoint, or the remote itself is the problem.",
+      possibleCauses:["Remote in DRY/FAN/AUTO mode","Dead remote batteries or failed IR emitter","Vacation/eco mode limiting capacity","Louver closed or set wrong"],
+      nextStep:"Set COOL with a low setpoint, confirm the indoor unit beeps on each command, and test with the emergency/manual button on the chassis if the remote is suspect.",
+      recommendedParts:["Remote control","Batteries"],
+      safety:["None significant"],
+      commonMistakes:["Running a full diagnostic on a unit that was in FAN mode"],
+      estimatedTime:"10–20 min",difficulty:"Easy"},
+    r_ms_comm:{id:"r_ms_comm",kind:"result",stage:"Result",title:"Communication or outdoor board fault",
+      diagnosis:"The indoor unit is calling but the outdoor section never responds — the interconnect communication or the outdoor inverter board is at fault.",
+      possibleCauses:["Broken/miswired interconnect (terminals must match 1-to-1)","Communication signal degraded by a wire splice","Failed outdoor main/inverter board","Blown board fuse from a surge"],
+      nextStep:"Verify line voltage at the outdoor unit, check the communication signal per the brand's test procedure (many boards have LED heartbeat indicators), and inspect the interconnect for splices or wrong-terminal wiring.",
+      recommendedParts:["Interconnect cable","Outdoor main board","Board fuse"],
+      safety:["Inverter DC bus can exceed 300 VDC and stays charged after disconnect — verify discharge before touching"],
+      commonMistakes:["Assuming the interconnect is fine because the wire 'looks connected' — a single swapped terminal kills communication"],
+      estimatedTime:"45–90 min",difficulty:"Advanced"},
+    r_ms_airflow:{id:"r_ms_airflow",kind:"result",stage:"Result",title:"Dirty filters, blower wheel, or coil",
+      diagnosis:"Airflow is choked. A grime-bridged blower wheel alone can cut capacity 30–40% while the unit sounds normal.",
+      possibleCauses:["Plugged filters","Blower wheel fins bridged with dust/biofilm","Indoor coil matted","Mold buildup restricting the outlet"],
+      nextStep:"Wash the filters, deep-clean the blower wheel and coil (bib kit and coil cleaner), and recheck the temperature split afterwards.",
+      recommendedParts:["Coil cleaner","Cleaning bib kit"],
+      safety:["Protect the electronics from cleaning spray — the control board sits right beside the coil"],
+      commonMistakes:["Cleaning only the filters when the blower wheel holds most of the blockage"],
+      estimatedTime:"45–60 min",difficulty:"Easy"},
+    r_ms_charge:{id:"r_ms_charge",kind:"result",stage:"Result",title:"Low charge — check the flare fittings",
+      diagnosis:"Clean airflow with a weak split points at charge, and on mini splits the flare connections are the usual leak point.",
+      possibleCauses:["Leaking flare fitting (installation torque)","Leak at the service valves","Undercharged from install (long lineset never trimmed)"],
+      nextStep:"Bubble-test every flare and the service valve cores, repair/re-flare as needed, then recover and weigh in the nameplate charge plus lineset allowance.",
+      recommendedParts:["Refrigerant","Flare nuts","Torque wrench (proper flare torque)"],
+      safety:["Follow EPA recovery rules"],
+      commonMistakes:["Retorquing a leaking flare instead of cutting and re-making it"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_ms_ok:{id:"r_ms_ok",kind:"result",stage:"Result",title:"Unit performing — verify sizing and expectations",
+      diagnosis:"The split is healthy. If comfort is still poor, the issue is load, placement, or expectations rather than the machine.",
+      possibleCauses:["Unit undersized for the space or solar load","Poor indoor unit placement / short-cycling airflow","Doors open to unconditioned areas","Setpoint expectations"],
+      nextStep:"Log room temperature over an afternoon, review the load vs. capacity, and check the airflow pattern reaches the occupied zone.",
+      recommendedParts:["None"],
+      safety:["Standard PPE"],
+      commonMistakes:["Chasing a refrigerant problem on a correctly working but undersized unit"],
+      estimatedTime:"20–30 min",difficulty:"Easy"}
+  }
+},
+{
+  id:"airhandler-generic-indoor-fan", equipment:"Air Handler", manufacturer:"Generic", symptom:"Indoor Fan Not Running",
+  rootId:"q_ah_power",
+  causes:[
+    {id:"power",label:"No line power / door switch"},
+    {id:"nocall",label:"No fan call (G / board)"},
+    {id:"capacitor",label:"Failed blower capacitor (PSC)"},
+    {id:"psc_motor",label:"Failed PSC blower motor"},
+    {id:"ecm",label:"Failed ECM module/motor"},
+    {id:"board",label:"Control board / relay fault"}
+  ],
+  nodes:{
+    q_ah_power:{id:"q_ah_power",kind:"question",inputType:"yes_no",stage:"Power",
+      title:"Is line voltage present at the air handler with the door/panel switch engaged?",
+      why:"Air handlers hide behind a blower door safety switch that kills everything when the panel is loose. Confirm line power AND that the door switch is actually depressed — a warped door that doesn't press the switch is a classic no-blower call.",
+      options:[
+        {id:"yes",label:"Yes, powered",next:"q_ah_call"},
+        {id:"no",label:"No",next:"r_ah_power",weights:{power:65}}
+      ]},
+    q_ah_call:{id:"q_ah_call",kind:"question",inputType:"yes_no",stage:"Control Circuit",
+      title:"Is a fan call present (G energized, or fan set to ON at the stat)?",
+      why:"Separate 'motor won't run' from 'motor was never told to run.' Setting the stat fan to ON forces a G call. If the board sees G and does nothing, the board or motor is suspect; if there's no G, the problem is upstream.",
+      options:[
+        {id:"yes",label:"Yes, G call present",next:"q_ah_type"},
+        {id:"no",label:"No G call",next:"r_ah_nocall",weights:{nocall:60}}
+      ]},
+    q_ah_type:{id:"q_ah_type",kind:"question",inputType:"yes_no",stage:"Blower Motor",
+      title:"What type of blower motor is installed?",
+      why:"The diagnostic forks here. A PSC motor uses a run capacitor and speed taps — test the cap first. An ECM/variable-speed motor has its own electronics and needs constant line voltage plus a low-voltage command signal.",
+      options:[
+        {id:"psc",label:"PSC (has a run capacitor)",next:"m_ah_cap"},
+        {id:"ecm",label:"ECM / variable speed",next:"q_ah_ecm"}
+      ]},
+    m_ah_cap:{id:"m_ah_cap",kind:"measurement",stage:"Capacitor",
+      title:"Measure the blower run capacitor",unit:"µF",
+      why:"A weak blower cap is the most common PSC no-run cause. Typical blower caps are 5–15 µF; anything reading more than ~6% under its rating can leave the motor humming or dead. Discharge before testing.",
+      expected:{nominal:10,tolerancePct:8},
+      branches:{inRange:"r_ah_pscmotor",belowRange:"r_ah_cap",aboveRange:"r_ah_pscmotor",default:"r_ah_pscmotor"},
+      weights:{belowRange:{capacitor:70},inRange:{capacitor:-25,psc_motor:40}}},
+    q_ah_ecm:{id:"q_ah_ecm",kind:"question",inputType:"yes_no",stage:"ECM",
+      title:"Does the ECM have constant line voltage at its power plug AND a low-voltage command from the board?",
+      why:"ECMs need two things: 120/240V line power at all times, and a command (24V signals or serial data) telling them to run. Line power present with a valid command and no rotation means the module/motor failed. Missing command means the board.",
+      options:[
+        {id:"yes",label:"Power and command present, no rotation",next:"r_ah_ecm",weights:{ecm:60}},
+        {id:"no",label:"Power or command missing",next:"r_ah_board",weights:{board:55}}
+      ]},
+    r_ah_power:{id:"r_ah_power",kind:"result",stage:"Result",title:"No line power at the air handler",
+      diagnosis:"The unit is dead before the blower even enters the picture — power delivery or the door safety switch is open.",
+      possibleCauses:["Tripped breaker or pulled disconnect","Blower door switch not engaged (warped door)","Blown line fuse at the disconnect","Loose lug or wire nut in the power feed"],
+      nextStep:"Check the breaker and disconnect, verify the door switch is depressed with the panel seated, and measure voltage at the board's line terminals.",
+      recommendedParts:["Door interlock switch","Fuses"],
+      safety:["Verify with a meter, not the switch position — treat everything as live until proven dead"],
+      commonMistakes:["Missing a door switch that the warped panel no longer presses"],
+      estimatedTime:"15–30 min",difficulty:"Easy"},
+    r_ah_nocall:{id:"r_ah_nocall",kind:"result",stage:"Result",title:"No fan call reaching the board",
+      diagnosis:"The blower was never commanded. The stat, the G conductor, or the board's low-voltage side is not delivering the call.",
+      possibleCauses:["Stat fan relay failed","Broken G conductor","Blown low-voltage fuse on the board","Board not processing the call (failed relay logic)"],
+      nextStep:"Jumper R to G at the board (power off first, then restore). Blower runs = fix the stat/wiring. Blower doesn't run on a direct jumper = board or motor path.",
+      recommendedParts:["Thermostat","Low-voltage fuse","Control board"],
+      safety:["Kill power before placing jumpers"],
+      commonMistakes:["Replacing the motor when the G wire broke at a staple"],
+      estimatedTime:"20–40 min",difficulty:"Easy"},
+    r_ah_cap:{id:"r_ah_cap",kind:"result",stage:"Result",title:"Failed blower run capacitor",
+      diagnosis:"The capacitor is below tolerance — the PSC motor can't develop starting torque and either hums or sits dead.",
+      possibleCauses:["Aged capacitor","Heat exposure in the blower compartment"],
+      nextStep:"Replace with the exact µF and equal-or-higher voltage rating, then verify the motor starts, runs quietly, and pulls normal amps.",
+      recommendedParts:["Blower run capacitor"],
+      safety:["Discharge the capacitor before handling"],
+      commonMistakes:["Installing the wrong µF 'because it was on the truck' — speed and amps will be off"],
+      estimatedTime:"15–20 min",difficulty:"Easy"},
+    r_ah_pscmotor:{id:"r_ah_pscmotor",kind:"result",stage:"Result",title:"PSC blower motor failed",
+      diagnosis:"Capacitor checks good but the motor won't run — windings or bearings have failed.",
+      possibleCauses:["Open winding or internal thermal cutout","Seized bearings","Burned speed-tap connection"],
+      nextStep:"Spin-test the wheel by hand (power off), ohm the windings across the speed taps, and check for voltage at the motor leads on a call. Replace the motor if windings are open or bearings drag.",
+      recommendedParts:["PSC blower motor","Blower wheel (inspect for cracks)"],
+      safety:["Support the blower assembly when pulling it — they're heavier than they look"],
+      commonMistakes:["Forcing a replacement motor with a different HP/speed rating and wondering why airflow is wrong"],
+      estimatedTime:"45–90 min",difficulty:"Moderate"},
+    r_ah_ecm:{id:"r_ah_ecm",kind:"result",stage:"Result",title:"ECM module or motor failed",
+      diagnosis:"Line power and a valid command are present but the motor won't rotate — the ECM module or motor section has failed.",
+      possibleCauses:["Failed ECM control module (often separable from the motor)","Failed motor windings","Moisture intrusion into the module"],
+      nextStep:"Many ECMs split into module + motor: test per the brand procedure (or with an ECM tester) and replace only the failed half if available. Check the module's connector for water tracks.",
+      recommendedParts:["ECM module","ECM motor","Aftermarket ECM replacement"],
+      safety:["ECM modules hold a charged DC bus after power-off — wait several minutes and verify before touching pins"],
+      commonMistakes:["Replacing the whole motor when only the bolt-on module failed"],
+      estimatedTime:"45–90 min",difficulty:"Advanced"},
+    r_ah_board:{id:"r_ah_board",kind:"result",stage:"Result",title:"Control board not commanding the blower",
+      diagnosis:"The motor never receives its power or command — the board's relay or logic side has failed.",
+      possibleCauses:["Failed blower relay on the board","Burned board trace","Failed board low-voltage section","Loose molex/harness connection"],
+      nextStep:"Verify 24V in and the call at the board, then check for output at the blower terminals. No output with a valid call = replace the board. Inspect the harness connectors first.",
+      recommendedParts:["Control board","Fan relay"],
+      safety:["Photograph the wiring before pulling any board"],
+      commonMistakes:["Board swap without checking the harness connector that actually failed"],
+      estimatedTime:"45–60 min",difficulty:"Moderate"}
+  }
+},
+{
+  id:"condensing-unit-generic-comp-no-start", equipment:"Condensing Unit", manufacturer:"Generic", symptom:"Compressor Will Not Start",
+  rootId:"q_cu_contactor",
+  causes:[
+    {id:"control",label:"Control circuit / safety open"},
+    {id:"contactor",label:"Failed contactor"},
+    {id:"capacitor",label:"Failed run capacitor"},
+    {id:"overload",label:"Open internal overload"},
+    {id:"windings",label:"Open / shorted windings"},
+    {id:"lockedrotor",label:"Locked rotor"}
+  ],
+  nodes:{
+    q_cu_contactor:{id:"q_cu_contactor",kind:"question",inputType:"yes_no",stage:"Contactor",
+      title:"Is the contactor pulled in when the unit is calling?",
+      why:"The contactor is the gateway: if it's open, the compressor never sees power and the problem is on the 24V control side. If it's closed and the compressor still won't start, the problem is on the load side — capacitor, windings, or the compressor itself.",
+      options:[
+        {id:"yes",label:"Yes, pulled in",next:"q_cu_hum"},
+        {id:"no",label:"No, open",next:"m_cu_coil"}
+      ]},
+    m_cu_coil:{id:"m_cu_coil",kind:"measurement",stage:"Control Circuit",
+      title:"Measure voltage across the contactor coil",unit:"VAC",
+      why:"This single reading splits the control side in half. 24V present with the contactor open means the coil is dead — replace the contactor. Near zero means the call is being interrupted upstream: pressure switches, float switch, defrost/lockout board, or the stat circuit.",
+      expected:{nominal:24,tolerancePct:20},
+      branches:{inRange:"r_cu_contactor",belowRange:"r_cu_ctrl",aboveRange:"r_cu_contactor",default:"r_cu_ctrl"},
+      weights:{inRange:{contactor:65},belowRange:{control:60}}},
+    q_cu_hum:{id:"q_cu_hum",kind:"question",inputType:"yes_no",stage:"Compressor",
+      title:"Does the compressor hum for a few seconds, then click off?",
+      why:"Hum-then-click is the internal overload saving a compressor that can't start — usually a failed run capacitor or a locked rotor. Complete silence with the contactor closed points at an open overload (hot shell) or open windings.",
+      options:[
+        {id:"yes",label:"Yes, hums then clicks off",next:"m_cu_cap"},
+        {id:"no",label:"No, dead silent",next:"q_cu_hot"}
+      ]},
+    m_cu_cap:{id:"m_cu_cap",kind:"measurement",stage:"Capacitor",
+      title:"Measure the compressor run capacitor",unit:"µF",
+      why:"The single most common reason a compressor hums but won't start. Compare against the rated µF printed on the can — more than ~6% low and the motor can't build starting torque. Discharge before testing.",
+      expected:{nominal:45,tolerancePct:6},
+      branches:{inRange:"r_cu_locked",belowRange:"r_cu_cap",aboveRange:"r_cu_locked",default:"r_cu_locked"},
+      weights:{belowRange:{capacitor:70},inRange:{capacitor:-25,lockedrotor:45}}},
+    q_cu_hot:{id:"q_cu_hot",kind:"question",inputType:"yes_no",stage:"Compressor",
+      title:"Is the compressor shell too hot to keep your hand on?",
+      why:"A hot shell with total silence means the internal overload is open and the compressor is protecting itself. It may close again once cool — condemning it while hot is the classic mistake. A cool, silent compressor points at the windings or wiring.",
+      options:[
+        {id:"yes",label:"Yes, very hot",next:"r_cu_overload",weights:{overload:60}},
+        {id:"no",label:"No, cool or warm",next:"r_cu_windings",weights:{windings:55}}
+      ]},
+    r_cu_ctrl:{id:"r_cu_ctrl",kind:"result",stage:"Result",title:"Control circuit open — walk the safety string",
+      diagnosis:"No 24V is reaching the contactor coil. A safety or the control path upstream is holding the call off.",
+      possibleCauses:["Open high-pressure switch (dirty coil, fan fault)","Open low-pressure switch (leak / low charge)","Float switch tripped","Broken Y conductor","Anti-short-cycle lockout timing"],
+      nextStep:"Walk the 24V string device by device to find the open point. When you find an open safety, diagnose WHY it opened — the switch is the messenger, not the fault.",
+      recommendedParts:["Pressure switch","Float switch"],
+      safety:["Never jumper a pressure switch except momentarily for diagnosis"],
+      commonMistakes:["Bypassing a low-pressure switch and running a leaking system until the compressor dies"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_cu_contactor:{id:"r_cu_contactor",kind:"result",stage:"Result",title:"Failed contactor",
+      diagnosis:"24V is present at the coil but the contactor will not close — the coil is open or the mechanism is jammed.",
+      possibleCauses:["Open contactor coil","Mechanism jammed by insects or debris","Burned/welded contact carrier"],
+      nextStep:"Replace the contactor, matching coil voltage and contact rating. Inspect the old contacts — heavy pitting suggests a hard-starting compressor worth investigating.",
+      recommendedParts:["Contactor"],
+      safety:["Line voltage is present on the line side even with the contactor open — lock out"],
+      commonMistakes:["Not checking why the old contacts burned — a failing capacitor arcs contacts fast"],
+      estimatedTime:"20–30 min",difficulty:"Easy"},
+    r_cu_cap:{id:"r_cu_cap",kind:"result",stage:"Result",title:"Failed run capacitor",
+      diagnosis:"The capacitor is below tolerance — the compressor hums against a motor that can't develop start torque, then the overload trips.",
+      possibleCauses:["Aged or swollen capacitor","Heat exposure","Voltage spikes"],
+      nextStep:"Replace with matching µF and equal-or-higher voltage, then confirm the compressor starts and amps settle at or below RLA.",
+      recommendedParts:["Run capacitor","Dual run capacitor"],
+      safety:["ALWAYS discharge before handling"],
+      commonMistakes:["Leaving without verifying run amps — a marginal compressor can kill the new cap"],
+      estimatedTime:"15–20 min",difficulty:"Easy"},
+    r_cu_locked:{id:"r_cu_locked",kind:"result",stage:"Result",title:"Locked rotor — compressor mechanically stuck",
+      diagnosis:"Good capacitor, good power, and it still hums and trips: the rotor is not turning.",
+      possibleCauses:["Seized bearings/scroll","Liquid refrigerant in the shell (flooded start)","Stuck from sitting (seasonal start)"],
+      nextStep:"Try a hard-start kit as a diagnostic — if it starts and runs clean, note it may be nearing end of life. If it still won't turn, the compressor needs replacement.",
+      recommendedParts:["Hard-start kit","Compressor"],
+      safety:["Locked-rotor amps are massive — don't hold the contactor in manually"],
+      commonMistakes:["Repeated start attempts back-to-back, cooking the windings"],
+      estimatedTime:"30–60 min",difficulty:"Advanced"},
+    r_cu_overload:{id:"r_cu_overload",kind:"result",stage:"Result",title:"Internal overload open — let it cool",
+      diagnosis:"The compressor overheated and its internal overload opened. It cannot even hum until the shell cools and the overload resets.",
+      possibleCauses:["Ran hot from a dirty condenser or dead fan","Low charge (no suction cooling)","Repeated short-cycling","Failing capacitor driving high amps"],
+      nextStep:"Cool the shell (shade/water mist speeds it up — can take 1–3 hours), find and fix WHY it overheated, then retest. Windings that ohm open on a hot shell often close when cool.",
+      recommendedParts:["Run capacitor","Condenser fan motor","Coil cleaner"],
+      safety:["Hot shell — burns. Kill the call so it doesn't restart on you."],
+      commonMistakes:["Condemning a compressor whose overload just needed an hour to reset"],
+      estimatedTime:"60+ min",difficulty:"Moderate"},
+    r_cu_windings:{id:"r_cu_windings",kind:"result",stage:"Result",title:"Open or shorted windings",
+      diagnosis:"Cool shell, power present, total silence — the motor windings or their connections have failed.",
+      possibleCauses:["Open winding (C-R or C-S reads OL)","Winding shorted to ground","Burned spade terminal at the compressor","Broken wire in the whip"],
+      nextStep:"Ohm C-R, C-S, R-S and each terminal to ground. R-S should equal C-R + C-S. Any OL or ground reading on a cool compressor condemns it. Check the terminal spades first — a burned connector mimics an open winding.",
+      recommendedParts:["Compressor","Terminal repair kit"],
+      safety:["Never energize a compressor with a suspected terminal fault — terminal venting is a serious burn hazard. Stand to the side."],
+      commonMistakes:["Missing a burned spade connector and replacing a good compressor"],
+      estimatedTime:"45–60 min",difficulty:"Advanced"}
+  }
+},
+{
+  id:"vrf-generic-no-cooling", equipment:"VRF", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_vrf_fault",
+  causes:[
+    {id:"fault",label:"Active fault code"},
+    {id:"comm",label:"Communication bus fault"},
+    {id:"modeconflict",label:"Mode conflict / changeover"},
+    {id:"eev",label:"EEV / branch selector fault"},
+    {id:"odu",label:"Outdoor unit / inverter fault"},
+    {id:"lowcharge",label:"Low refrigerant charge"}
+  ],
+  nodes:{
+    q_vrf_fault:{id:"q_vrf_fault",kind:"question",inputType:"yes_no",stage:"Fault Codes",
+      title:"Is a fault code active at the outdoor unit board or on any indoor controller?",
+      why:"VRF systems are heavily instrumented — the fault code system is your primary diagnostic tool, not a formality. Check the ODU board's 7-segment display or LEDs AND the wired remote controllers; a code tells you the subsystem and often the exact sensor. Never start parts-swapping on a VRF without pulling codes first.",
+      options:[
+        {id:"yes",label:"Yes, code(s) active",next:"r_vrf_code",weights:{fault:70}},
+        {id:"no",label:"No codes",next:"q_vrf_scope"}
+      ]},
+    q_vrf_scope:{id:"q_vrf_scope",kind:"question",inputType:"yes_no",stage:"Scope",
+      title:"How many indoor units are affected?",
+      why:"Scope is everything on VRF. All or most units failing points at the system level — outdoor unit, main communication bus, refrigerant circuit. A single zone failing points at that indoor unit: its EEV, addressing, branch selector port, or its own controller.",
+      options:[
+        {id:"all",label:"All / most zones",next:"q_vrf_odu"},
+        {id:"one",label:"One zone only",next:"q_vrf_zone"}
+      ]},
+    q_vrf_odu:{id:"q_vrf_odu",kind:"question",inputType:"yes_no",stage:"Outdoor Unit",
+      title:"Is the outdoor unit running (inverter compressor ramping up)?",
+      why:"With multiple zones calling, the ODU should ramp its inverter compressor within minutes. A dead ODU with no code points at communication (it never got the calls), a power/phase issue, or a control setting like a forced thermo-off. Listen for the compressor ramp and watch the board LEDs.",
+      options:[
+        {id:"yes",label:"Yes, compressor running",next:"m_vrf_suction"},
+        {id:"no",label:"No, ODU idle",next:"r_vrf_odu",weights:{comm:40,odu:35}}
+      ]},
+    q_vrf_zone:{id:"q_vrf_zone",kind:"question",inputType:"yes_no",stage:"Indoor Unit",
+      title:"At the affected indoor unit, does the coil get cold at all when calling?",
+      why:"This splits the single-zone problem: a coil that stays warm isn't receiving refrigerant — its EEV isn't opening or its branch selector port isn't feeding it. A coil that gets cold but delivers weak air is an airflow problem local to that unit.",
+      options:[
+        {id:"warm",label:"No, coil stays warm",next:"r_vrf_eev",weights:{eev:60}},
+        {id:"cold",label:"Yes, cold coil but weak cooling",next:"r_vrf_idu"}
+      ]},
+    m_vrf_suction:{id:"m_vrf_suction",kind:"measurement",stage:"Refrigerant",
+      title:"Read suction pressure at the ODU service port",unit:"PSIG",
+      why:"With the compressor ramping and multiple zones calling, R-410A suction typically holds ~90–150 PSIG depending on load and target evaporating temp. Persistently low suction means the circuit is starved (charge/leak). Suction in range with warm zones points at distribution and control — changeover mode, EEVs, or a master-unit setting.",
+      expected:{nominal:120,tolerancePct:25},
+      branches:{inRange:"r_vrf_mode",belowRange:"r_vrf_charge",aboveRange:"r_vrf_capacity",default:"r_vrf_mode"},
+      weights:{belowRange:{lowcharge:55},inRange:{modeconflict:40},aboveRange:{odu:30}}},
+    r_vrf_code:{id:"r_vrf_code",kind:"result",stage:"Result",title:"Active fault code — decode before touching anything",
+      diagnosis:"The system has flagged its own fault. VRF codes are specific — communication errors, inverter protection, sensor failures, and refrigerant faults all have distinct codes per brand.",
+      possibleCauses:["Indoor–outdoor communication error","Inverter overcurrent / IPM protection","High-pressure or discharge-temp protection","Thermistor or pressure sensor out of range","Addressing/configuration error after board replacement"],
+      nextStep:"Record every code from the ODU display and each remote controller, look them up in the model's service manual, and follow that code's test procedure. Record the operating data (pressures, EEV pulse counts) from the service tool if available before resetting anything.",
+      recommendedParts:["Per fault code"],
+      safety:["Inverter DC bus holds 300+ VDC after power-off — verify discharge before opening the drive compartment"],
+      commonMistakes:["Cycling power to clear codes and losing the diagnostic history stored on the board"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_vrf_odu:{id:"r_vrf_odu",kind:"result",stage:"Result",title:"Outdoor unit not responding to calls",
+      diagnosis:"Zones are calling but the ODU never ramps — the calls aren't arriving (communication) or the ODU can't respond (power/inverter/control).",
+      possibleCauses:["Communication bus fault — open, shorted, or noise-corrupted daisy chain","Wrong bus polarity or a spur/star topology where a daisy chain is required","Loss of one phase on a three-phase feed","ODU in a protection hold or forced thermo-off","Failed main or inverter board"],
+      nextStep:"Verify three-phase power and phase rotation at the ODU. Check the communication bus wiring end to end — VRF buses generally require a continuous daisy chain with shielded cable grounded at one end. Watch the ODU board's communication LEDs and run the brand's bus check function.",
+      recommendedParts:["Shielded communication cable","Main PCB","Inverter PCB"],
+      safety:["Three-phase power and charged DC bus — lock out and verify discharge"],
+      commonMistakes:["Wiring the comm bus as a star/spur because it was convenient — many systems tolerate it for years, then fail mysteriously"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_vrf_charge:{id:"r_vrf_charge",kind:"result",stage:"Result",title:"System starved — low charge or restriction",
+      diagnosis:"Suction is persistently low with the compressor ramping: the circuit is short of refrigerant or restricted.",
+      possibleCauses:["Leak at brazed joints in the branch piping / headers","Undercharge (trim charge never completed at commissioning)","Restriction at a filter or header","Liquid line service valve not fully open"],
+      nextStep:"Run the brand's charge-check/test-run mode if available. Leak-search the branch joints, headers, and flare connections at every IDU. Correct charge on VRF is calculated from total pipe length and diameter — weigh it, don't guess.",
+      recommendedParts:["Refrigerant","Brazing materials","Nitrogen (pressure test)"],
+      safety:["Large refrigerant volume in occupied space — mind ASHRAE 15/34 concentration limits","Follow EPA recovery rules"],
+      commonMistakes:["Topping off by pressure alone — VRF charge must be calculated from the actual piping"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_vrf_mode:{id:"r_vrf_mode",kind:"result",stage:"Result",title:"Mode conflict or changeover/control issue",
+      diagnosis:"The refrigerant side is healthy but zones still won't cool — the control layer is the suspect: mode priority, changeover settings, or zone configuration.",
+      possibleCauses:["Heat/cool mode conflict — on heat-pump (2-pipe) VRF, all zones follow the master; zones set opposite are ignored","Master indoor unit selection wrong or lost after power cycle","Central controller schedule or mode lock overriding local remotes","Branch selector (heat recovery) box fault on affected zones","Setback/setpoint limits configured in the controller"],
+      nextStep:"Identify which unit is master and what mode the system is in. Check the central controller for locks/schedules. On heat-recovery systems, verify the branch selector unit for the affected zones is switching (listen for its valves).",
+      recommendedParts:["Branch selector valve kit","Remote controller"],
+      safety:["None significant"],
+      commonMistakes:["Chasing refrigerant on a 2-pipe system where someone set one zone to HEAT and locked everyone else out of COOL"],
+      estimatedTime:"30–60 min",difficulty:"Moderate"},
+    r_vrf_capacity:{id:"r_vrf_capacity",kind:"result",stage:"Result",title:"High suction — capacity or compressor issue",
+      diagnosis:"Suction stays high with zones starving: the compressor isn't ramping to meet load or capacity control is misbehaving.",
+      possibleCauses:["Inverter limiting output (thermal derate, dirty condenser)","Compressor worn / not pumping to capacity","Demand-limit or quiet-mode setting capping output","Condenser coils fouled driving protective derate"],
+      nextStep:"Check for derate/protection states in the service data, clean the ODU coils, verify condenser fans ramp, and compare compressor speed (Hz) against expected for the load.",
+      recommendedParts:["Coil cleaner","Compressor","Fan motor"],
+      safety:["Charged DC bus — verify discharge before drive work"],
+      commonMistakes:["Missing an enabled demand-limit function that a controls contractor set months ago"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_vrf_eev:{id:"r_vrf_eev",kind:"result",stage:"Result",title:"Zone starved — EEV or branch selector fault",
+      diagnosis:"The affected zone's coil never receives refrigerant. Its electronic expansion valve isn't opening, or on heat-recovery systems its branch selector port isn't feeding it.",
+      possibleCauses:["EEV stuck closed or stepper coil failed","EEV connector unplugged at the IDU board","Branch selector valve for that port failed","IDU addressing error — valve commands going to the wrong unit","Kinked or blocked branch pipe"],
+      nextStep:"Listen/feel for the EEV initialization rattle on power-up (all EEVs cycle at reset). Check the stepper coil resistance per spec and verify the connector. On heat recovery, swap-test the branch selector port if the design permits.",
+      recommendedParts:["EEV body/coil","Branch selector valve kit","IDU control board"],
+      safety:["Recover the zone/system charge before opening the circuit — follow EPA rules"],
+      commonMistakes:["Replacing the EEV when the units were re-addressed and the commands go to a different zone"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_vrf_idu:{id:"r_vrf_idu",kind:"result",stage:"Result",title:"Cold coil, weak delivery — local airflow fault",
+      diagnosis:"Refrigerant reaches the zone; the indoor unit just isn't moving air across it.",
+      possibleCauses:["Plugged filters or matted coil","Blower motor running slow or failed","Fan speed locked LOW at the controller","Duct/plenum blockage (ducted cassettes)","Iced coil from previous airflow failure"],
+      nextStep:"Clean filters and coil, verify fan speed settings at the remote, confirm the blower ramps through its speeds, and inspect accessible duct runs.",
+      recommendedParts:["Filters","IDU fan motor","Coil cleaner"],
+      safety:["Lock out the IDU before reaching into the blower"],
+      commonMistakes:["Condemning the EEV on a unit whose blower wheel is packed with dust"],
+      estimatedTime:"30–60 min",difficulty:"Easy"}
+  }
+},
+{
+  id:"rack-generic-no-cooling", equipment:"Refrigeration Rack", manufacturer:"Generic", symptom:"No Cooling",
+  rootId:"q_rr_scope",
+  causes:[
+    {id:"casefault",label:"Case valve / controller fault"},
+    {id:"defrostfault",label:"Case defrost fault"},
+    {id:"comp",label:"Compressors down / staging fault"},
+    {id:"condenser",label:"Condenser / head pressure fault"},
+    {id:"lowcharge",label:"Low charge / liquid starvation"},
+    {id:"distribution",label:"Distribution / multiple case faults"}
+  ],
+  nodes:{
+    q_rr_scope:{id:"q_rr_scope",kind:"question",inputType:"yes_no",stage:"Scope",
+      title:"Is one case warm, or multiple cases on the same suction group?",
+      why:"Scope splits a rack call instantly. One warm case with its neighbors holding temp is a case-level fault — its EPR, liquid solenoid, defrost, or controller. Multiple cases on one suction group warming together means the problem is back at the rack: compressors, suction pressure control, or liquid supply.",
+      options:[
+        {id:"one",label:"One case only",next:"q_rr_case"},
+        {id:"multi",label:"Multiple cases on the group",next:"q_rr_comp"}
+      ]},
+    q_rr_case:{id:"q_rr_case",kind:"question",inputType:"yes_no",stage:"Case",
+      title:"Is the affected case mid-defrost, or is its coil iced?",
+      why:"Check the case controller's status first — a case in defrost (or one that just finished) reads warm by design. A coil packed with ice means its defrost has been failing for days: heater, termination sensor, or a schedule problem.",
+      options:[
+        {id:"yes",label:"Yes, in defrost or iced",next:"r_rr_defrost",weights:{defrostfault:60}},
+        {id:"no",label:"No, coil clear and not in defrost",next:"r_rr_case",weights:{casefault:55}}
+      ]},
+    q_rr_comp:{id:"q_rr_comp",kind:"question",inputType:"yes_no",stage:"Rack",
+      title:"Are the compressors on that suction group running?",
+      why:"Walk to the rack and look. Compressors down on a whole group means staging control, safeties (oil pressure, high/low pressure), or a power problem. Compressors running with warm cases means they can't hold suction setpoint — a capacity or supply problem.",
+      options:[
+        {id:"yes",label:"Yes, running",next:"m_rr_suction"},
+        {id:"no",label:"No, group is down",next:"r_rr_comp",weights:{comp:65}}
+      ]},
+    m_rr_suction:{id:"m_rr_suction",kind:"measurement",stage:"Rack",
+      title:"Measure suction pressure for the affected group",unit:"PSIG",
+      why:"Compare against the group's setpoint on the rack controller (typical medium-temp R-448A/449A groups float around 25–45 PSIG; low-temp far lower). Suction pinned LOW with warm cases means the coils are starved of liquid. Suction riding HIGH means the compressors can't keep up with the connected load.",
+      expected:{min:20,max:48},
+      branches:{inRange:"r_rr_distribution",belowRange:"r_rr_starved",aboveRange:"r_rr_capacity",default:"r_rr_distribution"},
+      weights:{belowRange:{lowcharge:50},inRange:{distribution:45},aboveRange:{comp:35,condenser:20}}},
+    r_rr_defrost:{id:"r_rr_defrost",kind:"result",stage:"Result",title:"Case defrost fault",
+      diagnosis:"The case is iced or stuck around its defrost cycle — the defrost system for this case is failing or mis-scheduled.",
+      possibleCauses:["Open defrost heater (electric defrost)","Failed termination sensor — defrost runs to fail-safe time every cycle","Case controller defrost schedule wrong / overlapping","Hot-gas defrost valve not sealing (gas defrost racks)","Drain freezing and re-flooding the coil"],
+      nextStep:"Pull the case controller's defrost history. Ohm the heaters, verify the termination sensor reads correctly, melt the coil fully, and watch one complete defrost cycle terminate on temperature (not time).",
+      recommendedParts:["Defrost heater","Termination sensor/klixon","Drain line heater"],
+      safety:["Line-voltage heaters in a wet environment — lock out before testing"],
+      commonMistakes:["Clearing the ice without checking whether defrost terminates on temp or is timing out every cycle"],
+      estimatedTime:"60+ min",difficulty:"Moderate"},
+    r_rr_case:{id:"r_rr_case",kind:"result",stage:"Result",title:"Case-level valve or controller fault",
+      diagnosis:"One case starving while the group holds setpoint — the case's own refrigerant feed or control is at fault.",
+      possibleCauses:["Liquid line solenoid not opening (coil failed or no signal)","EPR/EEPR stuck or set wrong, holding case suction too high","Case controller fault or wrong setpoint/profile","TXV/EEV on the case coil failed or plugged","Case sensor reading wrong, satisfying the controller falsely"],
+      nextStep:"Verify the liquid solenoid energizes on a call (magnet test), check the EPR/EEPR position and setpoint against the case spec, compare the case sensor against a reference thermometer, and confirm superheat at the case coil.",
+      recommendedParts:["Liquid line solenoid coil/valve","EPR/EEPR valve","Case controller","Case temperature sensor"],
+      safety:["Isolate the case circuit before valve work — the rest of the rack stays live and pressurized"],
+      commonMistakes:["Adjusting the EPR to 'fix' a case whose real problem is a dead solenoid coil"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_rr_comp:{id:"r_rr_comp",kind:"result",stage:"Result",title:"Suction group down — staging or safety trip",
+      diagnosis:"The compressors serving this group are off. Something staged them off or a safety locked them out.",
+      possibleCauses:["Rack controller staging fault or dead output","Oil pressure safety tripped (semi-hermetics)","High-pressure cutout from a condenser fault","Low-pressure lockout from loss of charge","Phase loss / blown compressor fuse or overload"],
+      nextStep:"Read the rack controller's alarm log first — it tells you which safety acted. Check oil levels and oil pressure controls, verify three-phase power to each compressor, and diagnose why the safety tripped before resetting.",
+      recommendedParts:["Oil pressure control","Compressor contactor","Fuses"],
+      safety:["Three-phase rack power — lock out. Oil safety trips often mean oil is somewhere it shouldn't be; don't just reset."],
+      commonMistakes:["Resetting an oil failure control without finding where the oil went — the next trip costs a compressor"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_rr_starved:{id:"r_rr_starved",kind:"result",stage:"Result",title:"Group starved — low charge or liquid supply fault",
+      diagnosis:"Suction is pinned low with cases warm: the coils aren't receiving liquid. The rack is short of refrigerant or the liquid supply is restricted.",
+      possibleCauses:["Low charge — check the receiver level","Leak (racks leak at valves, flanges, and case piping constantly)","Plugged liquid filter-drier (feel for temperature drop across it)","Liquid line solenoid or king valve partially closed","Flash gas from high liquid line temperature / low subcooling"],
+      nextStep:"Check the receiver sight glass level and the liquid line sight glass for flash. Feel across the driers for a temperature drop. Leak-search starting at valve stems, flanges, and recent repair points. Weigh in charge only after the leak is found.",
+      recommendedParts:["Refrigerant","Liquid filter-drier cores","Valve packing kits"],
+      safety:["Large charge system — EPA rules, and mind refrigerant concentration in the machine room (check the leak monitor)"],
+      commonMistakes:["Adding refrigerant weekly instead of committing to the leak search"],
+      estimatedTime:"60+ min",difficulty:"Advanced"},
+    r_rr_distribution:{id:"r_rr_distribution",kind:"result",stage:"Result",title:"Suction at setpoint — distribution or setpoint mismatch",
+      diagnosis:"The rack is holding its suction setpoint but cases are still warm — the setpoint itself or the distribution to the cases is wrong.",
+      possibleCauses:["Suction setpoint raised (floating suction misconfigured or manually bumped)","Multiple case EPRs/EEPRs set or drifted wrong","Case circuits piped/balanced poorly after a remodel","Controller float algorithm satisfied by the wrong sensor"],
+      nextStep:"Compare the group setpoint against design saturation temp for the warmest case class on the circuit. Review the floating-suction settings and recent controller changes, then verify each case's EPR position.",
+      recommendedParts:["EPR/EEPR valves","Controller sensor"],
+      safety:["Standard PPE"],
+      commonMistakes:["Missing that someone raised the suction setpoint to quiet an alarm and never set it back"],
+      estimatedTime:"45–90 min",difficulty:"Moderate"},
+    r_rr_capacity:{id:"r_rr_capacity",kind:"result",stage:"Result",title:"High suction — group can't meet the load",
+      diagnosis:"Suction rides above setpoint with all compressors called: the group is out of capacity or a compressor isn't contributing.",
+      possibleCauses:["A compressor running but not pumping (valves/unloaders failed)","Unloaders stuck unloaded","Condenser fouled or fans down driving high head and low capacity","Excess load — cases added, defrost overlap, or a door left open on a box","Hot-gas bypass or defrost gas leaking into suction"],
+      nextStep:"Check each compressor's amps and discharge temp — a passenger compressor shows low amps and a cool discharge line. Verify condenser fans stage and the coil is clean. Review defrost schedules for overlap.",
+      recommendedParts:["Compressor valve plate","Unloader kit","Condenser fan motor","Coil cleaner"],
+      safety:["Discharge lines run 200°F+ — burns"],
+      commonMistakes:["Adding refrigerant to a high-suction system — it's a capacity problem, not a charge problem"],
+      estimatedTime:"60+ min",difficulty:"Advanced"}
+  }
 }
 ];
 
-var EQUIPMENT=["RTU","Split System","Heat Pump","Walk-In Cooler","Walk-In Freezer","Reach-In Cooler","Reach-In Freezer","Ice Machine","Package Unit","Mini Split","Air Handler","Condensing Unit"];
+var EQUIPMENT=["RTU","Split System","Heat Pump","VRF","Walk-In Cooler","Walk-In Freezer","Reach-In Cooler","Reach-In Freezer","Refrigeration Rack","Ice Machine","Package Unit","Mini Split","Air Handler","Condensing Unit"];
 var MANUFACTURERS=["Carrier","Trane","Lennox","York","Daikin","AAON","Goodman","Mitsubishi","Copeland","Generic"];
 var SYMPTOMS=["No Cooling","No Heating","Breaker Trips","Compressor Will Not Start","Compressor Starts Then Stops","Outdoor Fan Not Running","Indoor Fan Not Running","Frozen Evaporator","High Head Pressure","Low Suction Pressure","High Superheat","Low Superheat","No 24 Volt Control Voltage","Short Cycling","Water Leak","Blowing Warm Air","Poor Airflow","Strange Noise","High Amp Draw","Low Voltage","No Power"];
+
+/* ============================================================
+   MANUFACTURER GUIDES
+   Field-oriented brand notes. Codes and specs vary by model and
+   vintage — always confirm against the unit's own service manual.
+   ============================================================ */
+var GUIDES=[
+{
+  id:"carrier", manufacturer:"Carrier", tagline:"Commercial RTUs & comfort splits",
+  overview:"Carrier's commercial rooftop lines (WeatherMaker, WeatherExpert) and residential/light-commercial splits share control philosophies with Bryant and Payne (same parent, ICP family adjacent). Furnace and fan-coil boards report status through LED flash codes; newer communicating equipment uses the Infinity/Evolution bus. R-410A ('Puron') was Carrier's early flagship refrigerant, with R-454B rolling into new lines.",
+  quickFacts:[
+    {label:"Sister brands",value:"Bryant, Payne (many parts interchange)"},
+    {label:"Controls",value:"LED flash codes; Infinity/Evolution communicating on premium lines"},
+    {label:"Refrigerants",value:"R-410A legacy, R-454B on new equipment"},
+    {label:"Parts note",value:"Board part numbers often cross to Bryant equivalents"}
+  ],
+  faultCodes:[
+    {code:"31",meaning:"Pressure switch fault (furnace)",action:"Check inducer operation, pressure switch hose for condensate, and flue for blockage before replacing the switch."},
+    {code:"33",meaning:"Limit or flame rollout open",action:"Check filter, blower operation, and heat exchanger airflow. Rollout switches are manual-reset — find the cause before resetting."},
+    {code:"13",meaning:"Limit lockout (repeated limit trips)",action:"Airflow problem until proven otherwise: filter, blower wheel, duct static."},
+    {code:"14",meaning:"Ignition lockout (failed 4 ignition attempts)",action:"Clean flame sensor, verify gas pressure and igniter, then check grounding — flame sensing needs a solid earth ground."},
+    {code:"45",meaning:"Control circuitry lockout",action:"Auto-resets after 1 hour; check for flame signal without gas valve energized, or board fault."}
+  ],
+  serviceNotes:[
+    {title:"Flash codes clear on power loss",body:"Most Carrier furnace boards store the last fault and blink it on demand, but a power cycle erases it. Read stored codes (briefly short/press the board's status option per label) BEFORE killing power to the unit."},
+    {title:"Communicating vs. legacy stats",body:"Infinity/Evolution systems use a 4-wire ABCD communicating bus, not conventional R/W/Y/G. Don't drop a conventional stat on a communicating system without checking the equipment supports legacy mode."}
+  ],
+  commonFailures:["Inducer motor bearings on high-runtime furnaces","Pressure switch hoses plugged with condensate","OEM contactors pitting on high-cycle RTUs","Economizer actuators and sensors on WeatherMaker RTUs drifting out of calibration"],
+  tips:["Board LEDs blink the code in tens and ones — e.g. 3 flashes then 1 = code 31.","On RTUs, check the economizer before condemning cooling capacity — a stuck-open damper mimics low charge.","Keep Bryant cross-reference handy; the same board is often cheaper under the other label."]
+},
+{
+  id:"trane", manufacturer:"Trane", tagline:"Precedent/Voyager RTUs & splits",
+  overview:"Trane commercial rooftops (Precedent, Voyager) run ReliaTel microprocessor controls on most modern vintages — diagnostics come from LED status and test-mode stepping rather than blink codes alone. Residential/light splits (with American Standard as the sister brand) are known for Climatuff compressors and all-aluminum Spine Fin condenser coils, which have their own service quirks.",
+  quickFacts:[
+    {label:"Sister brand",value:"American Standard (near-identical equipment)"},
+    {label:"Controls",value:"ReliaTel (RTUs); some legacy electromechanical"},
+    {label:"Compressors",value:"Climatuff recips, scrolls; 3-D scroll on larger tonnage"},
+    {label:"Coils",value:"Spine Fin aluminum condensers on residential"}
+  ],
+  faultCodes:[
+    {code:"ReliaTel: Heat fail LED",meaning:"Ignition/flame proving failure",action:"Use the test-mode pins to step the unit through heat stages; watch igniter and flame current at the ignition module."},
+    {code:"ReliaTel: Cool fail",meaning:"Compressor circuit lockout",action:"Check the CPR/protection module history, pressure switches, and compressor circuit before resetting."},
+    {code:"ReliaTel: Service LED flashing",meaning:"Clogged filter / airflow or fan proving fault",action:"Verify fan proving switch and filter status."},
+    {code:"No LEDs on RTM",meaning:"No 24V or failed transformer/board",action:"Check transformer output and the polarized plug connections."}
+  ],
+  serviceNotes:[
+    {title:"Use test mode, not jumpers",body:"ReliaTel boards have dedicated TEST terminals — shorting them steps the unit through fan, cool 1, cool 2, heat stages with proper delays. Driving loads with jumpers bypasses safeties and gives misleading results."},
+    {title:"Spine Fin coils need low pressure",body:"Spine Fin condensers pack tighter than plate-fin. Clean with garden-hose pressure and a foaming cleaner only — a pressure washer folds the spines and permanently kills capacity."}
+  ],
+  commonFailures:["Fan relay contacts on high-cycle RTUs","Economizer dry-bulb sensors drifting","Compressor internal overloads on Climatuff recips (let them cool — they usually reset)","Voyager inducer assemblies"],
+  tips:["ReliaTel stores no history through power loss — record LED states before cycling power.","American Standard part numbers are usually identical hardware at different pricing.","On Precedents, verify the phase monitor before chasing a 'dead unit' — a rolled phase after utility work locks everything out."]
+},
+{
+  id:"lennox", manufacturer:"Lennox", tagline:"Residential splits & light commercial",
+  overview:"Lennox runs proprietary harder than most brands: SureLight ignition boards, iComfort communicating controls, and model-specific parts that rarely cross to universal replacements cleanly. Furnace boards report two-digit E-codes or LED flashes depending on vintage. Expect to source OEM — Lennox parts channels matter more here than with other brands.",
+  quickFacts:[
+    {label:"Controls",value:"SureLight boards; iComfort communicating on premium"},
+    {label:"Parts",value:"Heavily OEM-specific; universal swaps often disappoint"},
+    {label:"Commercial",value:"Strategos/Energence RTUs with Prodigy controller"},
+    {label:"Known era issue",value:"Early SureLight igniter/board pairings were failure-prone"}
+  ],
+  faultCodes:[
+    {code:"E200-series",meaning:"Communication faults (iComfort)",action:"Check the RSBus wiring, terminations, and that each device is commissioned in the stat's dealer menu."},
+    {code:"E223 / E224",meaning:"Low/high pressure switch fault",action:"Verify charge and condenser airflow; check switch continuity at the harness."},
+    {code:"Watchguard lockouts",meaning:"Board self-protects after repeated faults (e.g., 5 failed ignitions)",action:"Watchguard auto-resets after a timed hold. Find the underlying fault — flame sensor, gas pressure, pressure switch — instead of waiting it out."},
+    {code:"Slow green flash",meaning:"Normal operation (older SureLight)",action:"No action; use the code chart on the door for other patterns."}
+  ],
+  serviceNotes:[
+    {title:"Prodigy walk-through",body:"Energence RTUs with the Prodigy controller expose full status, staging, and fault history on the 2-line display — use the menu instead of meter-probing blind. It will tell you which safety opened and when."},
+    {title:"iComfort commissioning",body:"After replacing any communicating component (board, blower, stat), re-run the commissioning wizard. The system inventories devices at commissioning and a swapped serial number without re-commissioning throws communication alarms."}
+  ],
+  commonFailures:["SureLight hot surface igniters (keep spares)","Blower ECM modules on high-static duct systems","Condensate traps clogging and tripping pressure switches on 90%+ furnaces","iComfort stats after firmware gaps"],
+  tips:["Check the Watchguard history before anything else on a no-heat — it's usually already diagnosed the fault for you.","Lennox coil and igniter dimensions are often non-standard; verify fitment before quoting a universal part.","On 90%+ furnaces, pull and flush the condensate trap at every service — it causes half the pressure-switch codes."]
+},
+{
+  id:"york", manufacturer:"York", tagline:"Johnson Controls RTUs & splits",
+  overview:"York (with Coleman and Luxaire as JCI sister brands) uses Simplicity control boards on light-commercial RTUs — a board family with onboard LED codes and dip-switch configuration. Residential furnaces use flash-code boards similar in philosophy to other majors. Parts interchange across the JCI brand family is excellent, which helps sourcing.",
+  quickFacts:[
+    {label:"Sister brands",value:"Coleman, Luxaire (same hardware, different badge)"},
+    {label:"Controls",value:"Simplicity / Simplicity Lite boards on RTUs"},
+    {label:"Refrigerants",value:"R-410A legacy; R-454B transition underway"},
+    {label:"Parts note",value:"Source 331-series boards by the number on the board, not the unit"}
+  ],
+  faultCodes:[
+    {code:"2 flashes",meaning:"Pressure switch stuck open (furnace)",action:"Check inducer, hose, and flue path; verify switch closes at the rated draft."},
+    {code:"4 flashes",meaning:"Open limit switch",action:"Airflow first: filter, blower, register restrictions. Then verify the limit itself."},
+    {code:"7 flashes",meaning:"Ignition lockout",action:"Clean/verify flame sensor, gas pressure, igniter, and grounding."},
+    {code:"Simplicity: flashing status",meaning:"Board-specific code table",action:"The code legend is printed on the control box cover — the same flash count means different things across board revisions, so read the label."}
+  ],
+  serviceNotes:[
+    {title:"Dip-switch configuration",body:"Simplicity boards carry the unit's configuration (staging, fan profiles, economizer options) in dip switches. When replacing a board, photograph the old switch positions FIRST — a default-configured board runs the unit wrong in subtle ways."},
+    {title:"Anti-cycle timing",body:"Simplicity enforces multi-minute anti-short-cycle and stage-up delays. A 'dead' cooling stage is often just a timer — use the board's test mode to bypass delays legitimately during service."}
+  ],
+  commonFailures:["Condenser fan motors on coastal units (housing corrosion)","Pressure switch hoses hardening and cracking","Board relay contacts on high-cycle applications","Economizer actuators seizing"],
+  tips:["Coleman/Luxaire manuals apply verbatim — use whichever brand's literature you can find for the same series.","Check dip switches against the door legend before condemning odd blower behavior.","On RTU swaps, York curb adapters are widely available — measure the curb before assuming."]
+},
+{
+  id:"daikin", manufacturer:"Daikin", tagline:"VRV/VRF, mini splits & unitary",
+  overview:"Daikin invented VRF (their trademark is VRV) and their fault-code discipline reflects it: two-character codes shown on wired remotes and outdoor boards diagnose most problems before you open a panel. Daikin also owns Goodman/Amana, but the Daikin-badged mini splits and VRV systems are a distinct engineering line. Inverter boards, EEVs, and serial communication are the daily service reality.",
+  quickFacts:[
+    {label:"VRF line",value:"VRV (2-pipe heat pump, 3-pipe heat recovery)"},
+    {label:"Fault codes",value:"Two-character codes (U4, E3, L5…) on remotes/boards"},
+    {label:"Check tool",value:"Wired remote service menu exposes sensors & history"},
+    {label:"Owns",value:"Goodman, Amana (separate product lines)"}
+  ],
+  faultCodes:[
+    {code:"U4",meaning:"Indoor–outdoor transmission failure",action:"Check F1/F2 bus wiring, polarity, daisy-chain topology, and terminating unit. Power-cycle indoor units AFTER outdoor to re-establish comms."},
+    {code:"E3",meaning:"High pressure protection",action:"Condenser airflow/cleanliness, fans, service valves fully open, then non-condensables and overcharge."},
+    {code:"E4",meaning:"Low pressure protection",action:"Leak-search and verify charge; check EEV operation and suction thermistors."},
+    {code:"F3",meaning:"Discharge pipe temperature abnormal",action:"Low charge or EEV starving the compressor — check superheat control and discharge thermistor."},
+    {code:"L5",meaning:"Inverter instantaneous overcurrent",action:"Megohm the compressor, check the inverter output, and inspect for shorted windings before replacing the drive."},
+    {code:"A3",meaning:"Drain level system fault (indoor)",action:"Float switch and condensate pump — clean the drain pan and verify the float moves free."}
+  ],
+  serviceNotes:[
+    {title:"Pull history from the remote",body:"Wired remotes expose a service menu (hold the inspection/test button per manual) with fault history and live sensor data per unit. On VRV, this plus the outdoor board's 7-segment display replaces most gauge work for triage."},
+    {title:"Respect the bus topology",body:"F1/F2 communication requires daisy-chain wiring — no stars, no spurs. It often 'works' miswired until a marginal day. When chasing intermittent U4 codes, audit the physical topology before replacing boards."}
+  ],
+  commonFailures:["EEV stepper coils (rattle test at power-up)","Outdoor fan motor bearings on coastal VRV","Drain pumps and float switches on cassettes (A3 codes)","PCB fuses after lightning/surge events"],
+  tips:["Record codes from EVERY indoor remote before resetting — different zones may hold different pieces of the story.","VRV charge is calculated from pipe lengths — never top off by pressure alone.","After board replacement, field settings must be re-entered; photograph or export them first."]
+},
+{
+  id:"aaon", manufacturer:"AAON", tagline:"Semi-custom commercial rooftops",
+  overview:"AAON builds semi-custom RTUs and air handlers — direct-drive backward-curved plenum fans on VFDs, modulating hot gas reheat for dehumidification, and factory options that make every serial number a little different. Controls are commonly WattMaster/Orion (AAON-branded) or factory-integrated third-party (BACnet) controllers. The serial-number-specific documentation matters more than on any commodity brand.",
+  quickFacts:[
+    {label:"Controls",value:"Orion/WattMaster or spec'd BMS controllers"},
+    {label:"Fans",value:"Direct-drive backward-curved on VFDs (no belts)"},
+    {label:"Signature option",value:"Modulating hot gas reheat dehumidification"},
+    {label:"Docs",value:"Order the wiring diagram by unit serial number"}
+  ],
+  faultCodes:[
+    {code:"Orion alarm list",meaning:"Controller-specific alarm table",action:"Connect the handheld/service tool or check the controller display — alarms name the sensor or safety directly."},
+    {code:"VFD fault (varies by drive)",meaning:"Drive protecting itself or the motor",action:"Read the drive's own fault log (overcurrent, DC bus, ground fault) — the RTU controller often only reports 'fan fail'."},
+    {code:"Phase monitor LED",meaning:"Phase loss/reversal/imbalance",action:"Common after utility work — verify rotation and voltage balance at the unit."},
+    {code:"Compressor module trip",meaning:"CoreSense or protection module lockout",action:"Read the module's flash code at the compressor before resetting."}
+  ],
+  serviceNotes:[
+    {title:"Serial-specific wiring",body:"AAON publishes the exact wiring diagram for each serial number. Before any control diagnosis, download or request that diagram — a generic assumption about factory options (reheat, economizer, powered exhaust) will send you down wrong paths."},
+    {title:"VFD is part of the airflow chain",body:"With no belts to slip, airflow complaints route through the VFD: check commanded vs. actual Hz, drive faults, and any BMS override before touching the fan. Bypass parameters are rarely appropriate — these fans are designed to run on the drive."}
+  ],
+  commonFailures:["Condensate management on high-latent reheat units (traps, pans)","VFD cooling fans and DC bus capacitors with age","Modulating reheat valve actuators","Sensor drift on discharge-air control (drives odd staging)"],
+  tips:["Get the serial number before you roll — pull the wiring diagram and options list from AAON with it.","On dehumidification complaints, verify the hot-gas reheat valve actually modulates — a stuck valve mimics oversized-unit symptoms.","Direct-drive fans mean vibration complaints are balance or bearing — there's no belt to blame."]
+},
+{
+  id:"goodman", manufacturer:"Goodman", tagline:"Value residential splits & furnaces",
+  overview:"Goodman (Daikin-owned, with Amana as the premium badge) dominates the value segment. The equipment is deliberately simple and parts are cheap and everywhere — universal components almost always cross. Furnace boards use standard flash codes; condensers are conventional single-stage contactor/capacitor designs on most of the range, making them ideal textbook diagnostics.",
+  quickFacts:[
+    {label:"Parent / sister",value:"Daikin / Amana (premium badge, similar hardware)"},
+    {label:"Controls",value:"Conventional 24V; flash-code furnace boards"},
+    {label:"Parts",value:"Universal parts cross easily; OEM is inexpensive"},
+    {label:"Warranty",value:"Registration matters — 10-yr parts hinges on it"}
+  ],
+  faultCodes:[
+    {code:"1 flash",meaning:"Ignition failure lockout",action:"Flame sensor cleaning is the #1 fix; then gas pressure and igniter."},
+    {code:"2 flashes",meaning:"Pressure switch stuck closed",action:"Switch welded or hose issue — verify it opens with the inducer off."},
+    {code:"3 flashes",meaning:"Pressure switch stuck open",action:"Inducer, hose, flue blockage, condensate in the switch line."},
+    {code:"4 flashes",meaning:"Open limit switch",action:"Airflow: filter, blower wheel, closed registers. Then the limit itself."},
+    {code:"7 flashes",meaning:"Flame sensed with gas valve off",action:"Leaking gas valve — replace it; this one is a safety issue, not a nuisance."}
+  ],
+  serviceNotes:[
+    {title:"Check the warranty status first",body:"Goodman's long parts warranties (often 10 years registered) change the repair math. Look up the serial before quoting — a compressor or board may be a labor-only job."},
+    {title:"Budget components age faster",body:"Contactors, capacitors, and fan motors are built to price. On any service call, test the capacitor and inspect contactor points even if they're not the complaint — preventive swaps here are cheap and prevent callbacks."}
+  ],
+  commonFailures:["Run capacitors (test at every visit)","Contactor points pitting","Condenser fan motors in hot climates","Flame sensors carboning on furnaces","Evaporator coil leaks on certain 2010s vintages"],
+  tips:["Serial number encodes manufacture date (first two digits year, next two month on most vintages) — useful for warranty and vintage-issue checks.","Amana literature applies to matching Goodman models almost verbatim.","These are the best units to train new techs on — conventional circuits with no proprietary surprises."]
+},
+{
+  id:"mitsubishi", manufacturer:"Mitsubishi", tagline:"Mini splits & CITY MULTI VRF",
+  overview:"Mitsubishi Electric (M- and P-series mini splits, CITY MULTI VRF) is the ductless benchmark. Diagnostics center on indoor-unit LED blink patterns and remote-controller codes for mini splits, and four-digit codes (e.g., 6607) on CITY MULTI. The S1/S2/S3 indoor-outdoor wiring carries power AND communication — it is the single most important thing to understand before putting a meter on one.",
+  quickFacts:[
+    {label:"Lines",value:"M-series (residential), P-series (Mr. Slim), CITY MULTI (VRF)"},
+    {label:"Interconnect",value:"S1/S2 power, S2/S3 communication (DC-offset signal)"},
+    {label:"Codes",value:"LED blinks / remote codes; 4-digit on CITY MULTI"},
+    {label:"Controls ecosystem",value:"kumo cloud, MELANS, PAR wired remotes"}
+  ],
+  faultCodes:[
+    {code:"P8",meaning:"Abnormal pipe temperature",action:"Check charge, thermistor placement, and EEV behavior — often a charge issue reporting itself as a sensor code."},
+    {code:"E6",meaning:"Indoor/outdoor communication error",action:"Check S1/S2/S3 continuity, polarity, and that no one wired a splice or surge strip into the run. Verify 208/230V S1-S2."},
+    {code:"U... (outdoor U-codes)",meaning:"Outdoor unit protection (varies)",action:"Read via outdoor board LEDs or the remote's service mode; the sub-code narrows it to inverter, thermistor, or pressure event."},
+    {code:"6607 (CITY MULTI)",meaning:"No ACK error — a unit isn't answering on M-NET",action:"Address conflict, mis-set rotary switches, or bus wiring fault. Audit addresses against the commissioning sheet."},
+    {code:"5-blink patterns",meaning:"Model-specific LED tables",action:"Count operation/timer LED blinks and use the indoor unit's service manual table — patterns are not universal across series."}
+  ],
+  serviceNotes:[
+    {title:"S3 carries a DC-biased signal",body:"S2-S3 communication rides a DC offset around the AC supply — a standard 'is it 24V?' mindset does not apply. Use the brand's specified test procedure and never megger or hi-pot the comm line; you'll kill boards on both ends."},
+    {title:"Torque the flares",body:"The majority of Mitsubishi charge losses trace to under- or over-torqued flares at install. Use a torque wrench to the spec on the service panel, and re-make (not retighten) any flare that shows dye or bubbles."}
+  ],
+  commonFailures:["Flare joint leaks (installation quality)","Drain/float issues on ceiling cassettes","Blower wheels loading with biofilm (capacity loss with no code)","Outdoor board fuses after surges","kumo/adapter Wi-Fi module dropouts misread as unit faults"],
+  tips:["The wired PAR remote's service menu shows fault history and live sensor data even on units normally run by handheld remote — carry one as a service tool.","Never connect line voltage to S3 — it's an instant board kill on both ends.","On CITY MULTI, keep the address map from commissioning with the unit — half of all comm faults are address bookkeeping."]
+},
+{
+  id:"copeland", manufacturer:"Copeland", tagline:"Compressors: scrolls, recips & Discus",
+  overview:"Copeland isn't a unit brand — it's the compressor inside half the equipment you touch. Knowing the model-number language (ZR/ZP comfort scrolls, ZB/ZS refrigeration scrolls, ZF low-temp with vapor injection, Discus semi-hermetics like 2D/3D/4D) and the standard diagnostic drills (three-phase scroll rotation, terminal safety, megohm standards, CoreSense modules) pays off across every brand of equipment.",
+  quickFacts:[
+    {label:"Scroll families",value:"ZR (R-22/407C era), ZP (R-410A), ZB/ZS/ZF (refrigeration)"},
+    {label:"Semi-hermetics",value:"Discus 2D/3D/4D/6D — rebuildable, oil-pressure protected"},
+    {label:"Protection",value:"CoreSense / Sentronic modules with flash-code diagnostics"},
+    {label:"Oil",value:"POE with HFCs — hygroscopic; keep it sealed and dry"}
+  ],
+  faultCodes:[
+    {code:"CoreSense flash codes",meaning:"Module-detected fault (locked rotor, missing phase, low oil…)",action:"Count the LED flashes at the module and match its label table — the module remembers trip history that the equipment controller never saw."},
+    {code:"Reverse rotation (3-ph scroll)",meaning:"Loud rattle, no pressure differential, hot",action:"Swap any two phases at the contactor — then find out why rotation changed (utility work, replaced contactor)."},
+    {code:"Oil pressure trip (Discus)",meaning:"Net oil pressure below spec for the trip delay",action:"Check oil level, oil pump, and floodback. NEVER just reset — repeated resets destroy bearings."},
+    {code:"Terminal venting risk",meaning:"Damaged/burned terminals",action:"If terminals show damage, do not energize. Replace per procedure — terminal venting under pressure is a severe injury hazard."}
+  ],
+  serviceNotes:[
+    {title:"Megohm standards, not vibes",body:"Condemn windings on data: readings to ground under ~1 MΩ warrant action; under 100 kΩ is a failure. Winding-to-winding ratios should match the published values (R-S ≈ C-R + C-S on singles). A hot compressor reads artificially low — retest cool before condemning."},
+    {title:"Burnout cleanup protocol",body:"After a motor burnout, acid is in the system. Install suction and liquid clean-out driers, run 24–72 hours, test the oil for acid, and swap cores until clean. Skipping this kills the replacement compressor within months."}
+  ],
+  commonFailures:["Flooded starts washing bearings (missing/failed crankcase heaters)","Discus valve plates from liquid slugging","Scroll high-discharge-temp trips from low charge","Start components blamed as 'bad compressors' (test start gear first)"],
+  tips:["Decode the model: ZP54K5E-PFV = ZP (R-410A scroll), 54 = ~54kBTU nominal, PFV = single-phase 208/230. The nameplate tells you application and electrical before you open a book.","Verify the crankcase heater on every compressor replacement — the old one's failure may be why you're there.","On three-phase scrolls after ANY electrical work, confirm rotation by pressures immediately at startup."]
+}
+];
+function findGuide(id){return GUIDES.find(function(g){return g.id===id;});}
 
 function findTree(eq,man,sym){
   return TREES.find(function(t){return t.equipment===eq&&t.manufacturer===man&&t.symptom===sym;})
@@ -860,7 +2065,7 @@ function treeList(){return TREES.map(function(t){return {equipment:t.equipment,m
 /* ============================================================
    STATE + RENDER
    ============================================================ */
-var state={screen:"home",mode:"fast",equipment:"RTU",manufacturer:"Generic",symptom:"No Cooling",session:null,whyOpen:false,viewId:null,resultSaved:false};
+var state={screen:"home",mode:"fast",equipment:"RTU",manufacturer:"Generic",symptom:"No Cooling",session:null,whyOpen:false,viewId:null,guideId:null,resultSaved:false};
 var root=document.getElementById("root");
 function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
@@ -883,7 +2088,7 @@ function homeHTML(){
     {k:"faults",t:"Common Faults",d:"Jump straight to the most frequent failures by equipment.",i:IC.wrench(),action:"open-faults",meta:treeList().length+" loaded"},
     {k:"favorites",t:"Favorites",d:"Your pinned workflows for one-tap access.",i:IC.star(),action:"open-favorites",meta:favN?favN+" pinned":"None pinned"},
     {k:"saved",t:"Saved Diagnostics",d:"Review the job log from past diagnostics.",i:IC.list(),action:"open-saved",meta:savedN?savedN+(savedN===1?" job":" jobs"):"No jobs yet"},
-    {k:"guides",t:"Manufacturer Guides",d:"Brand-specific service notes and bulletins.",i:IC.book(),soon:true},
+    {k:"guides",t:"Manufacturer Guides",d:"Brand-specific service notes and bulletins.",i:IC.book(),action:"open-guides",meta:GUIDES.length+" brands"},
     {k:"about",t:"About",d:"How the diagnostic engine works.",i:IC.info(),action:"open-about"}
   ];
   var cardHTML=cards.map(function(c){
@@ -985,6 +2190,7 @@ function aboutHTML(){
     +'<div class="stat"><div class="stat__num">'+treeList().length+'</div><div class="stat__label">Diagnostic trees</div></div>'
     +'<div class="stat"><div class="stat__num">'+EQUIPMENT.length+'</div><div class="stat__label">Equipment types</div></div>'
     +'<div class="stat"><div class="stat__num">'+SYMPTOMS.length+'</div><div class="stat__label">Symptoms</div></div>'
+    +'<div class="stat"><div class="stat__num">'+GUIDES.length+'</div><div class="stat__label">Brand guides</div></div>'
     +'</div>';
   var prose='<div class="prose">'
     +'<p>HVAC Assist is a guided, decision-tree diagnostic tool — not a chatbot. Every workflow is a structured tree of <strong>questions</strong> and <strong>measurements</strong>. Each answer you give branches to the next most useful check and adjusts the confidence behind each suspected cause, so you reach a diagnosis the way a senior tech would: by elimination, not guesswork.</p>'
@@ -998,6 +2204,36 @@ function aboutHTML(){
     +'<p>Every workflow is pure data. New equipment, brands, and symptoms drop straight into the pickers as trees are added — the green dot on the setup screen marks the combinations that are loaded today.</p>'
     +'</div>';
   return backHome()+pageHead("About","How the diagnostic engine works","")+stats+prose;
+}
+function guideCard(g){
+  return '<button class="card" data-action="view-guide" data-id="'+esc(g.id)+'">'
+    +'<span class="card__icon">'+IC.book()+'</span>'
+    +'<span class="card__title">'+esc(g.manufacturer)+'</span>'
+    +'<span class="card__desc">'+esc(g.tagline)+'</span>'
+    +'<span class="card__meta">'+g.faultCodes.length+' fault codes · '+g.tips.length+' tips</span></button>';
+}
+function guidesHTML(){
+  return backHome()
+    +pageHead("Manufacturer Guides","Brand-specific service notes","Fault-code tables, service notes, and known failure points by brand. Codes vary by model and vintage — always confirm against the unit's own service manual.")
+    +'<div class="cards">'+GUIDES.map(guideCard).join("")+'</div>';
+}
+function guideViewHTML(){
+  var g=findGuide(state.guideId);
+  if(!g)return guidesHTML();
+  var facts='<div class="gfacts">'+g.quickFacts.map(function(f){
+    return '<div class="gfact"><span class="gfact__label">'+esc(f.label)+'</span><span class="gfact__val">'+esc(f.value)+'</span></div>';
+  }).join("")+'</div>';
+  var codes='<div class="gsection"><h3 class="gsection__title">'+IC.bolt(15)+' Fault codes &amp; indicators</h3>'
+    +'<div class="codeTableWrap"><table class="codeTable"><thead><tr><th>Code / signal</th><th>Meaning</th><th>Field action</th></tr></thead><tbody>'
+    +g.faultCodes.map(function(c){return '<tr><td class="codeCell">'+esc(c.code)+'</td><td>'+esc(c.meaning)+'</td><td>'+esc(c.action)+'</td></tr>';}).join("")
+    +'</tbody></table></div></div>';
+  var notes='<div class="gsection"><h3 class="gsection__title">'+IC.info(15)+' Service notes</h3>'
+    +g.serviceNotes.map(function(n){return '<div class="gnote"><h4 class="gnote__title">'+esc(n.title)+'</h4><p class="gnote__body">'+esc(n.body)+'</p></div>';}).join("")+'</div>';
+  return '<button class="linkbtn" data-action="open-guides">'+IC.back(16)+' All guides</button>'
+    +pageHead("Manufacturer Guide",g.manufacturer,g.overview)
+    +facts+codes+notes
+    +'<div class="result__grid" style="margin-top:26px">'+block("Common failure points",ul(g.commonFailures),"parts")+block("Tech tips",ul(g.tips))+'</div>'
+    +'<p class="gdisclaimer">Guide content is general field knowledge for the brand. Codes, specs, and procedures vary by model, series, and vintage — always verify against the service literature for the exact unit in front of you.</p>';
 }
 function chipRow(field,options,value){
   return '<div class="chips">'+options.map(function(o){
@@ -1136,6 +2372,8 @@ function render(){
   else if(state.screen==="favorites")body=favoritesHTML();
   else if(state.screen==="saved")body=savedHTML();
   else if(state.screen==="saved-view")body=savedViewHTML();
+  else if(state.screen==="guides")body=guidesHTML();
+  else if(state.screen==="guide-view")body=guideViewHTML();
   else if(state.screen==="about")body=aboutHTML();
   else body=diagHTML();
   root.innerHTML='<div class="app">'+topbar()+body+'</div>';
@@ -1210,6 +2448,8 @@ document.addEventListener("click",function(ev){
   else if(a==="open-faults"){state.screen="faults";render();}
   else if(a==="open-favorites"){state.screen="favorites";render();}
   else if(a==="open-saved"){state.screen="saved";render();}
+  else if(a==="open-guides"){state.screen="guides";render();}
+  else if(a==="view-guide"){state.guideId=el.getAttribute("data-id");state.screen="guide-view";window.scrollTo(0,0);render();}
   else if(a==="open-about"){state.screen="about";render();}
   else if(a==="launch"){
     state.equipment=el.getAttribute("data-eq");
