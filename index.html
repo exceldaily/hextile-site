@@ -157,6 +157,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .stat__num{font-family:var(--display);font-weight:700;font-size:28px;color:var(--blue);line-height:1.1}
 .stat__label{font-size:12px;color:var(--muted);letter-spacing:.04em;margin-top:2px}
 /* Manufacturer guides */
+.faultGroup{margin-bottom:34px}
+.faultGroup__title{margin:0 0 14px;display:flex;align-items:baseline;gap:10px}
+.faultGroup__count{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
 .gfacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0 6px}
 .gfact{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
 .gfact__label{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);display:block;margin-bottom:5px}
@@ -2591,9 +2594,15 @@ function faultCard(t){
     +'</div></div>';
 }
 function faultsHTML(){
+  var groups=EQUIPMENT.map(function(eq){
+    var trees=treeList().filter(function(t){return t.equipment===eq;});
+    if(!trees.length)return "";
+    return '<div class="faultGroup"><h2 class="h2 faultGroup__title">'+esc(eq)+'<span class="faultGroup__count">'+trees.length+(trees.length===1?" tree":" trees")+'</span></h2>'
+      +'<div class="cards">'+trees.map(faultCard).join("")+'</div></div>';
+  }).join("");
   return backHome()
-    +pageHead("Common Faults","Frequent failures, ready to work","These are the diagnostic trees currently loaded. Pick one to jump straight in.")
-    +'<div class="cards">'+treeList().map(faultCard).join("")+'</div>';
+    +pageHead("Common Faults","Frequent failures, ready to work","These are the diagnostic trees currently loaded, grouped by equipment. Pick one to jump straight in.")
+    +groups;
 }
 function favoritesHTML(){
   var favs=getFavs();
