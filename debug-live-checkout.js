@@ -1,9 +1,9 @@
 /* Drives the LIVE hextile.studio in a real browser and reports exactly what
    happens when the FIXCHORD tape is added to the cart and Checkout is tapped. */
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-core');
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ channel: 'chrome' }); // GitHub runners have Chrome preinstalled
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } }); // phone-sized
   const events = [];
   page.on('dialog', async d => { events.push('DIALOG: ' + d.message()); await d.accept(); });
