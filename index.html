@@ -1,774 +1,1694 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#fff7ec" />
-<title>Going Up! — Elevator Coloring Book</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
-<style>
-:root{
-  --bg:#fff7ec;--panel:#ffffff;--ink:#263042;--soft:#6b7a90;
-  --sun:#ffb703;--sky:#4cc9f0;--grass:#80c920;--berry:#ff5d8f;--grape:#9b5de5;
-  --line:#f1e4cf;--shadow:0 10px 24px rgba(60,40,10,.12);
-  --r:22px;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:
-  radial-gradient(500px 300px at 8% -4%,rgba(76,201,240,.18),transparent 60%),
-  radial-gradient(500px 320px at 96% -6%,rgba(255,183,3,.20),transparent 60%),
-  var(--bg);
-  color:var(--ink);font-family:'Nunito',system-ui,sans-serif;font-size:16.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;cursor:pointer}
-button:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
-.app{max-width:1180px;margin:0 auto;padding:0 16px 70px}
-.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:14px 0 10px;background:linear-gradient(var(--bg) 78%,transparent)}
-.brand{display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;color:inherit;cursor:pointer;text-align:left}
-.brand__mark{width:52px;height:52px;border-radius:16px;background:#fff;border:3px solid var(--ink);display:grid;place-items:center;box-shadow:var(--shadow)}
-.brand__name{font-family:'Baloo 2';font-weight:800;font-size:24px;line-height:1.05;display:block}
-.brand__sub{font-size:12.5px;color:var(--soft);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.topbar__spacer{flex:1}
-.hero{margin:14px 0 6px}
-.hero h1{font-family:'Baloo 2';font-weight:800;font-size:clamp(30px,5.4vw,52px);line-height:1.08;margin:0 0 10px}
-.hero h1 .up{color:var(--berry)}
-.hero p{max-width:64ch;color:var(--soft);font-weight:700;margin:0 0 20px}
-.chips{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 22px}
-.chip{min-height:46px;padding:0 20px;border-radius:999px;border:3px solid var(--ink);background:#fff;font-weight:800;font-size:15px;font-family:'Baloo 2';transition:.15s;box-shadow:0 4px 0 rgba(38,48,66,.9)}
-.chip:hover{transform:translateY(-2px)}
-.chip[data-active='true']{background:var(--sun);}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-.pageCard{background:var(--panel);border:3px solid var(--ink);border-radius:var(--r);padding:14px 14px 16px;text-align:left;color:inherit;display:flex;flex-direction:column;gap:10px;transition:transform .16s;box-shadow:var(--shadow)}
-.pageCard:hover{transform:translateY(-4px) rotate(-.4deg)}
-.pageCard__thumb{background:#fff;border:2px solid var(--line);border-radius:14px;overflow:hidden;aspect-ratio:4/5}
-.pageCard__thumb svg{width:100%;height:100%;display:block}
-.pageCard__title{font-family:'Baloo 2';font-weight:800;font-size:19px;line-height:1.15}
-.pageCard__tag{align-self:flex-start;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:999px;border:2px solid var(--ink)}
-.pageCard__tag[data-cat='Elevators']{background:#dff3ff}
-.pageCard__tag[data-cat='Escalators']{background:#ffe8f1}
-.pageCard__tag[data-cat='Excavators']{background:#fff3c9}
-.colorbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 14px}
-.btn{min-height:48px;padding:0 20px;border-radius:16px;border:3px solid var(--ink);background:#fff;font-weight:800;font-size:15px;font-family:'Baloo 2';display:inline-flex;align-items:center;gap:9px;transition:.15s;box-shadow:0 4px 0 rgba(38,48,66,.9)}
-.btn:hover{transform:translateY(-2px)}
-.btn--sun{background:var(--sun)}
-.btn--sky{background:#c9ecff}
-.btn--danger:hover{background:#ffe1e1}
-.colorbar__title{font-family:'Baloo 2';font-weight:800;font-size:clamp(20px,3vw,30px);margin:0 6px 0 0}
-.studio{display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:start}
-@media(max-width:760px){.studio{grid-template-columns:1fr}}
-.palette{position:sticky;top:86px;display:grid;grid-template-columns:repeat(2,1fr);gap:9px;background:#fff;border:3px solid var(--ink);border-radius:18px;padding:10px;box-shadow:var(--shadow)}
-@media(max-width:760px){.palette{position:static;grid-template-columns:repeat(10,1fr)}}
-.swatch{width:100%;aspect-ratio:1;border-radius:12px;border:3px solid rgba(38,48,66,.35);padding:0;transition:.12s}
-.swatch:hover{transform:scale(1.1)}
-.swatch[data-active='true']{border-color:var(--ink);transform:scale(1.12);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--ink)}
-.swatch--eraser{background:repeating-linear-gradient(45deg,#fff 0 6px,#eef2f7 6px 12px)}
-.stage{background:#fff;border:3px solid var(--ink);border-radius:var(--r);padding:10px;box-shadow:var(--shadow)}
-.stage svg{width:100%;height:auto;display:block;touch-action:manipulation}
-.stage .c{cursor:pointer}
-.stage .c:hover{filter:brightness(.96)}
-.stage text,.stage .t{pointer-events:none;user-select:none;font-family:'Baloo 2','Nunito',sans-serif}
-.hint{margin-top:12px;color:var(--soft);font-weight:700;font-size:14px;text-align:center}
-.footer{margin-top:46px;text-align:center;color:var(--soft);font-weight:700;font-size:14px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--ink);color:#fff;border-radius:14px;padding:12px 22px;font-weight:800;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;opacity:0;z-index:100;white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-@media print{
-  body{background:#fff}
-  body *{visibility:hidden}
-  .stage,.stage *{visibility:visible}
-  .stage{position:absolute;inset:0;border:0;box-shadow:none;padding:0}
-  .stage svg{width:100%;max-height:100vh}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hextile | Premium Acoustic Panels | UK &amp; Australia</title>
+    <meta name="description" content="Premium acoustic panels for home studios, gaming rooms & offices. Free delivery to Ireland. Soundsbay, TONOR & FIXCHORD — professional soundproofing made easy.">
+    <meta name="keywords" content="acoustic wall panels Ireland, studio sound treatment, hexagon acoustic tiles, PET acoustic felt, DIY soundproofing, home studio Dublin, acoustic panels Ireland">
+    <meta property="og:title" content="Hextile | Premium Acoustic Panels — Ireland">
+    <meta property="og:description" content="Professional acoustic treatment for home studios, gaming rooms and offices. Free delivery to UK &amp; Australia. Shop now.">
+    <meta property="og:type" content="website">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1000892273"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-1000892273');
+    </script>
+    <!-- Event snippet for Website traffic conversion page -->
+    <script>
+      gtag('event', 'conversion', {'send_to': 'AW-1000892273/Xz7vCOqW3r0DEPHOod0D'});
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #f5f5f5;
+            scroll-behavior: smooth;
+        }
+        .bg-hero { background: radial-gradient(ellipse at top center, #111827 0%, #0a0a0a 65%); }
+        .hex-clip { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
+
+        .bento-card {
+            background: rgba(18,18,18,0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.35s ease;
+        }
+        .bento-card:hover {
+            border-color: rgba(59,130,246,0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 24px 48px rgba(59,130,246,0.07);
+        }
+
+        .nav-sticky {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,10,0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .gradient-text {
+            background: linear-gradient(130deg,#60a5fa 0%,#a855f7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg,#2563eb 0%,#7c3aed 100%);
+            color: white; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;
+            border-radius: 9999px; transition: all 0.3s ease;
+            box-shadow: 0 0 32px rgba(37,99,235,0.28); text-align: center; cursor: pointer;
+        }
+        .btn-primary:hover { box-shadow: 0 0 56px rgba(37,99,235,0.48); transform: translateY(-2px); opacity: 0.92; }
+        .btn-secondary {
+            display: inline-block; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12); color: white; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em; border-radius: 9999px;
+            transition: all 0.3s ease; text-align: center;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+        .trust-badge {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 0.6rem 1rem;
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: #9ca3af;
+        }
+
+        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn.active { background: white; color: black; border-color: white; }
+
+        .stat-cell {
+            text-align: center; padding: 2.25rem 1.5rem;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-cell:last-child { border-right: none; }
+
+        .glow-line {
+            width: 56px; height: 3px;
+            background: linear-gradient(90deg,#2563eb,#7c3aed);
+            border-radius: 999px; margin-bottom: 1.25rem;
+        }
+
+        /* ---- IMAGE SLIDER ---- */
+        .slider-wrap {
+            position: relative; overflow: hidden;
+            border-radius: 20px 20px 0 0;
+            aspect-ratio: 4/3; background: #111;
+            flex-shrink: 0;
+        }
+        .slider-track {
+            display: flex; height: 100%;
+            transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .slide {
+            min-width: 100%; height: 100%;
+            position: relative; overflow: hidden;
+        }
+        .slide img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+        }
+        .slide-placeholder {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px;
+        }
+        .slider-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.15);
+            color: white; width: 34px; height: 34px; border-radius: 50%;
+            cursor: pointer; z-index: 10; display: flex; align-items: center;
+            justify-content: center; font-size: 14px; transition: all 0.2s;
+        }
+        .slider-btn:hover { background: rgba(37,99,235,0.8); border-color: rgba(37,99,235,0.6); }
+        .slider-btn.prev { left: 10px; }
+        .slider-btn.next { right: 10px; }
+        .slider-dots {
+            position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 6px; z-index: 10;
+        }
+        .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.25s;
+        }
+        .dot.active { background: white; width: 20px; border-radius: 4px; }
+
+        /* ---- PRODUCT CARD ---- */
+        .product-card {
+            background: rgba(15,15,15,0.9);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 24px; overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex; flex-direction: column;
+        }
+        .product-card:hover {
+            border-color: rgba(59,130,246,0.3);
+            box-shadow: 0 20px 60px rgba(59,130,246,0.1);
+        }
+        .product-details { padding: 1.75rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+        .product-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(37,99,235,0.12); border: 1px solid rgba(37,99,235,0.25);
+            color: #60a5fa; font-size: 9px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.15em;
+            padding: 3px 10px; border-radius: 999px;
+        }
+        .product-title { font-size: 1.1rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.3; }
+        .product-desc { color: #9ca3af; font-size: 0.82rem; line-height: 1.65; }
+
+        /* Color & Pack selectors */
+        .variant-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #6b7280; margin-bottom: 8px; }
+        .color-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+        .color-swatch {
+            width: 28px; height: 28px; border-radius: 50%;
+            cursor: pointer; border: 2px solid transparent;
+            transition: all 0.2s; position: relative;
+        }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.selected { border-color: #60a5fa !important; box-shadow: 0 0 0 3px rgba(96,165,250,0.25); }
+        .color-swatch .swatch-tooltip {
+            display: none; position: absolute; bottom: 110%; left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1);
+            color: #f5f5f5; font-size: 9px; font-weight: 700;
+            white-space: nowrap; padding: 3px 7px; border-radius: 4px;
+        }
+        .color-swatch:hover .swatch-tooltip { display: block; }
+
+        .pack-options { display: flex; gap: 8px; flex-wrap: wrap; }
+        .pack-btn {
+            padding: 6px 14px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: #d1d5db; font-size: 11px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .pack-btn:hover:not(:disabled) { border-color: rgba(59,130,246,0.5); color: #60a5fa; }
+        .pack-btn.selected { background: rgba(37,99,235,0.2); border-color: #3b82f6; color: #93c5fd; }
+        .pack-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+        .size-btn {
+            padding: 6px 14px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: #d1d5db; font-size: 11px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .size-btn:hover { border-color: rgba(59,130,246,0.5); color: #60a5fa; }
+        .size-btn.selected { background: rgba(37,99,235,0.2); border-color: #3b82f6; color: #93c5fd; }
+
+        .price-display {
+            display: flex; align-items: baseline; gap: 10px;
+            padding: 1rem 0; border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .price-amount { font-size: 2rem; font-weight: 900; color: #f5f5f5; letter-spacing: -0.03em; }
+        .price-shipping { font-size: 10px; color: #4ade80; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+        .feature-list li { font-size: 0.8rem; color: #9ca3af; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
+        .feature-list li span.check { color: #60a5fa; flex-shrink: 0; margin-top: 1px; font-weight: 900; font-size: 0.85rem; }
+
+        /* FAQ */
+        .faq-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .faq-question {
+            width: 100%; text-align: left; padding: 1.25rem 0;
+            font-weight: 700; font-size: 0.9rem;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; color: #e5e7eb; background: none; border: none; gap: 1rem;
+        }
+        .faq-question:hover { color: #fff; }
+        .faq-answer { display: none; padding-bottom: 1.25rem; color: #9ca3af; font-size: 0.875rem; line-height: 1.75; }
+        .faq-answer.open { display: block; }
+        .faq-icon {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 15px; color: #60a5fa;
+            transition: transform 0.25s ease, background 0.25s ease;
+        }
+        .faq-question.open .faq-icon { background: rgba(59,130,246,0.25); transform: rotate(45deg); }
+
+        /* Scroll reveal */
+        .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .step-num {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(135deg,rgba(37,99,235,0.15),rgba(124,58,237,0.15));
+            border: 1px solid rgba(59,130,246,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.125rem; font-weight: 900; color: #60a5fa; flex-shrink: 0;
+        }
+
+        #mobile-menu { display: none; }
+        #mobile-menu.open { display: block; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: all 0.3s; }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none; border-color: rgba(59,130,246,0.6) !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+        }
+
+        /* Currency switcher */
+        .currency-switcher { display: flex; align-items: center; gap: 2px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 3px; }
+        .curr-btn { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; border: none; background: transparent; color: #6b7280; transition: all 0.2s; white-space: nowrap; }
+        .curr-btn.active { background: rgba(37,99,235,0.9); color: white; box-shadow: 0 2px 8px rgba(37,99,235,0.4); }
+
+        /* Ireland badge */
+        .ireland-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(22,163,74,0.1); border: 1px solid rgba(22,163,74,0.25);
+            border-radius: 6px; padding: 3px 8px;
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: #4ade80; white-space: nowrap;
+        }
+
+        /* P5 tape sizes table */
+        .tape-size-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 1rem 1.25rem;
+            cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .tape-size-card:hover { border-color: rgba(59,130,246,0.4); }
+        .tape-size-card.selected { background: rgba(37,99,235,0.12); border-color: #3b82f6; }
+        .tape-size-card .size-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #d1d5db; }
+        .tape-size-card .size-price { font-size: 1.3rem; font-weight: 900; color: #f5f5f5; margin-top: 4px; }
+
+        /* Spec row */
+        .spec-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-label { color: #6b7280; }
+        .spec-value { font-weight: 700; color: #e5e7eb; }
+
+        /* ---- CART ---- */
+        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .cart-overlay.open { opacity: 1; pointer-events: all; }
+        .cart-drawer { position: fixed; right: 0; top: 0; height: 100%; width: 100%; max-width: 430px; background: #111; border-left: 1px solid rgba(255,255,255,0.08); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94); }
+        .cart-drawer.open { transform: translateX(0); }
+        .cart-btn-wrap { position: relative; display: inline-flex; }
+        .cart-badge { position: absolute; top: -7px; right: -7px; background: #2563eb; color: white; font-size: 9px; font-weight: 900; border-radius: 999px; min-width: 18px; height: 18px; display: none; align-items: center; justify-content: center; padding: 0 4px; pointer-events: none; }
+        .cart-badge.visible { display: flex; }
+        .cart-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .qty-btn { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; transition: all 0.2s; line-height: 1; }
+        .qty-btn:hover { background: rgba(37,99,235,0.35); border-color: rgba(37,99,235,0.5); }
+        .btn-add-cart { display: block; width: 100%; background: linear-gradient(135deg,#2563eb 0%,#7c3aed 100%); color: white; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 32px rgba(37,99,235,0.28); text-align: center; }
+        .btn-add-cart:hover { box-shadow: 0 0 56px rgba(37,99,235,0.48); transform: translateY(-2px); opacity: 0.92; }
+    </style>
 </head>
-<body>
-<div id="root"></div>
-<div class="toast" id="toast"></div>
+<body class="antialiased min-h-screen">
+
+<!-- ================================================================
+     STICKY NAVIGATION
+================================================================ -->
+<nav class="nav-sticky">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-3.5 flex justify-between items-center">
+        <a href="#" class="flex items-center gap-2">
+            <img src="logo.png" alt="Hextile" style="height:36px;width:auto;object-fit:contain;mix-blend-mode:screen">
+            <img src="https://flagcdn.com/w20/gb.png" alt="UK" style="width:20px;height:auto;border-radius:2px;opacity:0.85">
+        </a>
+
+        <div class="hidden md:flex items-center">
+            <div class="currency-switcher">
+                <button class="curr-btn active" data-currency="GBP" onclick="setCurrency('GBP')">£ GBP</button>
+                <button class="curr-btn" data-currency="AUD" onclick="setCurrency('AUD')">A$ AUD</button>
+            </div>
+        </div>
+
+        <div class="hidden md:flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <a href="#faq" class="hover:text-white transition">FAQ</a>
+            <a href="#contact" class="hover:text-white transition">Contact</a>
+            <div class="cart-btn-wrap">
+                <button onclick="openCart()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(59,130,246,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Cart
+                </button>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </div>
+            <a href="#shop" class="btn-primary px-5 py-2.5 text-[10px]">Shop Now</a>
+        </div>
+
+        <div class="md:hidden flex items-center gap-3">
+        <div class="cart-btn-wrap">
+            <button onclick="openCart()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:9px;padding:7px 10px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            </button>
+            <span class="cart-badge" id="cart-badge-mobile">0</span>
+        </div>
+        <button class="hamburger flex flex-col gap-1.5 p-2" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden border-t border-white/5 px-6 py-4 space-y-1">
+        <div class="currency-switcher mb-3" style="display:inline-flex">
+            <button class="curr-btn active" data-currency="GBP" onclick="setCurrency('GBP')">£ GBP</button>
+            <button class="curr-btn" data-currency="AUD" onclick="setCurrency('AUD')">A$ AUD</button>
+        </div>
+        <a href="#shop" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Shop All</a>
+        <a href="#faq" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">FAQ</a>
+        <a href="#contact" onclick="toggleMenu()" class="block py-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Contact</a>
+        <a href="#shop" onclick="toggleMenu()" class="btn-primary block px-6 py-3.5 text-[10px] mt-3">Shop Now</a>
+    </div>
+</nav>
+
+<!-- ================================================================
+     HERO
+================================================================ -->
+<header class="bg-hero overflow-hidden relative">
+    <div class="absolute top-16 left-8 w-36 h-36 bg-blue-600/4 hex-clip pointer-events-none"></div>
+    <div class="absolute top-32 right-12 w-52 h-52 bg-purple-600/4 hex-clip pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-6 md:px-8 py-14 md:py-20 text-center">
+        <div class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2 mb-7">
+            <img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px">
+            <img src="https://flagcdn.com/w20/au.png" alt="Australia" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px">
+            <span class="text-green-400 text-[10px] font-bold uppercase tracking-widest">Free Delivery to UK &amp; Australia — Order Today</span>
+        </div>
+
+        <h1 class="text-5xl sm:text-7xl md:text-[5.5rem] font-black mb-5 tracking-tight uppercase leading-none italic">
+            Your Room.<br>
+            <span class="gradient-text">Acoustically Perfect.</span>
+        </h1>
+
+        <p class="text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-3 font-medium leading-relaxed">
+            Professional acoustic panels for home studios, gaming rooms &amp; offices.
+        </p>
+        <p class="text-sm text-blue-400 font-bold mb-4">Soundsbay · TONOR · FIXCHORD — Curated &amp; Delivered to UK &amp; Australia.</p>
+        <p class="text-sm text-gray-500 mb-10">Install in under 30 minutes. No tools. No drilling. No damage.</p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+            <a href="#shop" class="btn-primary px-10 py-4 text-sm">Shop Products &rarr;</a>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-2.5 mb-12">
+            <div class="trust-badge"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:4px"> UK &amp; Australia</div>
+            <div class="trust-badge"><span class="text-green-400">&#127807;</span> 100% Safe &amp; Non-Toxic</div>
+            <div class="trust-badge"><span class="text-orange-400">&#128293;</span> Fire-Rated Materials</div>
+            <div class="trust-badge"><span class="text-purple-400">&#11088;</span> 0.9 NRC Rating</div>
+            <div class="trust-badge"><span class="text-yellow-400">&#128230;</span> 5 Premium Products</div>
+        </div>
+
+        <div class="relative w-full aspect-video rounded-[36px] overflow-hidden border border-white/8 shadow-2xl shadow-blue-900/20">
+            <img src="hextile-launch.jpg" alt="Professional acoustic panels installed on studio wall" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+            <div class="absolute bottom-6 left-6 flex gap-3 flex-wrap">
+                <div class="trust-badge" style="background:rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.2)">0.9 NRC Rated</div>
+                <div class="trust-badge" style="background:rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.2)">Self-Adhesive Install</div>
+                <div class="trust-badge" style="background:rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.2)">5 Products In Stock</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ================================================================
+     STATS BAR
+================================================================ -->
+<section class="border-y border-white/5 bg-black/50">
+    <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4">
+        <div class="stat-cell reveal">
+            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">0.9</div>
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">NRC Rating</div>
+        </div>
+        <div class="stat-cell reveal" style="transition-delay:.1s">
+            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">5</div>
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Products</div>
+        </div>
+        <div class="stat-cell reveal" style="transition-delay:.2s">
+            <div class="text-4xl md:text-5xl font-black gradient-text mb-1" style="display:flex;justify-content:center;gap:6px;align-items:center"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="width:32px;height:auto;border-radius:2px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="width:32px;height:auto;border-radius:2px"></div>
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">UK &amp; Australia</div>
+        </div>
+        <div class="stat-cell reveal" style="transition-delay:.3s">
+            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">&lt;30<span class="text-xl">min</span></div>
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Install Time</div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================
+     SHOP — 5 PRODUCTS
+================================================================ -->
+<section id="shop" class="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24">
+    <div class="text-center mb-14 reveal">
+        <div class="glow-line mx-auto"></div>
+        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Curated Range</p>
+        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Shop the Collection</h2>
+        <p class="text-gray-400 text-sm mt-3 max-w-xl mx-auto">All prices include VAT. Free delivery to all Irish addresses. Select your colour and pack size below.</p>
+    </div>
+
+    <!-- Products 1 & 2 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        <!-- ============ PRODUCT 1: SOUNDSBAY HONEYCOMB ============ -->
+        <div class="product-card reveal">
+            <!-- Image Slider -->
+            <div class="slider-wrap">
+                <div class="slider-track" id="p1-track">
+                    <!-- Slide 1 — replace src with: p1-img1.jpg -->
+                    <div class="slide">
+                        <img src="p1-img1.jpg" alt="Soundsbay Honeycomb Acoustic Panels" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#2a2a2a,#111)">
+                            <div class="w-16 h-16 bg-gray-700 hex-clip opacity-40"></div>
+                            <span style="font-size:10px;color:#555;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p1-img1.jpg here</span>
+                        </div>
+                    </div>
+                    <!-- Slide 2 — replace src with: p1-img2.jpg -->
+                    <div class="slide">
+                        <img src="p1-img2.jpg" alt="Soundsbay Honeycomb Panels — Detail" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#2a2a2a,#111)">
+                            <div class="w-16 h-16 bg-gray-700 hex-clip opacity-40"></div>
+                            <span style="font-size:10px;color:#555;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p1-img2.jpg here</span>
+                        </div>
+                    </div>
+                    <!-- Slide 3 — replace src with: p1-img3.jpg -->
+                    <div class="slide">
+                        <img src="p1-img3.jpg" alt="Soundsbay Honeycomb Panels — Installed" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#2a2a2a,#111)">
+                            <div class="w-16 h-16 bg-gray-700 hex-clip opacity-40"></div>
+                            <span style="font-size:10px;color:#555;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p1-img3.jpg here</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn prev" onclick="prevSlide('p1')">&#8249;</button>
+                <button class="slider-btn next" onclick="nextSlide('p1')">&#8250;</button>
+                <div class="slider-dots" id="p1-dots">
+                    <div class="dot active" onclick="goToSlide('p1',0)"></div>
+                    <div class="dot" onclick="goToSlide('p1',1)"></div>
+                    <div class="dot" onclick="goToSlide('p1',2)"></div>
+                </div>
+            </div>
+            <!-- Product Details -->
+            <div class="product-details">
+                <div><span class="product-badge">Soundsbay</span></div>
+                <h3 class="product-title">Honeycomb Sound Proofing Panels</h3>
+                <p class="product-desc">High-density PET honeycomb panels that trap sound vibrations at the source. Strong self-adhesive backing sticks in minutes — no tools, no damage, no excuses.</p>
+
+                <!-- Color -->
+                <div>
+                    <div class="variant-label">Colour: <span id="p1-color-label" style="color:#d1d5db">Black</span></div>
+                    <div class="color-swatches" id="p1-colors">
+                        <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p1','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.4)" onclick="selectColor('p1','White',this)"><div class="swatch-tooltip">White</div></div>
+                        <div class="color-swatch" data-color="Grey" style="background:#9ca3af;border-color:#6b7280" onclick="selectColor('p1','Grey',this)"><div class="swatch-tooltip">Grey</div></div>
+                    </div>
+                </div>
+
+                <!-- Pack -->
+                <div>
+                    <div class="variant-label">Pack Size:</div>
+                    <div class="pack-options" id="p1-packs">
+                        <button class="pack-btn selected" data-pack="12 Pack" onclick="selectPack('p1','12 Pack',this)">12 Pack</button>
+                        <button class="pack-btn" data-pack="18 Pack" onclick="selectPack('p1','18 Pack',this)">18 Pack</button>
+                    </div>
+                </div>
+
+                <!-- Price -->
+                <div class="price-display">
+                    <span class="price-amount" id="p1-price">&#8364;64.28</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
+                </div>
+
+                <!-- Features -->
+                <ul class="feature-list">
+                    <li><span class="check">&#10003;</span> High-density PET fiber, 0.9 NRC sound absorption</li>
+                    <li><span class="check">&#10003;</span> Self-adhesive backing — peel, stick, done in minutes</li>
+                    <li><span class="check">&#10003;</span> Non-toxic, wear-resistant &amp; safe for kids and pets</li>
+                </ul>
+
+                <button onclick="addCurrentToCart('p1')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
+            </div>
+        </div>
+
+        <!-- ============ PRODUCT 2: TONOR HEXAGON ============ -->
+        <div class="product-card reveal" style="transition-delay:.1s">
+            <div class="slider-wrap">
+                <div class="slider-track" id="p2-track">
+                    <div class="slide">
+                        <img src="p2-img1.jpg" alt="TONOR Hexagon Acoustic Panels" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#1a2a4a,#0f1020)">
+                            <div class="w-16 h-16 bg-blue-900 hex-clip opacity-40"></div>
+                            <span style="font-size:10px;color:#333;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p2-img1.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p2-img2.jpg" alt="TONOR Hexagon Panels — Close Up" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#1a2a4a,#0f1020)">
+                            <div class="w-16 h-16 bg-blue-900 hex-clip opacity-40"></div>
+                            <span style="font-size:10px;color:#333;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p2-img2.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p2-img3.jpg" alt="TONOR Hexagon Panels — Room Setup" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#1a2a4a,#0f1020)">
+                            <div class="w-16 h-16 bg-blue-900 hex-clip opacity-40"></div>
+                            <span style="font-size:10px;color:#333;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p2-img3.jpg here</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn prev" onclick="prevSlide('p2')">&#8249;</button>
+                <button class="slider-btn next" onclick="nextSlide('p2')">&#8250;</button>
+                <div class="slider-dots" id="p2-dots">
+                    <div class="dot active" onclick="goToSlide('p2',0)"></div>
+                    <div class="dot" onclick="goToSlide('p2',1)"></div>
+                    <div class="dot" onclick="goToSlide('p2',2)"></div>
+                </div>
+            </div>
+            <div class="product-details">
+                <div><span class="product-badge">TONOR</span></div>
+                <h3 class="product-title">Hexagon Acoustic Wall Panels</h3>
+                <p class="product-desc">Ultra-dense 1700g/m² hex panels with a 0.9 NRC rating. Absorbs 90% of noise frequencies and eliminates 97% of echo — studio performance, home price.</p>
+
+                <div>
+                    <div class="variant-label">Colour: <span id="p2-color-label" style="color:#d1d5db">White</span></div>
+                    <div class="color-swatches" id="p2-colors">
+                        <div class="color-swatch selected" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.5)" onclick="selectColor('p2','White',this)"><div class="swatch-tooltip">White</div></div>
+                        <div class="color-swatch" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p2','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="Blue" style="background:#1d4ed8;border-color:#1d4ed8" onclick="selectColor('p2','Blue',this)"><div class="swatch-tooltip">Blue</div></div>
+                        <div class="color-swatch" data-color="Orange" style="background:#ea580c;border-color:#ea580c" onclick="selectColor('p2','Orange',this)"><div class="swatch-tooltip">Orange</div></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="variant-label">Pack Size:</div>
+                    <div class="pack-options" id="p2-packs">
+                        <button class="pack-btn" data-pack="12 Pack" onclick="selectPack('p2','12 Pack',this)">12 Pack</button>
+                        <button class="pack-btn selected" data-pack="18 Pack" onclick="selectPack('p2','18 Pack',this)">18 Pack</button>
+                        <button class="pack-btn" data-pack="36 Pack" onclick="selectPack('p2','36 Pack',this)">36 Pack</button>
+                        <button class="pack-btn" data-pack="48 Pack" onclick="selectPack('p2','48 Pack',this)">48 Pack</button>
+                    </div>
+                </div>
+
+                <div class="price-display">
+                    <span class="price-amount" id="p2-price">&#8364;59.98</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
+                </div>
+
+                <ul class="feature-list">
+                    <li><span class="check">&#10003;</span> 1700g/m² density — 97% echo reduction, 0.9 NRC</li>
+                    <li><span class="check">&#10003;</span> Hexagonal honeycomb — stylish &amp; functional design</li>
+                    <li><span class="check">&#10003;</span> Waterproof, odorless 100% polyester fiber</li>
+                </ul>
+
+                <button onclick="addCurrentToCart('p2')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products 3 & 4 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        <!-- ============ PRODUCT 3: TONOR WOOD PANELS ============ -->
+        <div class="product-card reveal">
+            <div class="slider-wrap">
+                <div class="slider-track" id="p3-track">
+                    <div class="slide">
+                        <img src="p3-img1.jpg" alt="TONOR Wooden Acoustic Wall Panels" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#3d2810,#1a0f05)">
+                            <span style="font-size:10px;color:#6b4c1f;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p3-img1.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p3-img2.jpg" alt="TONOR Wood Panels — Texture" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#3d2810,#1a0f05)">
+                            <span style="font-size:10px;color:#6b4c1f;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p3-img2.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p3-img3.jpg" alt="TONOR Wood Panels — Room Install" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#3d2810,#1a0f05)">
+                            <span style="font-size:10px;color:#6b4c1f;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p3-img3.jpg here</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn prev" onclick="prevSlide('p3')">&#8249;</button>
+                <button class="slider-btn next" onclick="nextSlide('p3')">&#8250;</button>
+                <div class="slider-dots" id="p3-dots">
+                    <div class="dot active" onclick="goToSlide('p3',0)"></div>
+                    <div class="dot" onclick="goToSlide('p3',1)"></div>
+                    <div class="dot" onclick="goToSlide('p3',2)"></div>
+                </div>
+            </div>
+            <div class="product-details">
+                <div><span class="product-badge" style="background:rgba(180,83,9,0.15);border-color:rgba(180,83,9,0.35);color:#fbbf24">TONOR</span></div>
+                <h3 class="product-title">3D Wooden Acoustic Wall Panels</h3>
+                <p class="product-desc">Premium wood slat panels that double as luxury wall décor. MDF core, real wood veneer finish — reduce echo while transforming your space into something beautiful.</p>
+
+                <div>
+                    <div class="variant-label">Colour: <span id="p3-color-label" style="color:#d1d5db">Black</span></div>
+                    <div class="color-swatches" id="p3-colors">
+                        <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p3','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="Burlywood" style="background:#deb887;border-color:#c9a96e" onclick="selectColor('p3','Burlywood',this)"><div class="swatch-tooltip">Burlywood</div></div>
+                        <div class="color-swatch" data-color="Dark Walnut" style="background:#3d1f0a;border-color:#6b3a1f" onclick="selectColor('p3','Dark Walnut',this)"><div class="swatch-tooltip">Dark Walnut</div></div>
+                        <div class="color-swatch" data-color="Grey" style="background:#6b7280;border-color:#9ca3af" onclick="selectColor('p3','Grey',this)"><div class="swatch-tooltip">Grey</div></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="variant-label">Pack Size: <span id="p3-pack-note" style="color:#f59e0b;font-size:9px"></span></div>
+                    <div class="pack-options" id="p3-packs">
+                        <button class="pack-btn" data-pack="2 Pack" onclick="selectPack('p3','2 Pack',this)">2 Pack — 1.44m²</button>
+                        <button class="pack-btn selected" data-pack="4 Pack" onclick="selectPack('p3','4 Pack',this)">4 Pack — 2.88m²</button>
+                    </div>
+                </div>
+
+                <div class="price-display">
+                    <span class="price-amount" id="p3-price">&#8364;199.98</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
+                </div>
+
+                <ul class="feature-list">
+                    <li><span class="check">&#10003;</span> PET + MDF + real wood veneer — premium build quality</li>
+                    <li><span class="check">&#10003;</span> Includes all hardware (screws + self-adhesive option)</li>
+                    <li><span class="check">&#10003;</span> Cuttable to any length for a perfect custom fit</li>
+                </ul>
+
+                <button onclick="addCurrentToCart('p3')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
+            </div>
+        </div>
+
+        <!-- ============ PRODUCT 4: TONOR SQUARE PANELS ============ -->
+        <div class="product-card reveal" style="transition-delay:.1s">
+            <div class="slider-wrap">
+                <div class="slider-track" id="p4-track">
+                    <div class="slide">
+                        <img src="p4-img1.jpg" alt="TONOR Square Acoustic Panels" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#1a1a2a,#0a0a0a)">
+                            <span style="font-size:10px;color:#444;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p4-img1.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p4-img2.jpg" alt="TONOR Square Panels — Detail" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#1a1a2a,#0a0a0a)">
+                            <span style="font-size:10px;color:#444;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p4-img2.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p4-img3.jpg" alt="TONOR Square Panels — Wall Install" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#1a1a2a,#0a0a0a)">
+                            <span style="font-size:10px;color:#444;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p4-img3.jpg here</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn prev" onclick="prevSlide('p4')">&#8249;</button>
+                <button class="slider-btn next" onclick="nextSlide('p4')">&#8250;</button>
+                <div class="slider-dots" id="p4-dots">
+                    <div class="dot active" onclick="goToSlide('p4',0)"></div>
+                    <div class="dot" onclick="goToSlide('p4',1)"></div>
+                    <div class="dot" onclick="goToSlide('p4',2)"></div>
+                </div>
+            </div>
+            <div class="product-details">
+                <div><span class="product-badge">TONOR</span></div>
+                <h3 class="product-title">Square Sound Proofing Panels</h3>
+                <p class="product-desc">Clean 30×30cm square tiles with a smooth, minimalist finish. Maximum coverage, minimum fuss — 0.9 NRC performance that blends into any interior.</p>
+
+                <div>
+                    <div class="variant-label">Colour: <span id="p4-color-label" style="color:#d1d5db">Black</span></div>
+                    <div class="color-swatches" id="p4-colors">
+                        <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p4','Black',this)"><div class="swatch-tooltip">Black</div></div>
+                        <div class="color-swatch" data-color="Grey" style="background:#9ca3af;border-color:#6b7280" onclick="selectColor('p4','Grey',this)"><div class="swatch-tooltip">Grey</div></div>
+                        <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.5)" onclick="selectColor('p4','White',this)"><div class="swatch-tooltip">White</div></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="variant-label">Pack Size: <span id="p4-pack-note" style="color:#f59e0b;font-size:9px"></span></div>
+                    <div class="pack-options" id="p4-packs">
+                        <button class="pack-btn selected" data-pack="12 Pack" onclick="selectPack('p4','12 Pack',this)">12 Pack</button>
+                        <button class="pack-btn" data-pack="18 Pack" onclick="selectPack('p4','18 Pack',this)">18 Pack</button>
+                        <button class="pack-btn" data-pack="36 Pack" onclick="selectPack('p4','36 Pack',this)">36 Pack</button>
+                        <button class="pack-btn" data-pack="48 Pack" onclick="selectPack('p4','48 Pack',this)">48 Pack</button>
+                    </div>
+                </div>
+
+                <div class="price-display">
+                    <span class="price-amount" id="p4-price">&#8364;49.98</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
+                </div>
+
+                <ul class="feature-list">
+                    <li><span class="check">&#10003;</span> 0.9 NRC — 90% noise, 97% echo absorption</li>
+                    <li><span class="check">&#10003;</span> Peel &amp; stick — no glue, no tools, no damage</li>
+                    <li><span class="check">&#10003;</span> Anti-slip, corrosion &amp; fade resistant</li>
+                </ul>
+
+                <button onclick="addCurrentToCart('p4')" class="btn-add-cart py-3.5 text-sm mt-auto">Add to Cart &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ PRODUCT 5: FIXCHORD TAPE (FULL WIDTH) ============ -->
+    <div class="product-card reveal">
+        <div class="flex flex-col md:flex-row">
+            <!-- Slider -->
+            <div class="slider-wrap md:w-2/5 md:rounded-none md:rounded-l-3xl" style="border-radius:24px 24px 0 0">
+                <div class="slider-track" id="p5-track">
+                    <div class="slide">
+                        <img src="p5-img1.jpg" alt="FIXCHORD 3M Double Sided Mounting Tape" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#111,#000)">
+                            <span style="font-size:10px;color:#444;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p5-img1.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p5-img2.jpg" alt="FIXCHORD Tape — Application" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#111,#000)">
+                            <span style="font-size:10px;color:#444;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p5-img2.jpg here</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <img src="p5-img3.jpg" alt="FIXCHORD Tape — Close Up" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:block">
+                        <div class="slide-placeholder" style="display:none;background:linear-gradient(135deg,#111,#000)">
+                            <span style="font-size:10px;color:#444;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">Drop p5-img3.jpg here</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn prev" onclick="prevSlide('p5')">&#8249;</button>
+                <button class="slider-btn next" onclick="nextSlide('p5')">&#8250;</button>
+                <div class="slider-dots" id="p5-dots">
+                    <div class="dot active" onclick="goToSlide('p5',0)"></div>
+                    <div class="dot" onclick="goToSlide('p5',1)"></div>
+                    <div class="dot" onclick="goToSlide('p5',2)"></div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="product-details md:flex-1">
+                <div class="flex items-center justify-between">
+                    <span class="product-badge" style="background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.3);color:#c4b5fd">FIXCHORD</span>
+                    <span style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:0.1em">3M Industrial Adhesive</span>
+                </div>
+                <h3 class="product-title">Heavy Duty Double Sided Mounting Tape</h3>
+                <p class="product-desc">Industrial-strength 3M VHB foam core tape for mounting acoustic panels, LED strip lights, car trim &amp; more. UV-resistant, waterproof, and bonds in seconds without drilling.</p>
+
+                <!-- Size Selector -->
+                <div>
+                    <div class="variant-label mb-3">Select Width (All 4.7m / 15.4ft length):</div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="p5-sizes">
+                        <div class="tape-size-card selected" onclick="selectTapeSize('1cm', 7.19, this)">
+                            <div class="size-label">Width: 1cm</div>
+                            <div class="size-price">&#8364;7.19</div>
+                            <div style="font-size:9px;color:#4ade80;font-weight:700;margin-top:4px;text-transform:uppercase">Best Value</div>
+                        </div>
+                        <div class="tape-size-card" onclick="selectTapeSize('1.5cm', 9.59, this)">
+                            <div class="size-label">Width: 1.5cm</div>
+                            <div class="size-price">&#8364;9.59</div>
+                        </div>
+                        <div class="tape-size-card" onclick="selectTapeSize('2cm', 11.75, this)">
+                            <div class="size-label">Width: 2cm</div>
+                            <div class="size-price">&#8364;11.75</div>
+                        </div>
+                        <div class="tape-size-card" onclick="selectTapeSize('2.5cm', 14.39, this)">
+                            <div class="size-label">Width: 2.5cm</div>
+                            <div class="size-price">&#8364;14.39</div>
+                            <div style="font-size:9px;color:#f59e0b;font-weight:700;margin-top:4px;text-transform:uppercase">Max Hold</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-display">
+                    <span class="price-amount" id="p5-price">&#8364;11.98</span>
+                    <span class="price-shipping" id="shipping-label-x"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <ul class="feature-list">
+                        <li><span class="check">&#10003;</span> 3M industrial VHB foam core</li>
+                        <li><span class="check">&#10003;</span> UV, moisture &amp; chemical resistant</li>
+                    </ul>
+                    <ul class="feature-list">
+                        <li><span class="check">&#10003;</span> Works on LED strips, panels &amp; car trim</li>
+                        <li><span class="check">&#10003;</span> No drilling — bonds in seconds</li>
+                    </ul>
+                    <ul class="feature-list">
+                        <li><span class="check">&#10003;</span> Indoor &amp; outdoor suitable</li>
+                        <li><span class="check">&#10003;</span> Closed-cell foam for uneven surfaces</li>
+                    </ul>
+                </div>
+
+                <button onclick="addCurrentTapeToCart()" class="btn-add-cart py-3.5 text-sm">Add to Cart &rarr;</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================
+     VIDEO SHOWCASE
+================================================================ -->
+<section id="video" class="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24">
+    <div class="text-center mb-10 reveal">
+        <div class="glow-line mx-auto"></div>
+        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Studio In Action</p>
+        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Hear the difference.</h2>
+    </div>
+    <div class="relative group rounded-[36px] overflow-hidden border border-white/5 reveal">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/92 via-black/20 to-transparent z-10 flex flex-col justify-end p-5 md:p-14">
+            <div class="max-w-xl">
+                <div class="text-[10px] text-blue-400 uppercase tracking-widest font-bold mb-2">Professional Treatment</div>
+                <h2 class="text-xl md:text-5xl font-black uppercase italic leading-none mb-3">Studio Grade<br>Performance.</h2>
+                <p class="hidden md:block text-gray-400 text-sm leading-relaxed mb-6">Our curated range of acoustic panels eliminates echo, reduces noise, and transforms any room into a professional recording environment — all with peel-and-stick ease.</p>
+                <a href="#shop" class="btn-primary px-6 py-3 text-xs md:px-8 md:py-3.5 md:text-sm">Shop Now &rarr;</a>
+            </div>
+        </div>
+        <img src="video-banner.png" alt="Professional acoustic panels studio setup" class="w-full aspect-video object-cover brightness-50 group-hover:brightness-60 transition-all duration-700">
+    </div>
+</section>
+
+<!-- ================================================================
+     HOW IT WORKS
+================================================================ -->
+<section class="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24">
+    <div class="text-center mb-14 reveal">
+        <div class="glow-line mx-auto"></div>
+        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Simple Process</p>
+        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">From Order to Studio<br>in 3 Steps.</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bento-card flex flex-col gap-5 reveal">
+            <div class="step-num">1</div>
+            <div>
+                <h3 class="text-lg font-black uppercase italic mb-2">Pick Your Product</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Browse our curated range above. Select your colour and pack size — the price updates instantly so you always know exactly what you're paying.</p>
+            </div>
+        </div>
+        <div class="bento-card flex flex-col gap-5 reveal" style="transition-delay:.1s">
+            <div class="step-num">2</div>
+            <div>
+                <h3 class="text-lg font-black uppercase italic mb-2">Place Your Order</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Hit "Order Now" to send us your details via email. We'll confirm your order, arrange payment, and dispatch your panels directly to your Irish address.</p>
+            </div>
+        </div>
+        <div class="bento-card flex flex-col gap-5 reveal" style="transition-delay:.2s">
+            <div class="step-num">3</div>
+            <div>
+                <h3 class="text-lg font-black uppercase italic mb-2">Install &amp; Enjoy</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Peel, stick, and hear the difference. Most panel installations take under 30 minutes with zero tools. No drilling, no damage, fully renter-friendly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================
+     WHY BUY FROM US
+================================================================ -->
+<section class="max-w-7xl mx-auto px-6 md:px-8 py-10 pb-20">
+    <div class="bento-card grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 reveal">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-xl flex-shrink-0"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"></div>
+            <div>
+                <div class="font-bold text-sm">Ships to Ireland</div>
+                <div class="text-gray-500 text-xs">Free delivery, every order</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 text-xl flex-shrink-0">&#128274;</div>
+            <div>
+                <div class="font-bold text-sm">Secure Payments</div>
+                <div class="text-gray-500 text-xs">Safe &amp; transparent checkout</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400 text-xl flex-shrink-0">&#127775;</div>
+            <div>
+                <div class="font-bold text-sm">Curated Quality</div>
+                <div class="text-gray-500 text-xs">Only proven brands &amp; products</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 text-xl flex-shrink-0">&#128172;</div>
+            <div>
+                <div class="font-bold text-sm">Expert Support</div>
+                <div class="text-gray-500 text-xs">Email or phone — we're here</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================
+     FAQ
+================================================================ -->
+<section id="faq" class="max-w-4xl mx-auto px-6 md:px-8 py-20 md:py-28">
+    <div class="text-center mb-14 reveal">
+        <div class="glow-line mx-auto"></div>
+        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Got Questions?</p>
+        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Everything You<br>Need to Know.</h2>
+    </div>
+
+    <!-- Buying & Delivery -->
+    <div class="mb-8 reveal">
+        <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-4 px-1">Buying &amp; Delivery</p>
+        <div class="bento-card p-0 px-6">
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">How many panels do I need?<span class="faq-icon">+</span></button><div class="faq-answer">We recommend covering 20–30% of your wall surface area for effective treatment. Our 18-pack products are sized for a standard vocal booth or studio corner. Use our pack size selectors above to choose the coverage that fits your room.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Do you deliver to all of Ireland?<span class="faq-icon">+</span></button><div class="faq-answer">Yes — we deliver to all addresses across the Republic of Ireland and Northern Ireland. Delivery is free on every order, no minimum spend required.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">How do I place an order?<span class="faq-icon">+</span></button><div class="faq-answer">Click "Order Now" on any product card. This opens an email to our team pre-filled with the product name. Let us know your colour, pack size, and delivery address and we'll confirm your order within 24 hours.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Are the prices shown the final price?<span class="faq-icon">+</span></button><div class="faq-answer">Yes. All prices shown are final, inclusive of VAT, with free delivery to Ireland included. There are no hidden fees or surprise charges at checkout.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Do you offer bulk discounts?<span class="faq-icon">+</span></button><div class="faq-answer">Yes — for orders of 3+ products or large-coverage installations, contact us directly at Exceldaily@hotmail.com and we'll discuss custom pricing for your project.</div></div>
+            <div class="faq-item" style="border-bottom:none"><button class="faq-question" onclick="toggleFaq(this)">What is the lead time?<span class="faq-icon">+</span></button><div class="faq-answer">Most orders are dispatched within 2–5 business days and arrive in Ireland within 7–10 business days. We'll keep you updated at every step via email.</div></div>
+        </div>
+    </div>
+
+    <!-- Product & Performance -->
+    <div class="mb-8 reveal">
+        <p class="text-[10px] text-purple-400 uppercase tracking-[0.3em] font-bold mb-4 px-1">Product &amp; Performance</p>
+        <div class="bento-card p-0 px-6">
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">What does NRC 0.9 mean?<span class="faq-icon">+</span></button><div class="faq-answer">NRC stands for Noise Reduction Coefficient. A rating of 0.9 means the panels absorb 90% of sound energy that hits them — only 10% is reflected back into the room. This is professional studio standard performance.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">What is the difference between the panel products?<span class="faq-icon">+</span></button><div class="faq-answer">The Soundsbay Honeycomb panels use a unique honeycomb PET structure. TONOR Hexagon panels are high-density 1700g/m² hex tiles. TONOR Square panels offer a clean minimalist grid look. The TONOR Wood panels add a luxury real wood veneer finish for premium interiors. All achieve 0.9 NRC performance.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Will the panels damage my walls?<span class="faq-icon">+</span></button><div class="faq-answer">No. All panel products use self-adhesive or removable adhesive systems designed to peel off cleanly without damage. They are 100% renter-friendly on standard painted drywall.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Are the panels safe for children and pets?<span class="faq-icon">+</span></button><div class="faq-answer">Yes. All panels are made from 100% non-toxic, odorless polyester fiber. They have no sharp edges and are completely safe for households with children and pets.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Can I mount panels on a ceiling?<span class="faq-icon">+</span></button><div class="faq-answer">Yes — the PET fiber panels (Products 1, 2, 4) are lightweight enough for ceiling mounting with appropriate adhesive strips. The Wood panels (Product 3) include screws for secure ceiling installation.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Do they block sound from neighbours?<span class="faq-icon">+</span></button><div class="faq-answer">These panels are designed for sound absorption within your room (reducing echo and reverberation), not for blocking sound transmission through walls. For sound blocking, you'd also need mass-loaded vinyl and wall decoupling.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Are they effective for bass frequencies?<span class="faq-icon">+</span></button><div class="faq-answer">Our panels excel at mid-to-high frequencies (500Hz–8kHz+). For heavy bass control below 200Hz, we recommend layering panels in corners or adding dedicated bass traps.</div></div>
+            <div class="faq-item" style="border-bottom:none"><button class="faq-question" onclick="toggleFaq(this)">What surfaces do the panels stick to?<span class="faq-icon">+</span></button><div class="faq-answer">Any smooth, clean, dry surface — drywall, wood, painted concrete, glass, metal, and ceramic tiles. Clean the surface before applying for maximum adhesion.</div></div>
+        </div>
+    </div>
+
+    <!-- FIXCHORD Tape -->
+    <div class="reveal">
+        <p class="text-[10px] text-green-400 uppercase tracking-[0.3em] font-bold mb-4 px-1">FIXCHORD Tape</p>
+        <div class="bento-card p-0 px-6">
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Which tape width should I choose for acoustic panels?<span class="faq-icon">+</span></button><div class="faq-answer">For most PET fiber panels (30×30cm), the 1.5cm or 2cm width gives the best balance of hold strength and ease of removal. For heavier wooden panels, use the 2cm or 2.5cm width for a more secure bond.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Is the tape reusable?<span class="faq-icon">+</span></button><div class="faq-answer">The FIXCHORD tape is designed for permanent bonding. Once applied, it creates an industrial-strength hold that is not intended to be repositioned. For removable applications, use 3M Command strips instead.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Can I use the tape outdoors?<span class="faq-icon">+</span></button><div class="faq-answer">Yes. The FIXCHORD 3M VHB tape is UV-resistant, waterproof, and rated for outdoor use. It maintains adhesion in both extreme heat and cold conditions.</div></div>
+            <div class="faq-item" style="border-bottom:none"><button class="faq-question" onclick="toggleFaq(this)">What can I use the tape on besides acoustic panels?<span class="faq-icon">+</span></button><div class="faq-answer">The tape is ideal for LED strip lights, car trim, home décor mounting, cable management, mirror mounting, and any bonding application where drilling is not possible or desired.</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================
+     CONTACT
+================================================================ -->
+<section id="contact" class="max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-28">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        <div class="reveal">
+            <div class="glow-line"></div>
+            <p class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3">Get in Touch</p>
+            <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic mb-4">Talk to the<br>Team.</h2>
+            <p class="text-gray-400 leading-relaxed mb-8 text-sm">Have a question about which panels suit your space? We're here to help you get the best acoustic result for your budget.</p>
+
+            <div class="space-y-5 mb-8">
+                <a href="mailto:customersupport@hextile.studio" class="flex items-center gap-4 group">
+                    <div class="w-11 h-11 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500/20 transition flex-shrink-0">&#9993;</div>
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">Email</div>
+                        <div class="text-sm font-bold group-hover:text-blue-400 transition">customersupport@hextile.studio</div>
+                    </div>
+                </a>
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-lg flex-shrink-0"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:20px;height:15px;border-radius:2px"></div>
+                    <div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">UK Location</div>
+                        <div class="text-sm font-bold">Global Gossip Internet Café</div>
+                        <div class="text-xs text-gray-500">120 Earls Court Road, London, SW5 9QR, United Kingdom</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bento-card !p-5">
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Delivering Across Ireland</p>
+                <p class="text-gray-400 text-sm leading-relaxed">We ship professional acoustic solutions to all addresses across the UK and Australia — London, Manchester, Sydney, Melbourne, and everywhere in between.</p>
+            </div>
+        </div>
+
+        <div class="bento-card reveal" style="transition-delay:.15s">
+            <h3 class="text-lg font-black uppercase italic mb-6">Send a Message</h3>
+            <form onsubmit="submitContactForm(event)" class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Your Name</label>
+                    <input type="text" required placeholder="Your name" class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition placeholder-gray-600">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Email Address</label>
+                    <input type="email" required placeholder="you@email.com" class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition placeholder-gray-600">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Enquiry Type</label>
+                    <select class="w-full border border-white/8 rounded-xl px-4 py-3 text-sm text-gray-400 appearance-none transition" style="background-color:#141414;">
+                        <option>Order Enquiry</option>
+                        <option>Product Question</option>
+                        <option>Bulk / Trade Order</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Message</label>
+                    <textarea required rows="4" placeholder="Tell us about your room and what you're trying to achieve..." class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition resize-none placeholder-gray-600"></textarea>
+                </div>
+                <button type="submit" class="btn-primary w-full py-4 text-sm">Send Message &rarr;</button>
+            </form>
+            <div id="form-success" class="hidden mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-center">
+                <p class="text-green-400 font-bold text-sm">&#10003; Sent! We'll get back to you within 24 hours.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================
+     EMAIL CTA BANNER
+================================================================ -->
+<section class="max-w-7xl mx-auto px-6 md:px-8 pb-20">
+    <div class="relative overflow-hidden rounded-[36px] p-10 md:p-14 text-center reveal"
+        style="background:linear-gradient(135deg,rgba(37,99,235,0.12) 0%,rgba(124,58,237,0.12) 100%);border:1px solid rgba(59,130,246,0.18);">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/8 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/8 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10">
+            <div class="text-[10px] text-blue-400 uppercase tracking-[0.3em] font-bold mb-3"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Free Delivery to Ireland</div>
+            <h2 class="text-3xl md:text-5xl font-black italic uppercase mb-4 tracking-tighter">Get Your Studio<br>Sounding Right.</h2>
+            <p class="text-gray-400 mb-8 text-sm max-w-md mx-auto">Join our mailing list for exclusive deals, new product drops, and acoustic tips delivered straight to your inbox.</p>
+            <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <input type="email" id="footer-email" placeholder="your@email.com" class="flex-grow bg-black/50 border border-white/10 rounded-full px-6 py-4 text-sm placeholder-gray-600 focus:outline-none transition">
+                <button onclick="submitEmail()" class="btn-primary px-10 py-4 text-sm whitespace-nowrap">Subscribe</button>
+            </div>
+            <div id="email-success" class="hidden mt-4 text-green-400 text-sm font-bold">&#10003; You're in! Watch your inbox for exclusive deals.</div>
+            <p class="text-[10px] text-gray-600 mt-4 uppercase tracking-widest">No spam. Unsubscribe anytime.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================
+     FOOTER
+================================================================ -->
+<footer class="bg-black/70 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 md:px-8 py-14">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <img src="logo.png" alt="Hextile" style="height:40px;width:auto;object-fit:contain;mix-blend-mode:screen">
+                </div>
+                <p class="text-gray-500 text-xs leading-relaxed mb-4">Professional acoustic panels for home studios, gaming rooms and offices. Delivered free to Ireland.</p>
+                <div class="ireland-badge"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:3px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:4px"> UK &amp; Australia</div>
+            </div>
+            <div>
+                <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Shop</h4>
+                <ul class="space-y-2.5 text-sm text-gray-400">
+                    <li><a href="#shop" class="hover:text-white transition">Soundsbay Honeycomb</a></li>
+                    <li><a href="#shop" class="hover:text-white transition">TONOR Hexagon</a></li>
+                    <li><a href="#shop" class="hover:text-white transition">TONOR Wood Panels</a></li>
+                    <li><a href="#shop" class="hover:text-white transition">TONOR Square</a></li>
+                    <li><a href="#shop" class="hover:text-white transition">FIXCHORD Tape</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Info</h4>
+                <ul class="space-y-2.5 text-sm text-gray-400">
+                    <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
+                    <li><a href="#contact" class="hover:text-white transition">Contact Us</a></li>
+                    <li><a href="mailto:customersupport@hextile.studio?subject=Bulk Order" class="hover:text-white transition">Bulk Orders</a></li>
+                    <li><a href="privacy.html" class="hover:text-white transition">Privacy Policy</a></li>
+                    <li><a href="returns.html" class="hover:text-white transition">Returns Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold mb-4">Contact</h4>
+                <ul class="space-y-2.5 text-sm text-gray-400">
+                    <li><a href="mailto:customersupport@hextile.studio" class="hover:text-white transition break-all">customersupport@hextile.studio</a></li>
+                    <li class="text-xs text-gray-600 leading-relaxed pt-2"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:3px"> Global Gossip Internet Café<br>120 Earls Court Road<br>London, SW5 9QR<br>United Kingdom</li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-[10px] text-gray-600 uppercase tracking-widest">&copy; 2026 Hextile Acoustic Solutions. All rights reserved.</p>
+            <div class="flex flex-wrap justify-center gap-6 text-[10px] text-gray-600 uppercase tracking-widest">
+                <a href="#" class="hover:text-gray-400 transition">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-gray-400 transition">Terms of Service</a>
+                <a href="#" class="hover:text-gray-400 transition">Returns Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ================================================================
+     CART OVERLAY + DRAWER
+================================================================ -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:10px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span style="font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:0.05em">Your Cart</span>
+        </div>
+        <button onclick="closeCart()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;border-radius:8px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">&times;</button>
+    </div>
+
+    <!-- Items -->
+    <div style="flex:1;overflow-y:auto;padding:0 1.5rem">
+        <!-- Empty state -->
+        <div id="cart-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:3rem 0">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <p style="color:#4b5563;font-size:13px;font-weight:600;text-align:center">Your cart is empty.<br>Add some products to get started.</p>
+            <button onclick="closeCart();document.getElementById('shop').scrollIntoView({behavior:'smooth'})" style="background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);color:#60a5fa;border-radius:8px;padding:8px 20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s">Browse Products</button>
+        </div>
+        <!-- Cart items rendered by JS -->
+        <div id="cart-items"></div>
+    </div>
+
+    <!-- Footer -->
+    <div style="border-top:1px solid rgba(255,255,255,0.08);padding:1.25rem 1.5rem;flex-shrink:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280">Total</span>
+            <span id="cart-total" style="font-size:1.5rem;font-weight:900;color:#f5f5f5">£0.00</span>
+        </div>
+        <button id="cart-checkout-btn" onclick="checkout()" disabled class="btn-add-cart py-4 text-sm mb-3" style="opacity:0.5;transition:opacity 0.2s,transform 0.3s,box-shadow 0.3s" onmouseover="if(!this.disabled)this.style.opacity='0.92'" onmouseout="this.style.opacity=this.disabled?'0.5':'1'">
+            Checkout &rarr;
+        </button>
+        <p style="font-size:10px;color:#4b5563;text-align:center;line-height:1.6">Secure checkout via Stripe. Free delivery to UK &amp; Australia.</p>
+    </div>
+</div>
+
+<!-- ================================================================
+     JAVASCRIPT
+================================================================ -->
 <script>
-"use strict";
-
-/* ============================================================
-   COLORING PAGES — SVG line art.
-   class "c" = colorable region (white fill, tap to color)
-   class "d" = detail stroke (not colorable)
-   class "t" = solid detail / label (not colorable)
-   SW/DT = chunky style (escalators, excavators)
-   SR/DF = realistic fine style (elevator pages)
-   ============================================================ */
-var SW='fill="#ffffff" stroke="#263042" stroke-width="5" stroke-linejoin="round"';
-var DT='fill="none" stroke="#263042" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"';
-var SR='fill="#ffffff" stroke="#263042" stroke-width="4" stroke-linejoin="round"';
-var DF='fill="none" stroke="#263042" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"';
-var DOT='fill="#263042" stroke="none"';
-
-var PAGES=[
-{
-  id:"classic-elevator", title:"The Elevator Lobby", cat:"Elevators",
-  svg:'<rect class="c" '+SR+' x="50" y="50" width="700" height="806"/>'
-    +'<path class="d" '+DF+' d="M50,100 H750"/>'
-    +'<ellipse class="c" '+SR+' cx="150" cy="76" rx="28" ry="11"/>'
-    +'<ellipse class="c" '+SR+' cx="400" cy="76" rx="28" ry="11"/>'
-    +'<ellipse class="c" '+SR+' cx="650" cy="76" rx="28" ry="11"/>'
-    +'<rect class="c" '+SR+' x="340" y="108" width="120" height="52" rx="8"/>'
-    +'<polygon class="c" '+SR+' points="358,146 372,120 386,146"/>'
-    +'<text class="t" x="424" y="150" font-size="34" font-weight="800" text-anchor="middle" fill="#263042">12</text>'
-    +'<rect class="c" '+SR+' x="224" y="176" width="352" height="44"/>'
-    +'<rect class="c" '+SR+' x="224" y="220" width="352" height="600"/>'
-    +'<rect class="c" '+SR+' x="242" y="238" width="155" height="566"/>'
-    +'<rect class="c" '+SR+' x="403" y="238" width="155" height="566"/>'
-    +'<rect class="c" '+SR+' x="258" y="258" width="123" height="254" rx="4"/>'
-    +'<rect class="c" '+SR+' x="258" y="528" width="123" height="252" rx="4"/>'
-    +'<rect class="c" '+SR+' x="419" y="258" width="123" height="254" rx="4"/>'
-    +'<rect class="c" '+SR+' x="419" y="528" width="123" height="252" rx="4"/>'
-    +'<path class="d" '+DF+' d="M400,238 V804"/>'
-    +'<rect class="c" '+SR+' x="224" y="804" width="352" height="14"/>'
-    +'<rect class="c" '+SR+' x="612" y="250" width="56" height="116" rx="10"/>'
-    +'<circle class="c" '+SR+' cx="640" cy="282" r="16"/>'
-    +'<circle class="c" '+SR+' cx="640" cy="334" r="16"/>'
-    +'<polygon class="t" '+DOT+' points="640,276 646,286 634,286"/>'
-    +'<polygon class="t" '+DOT+' points="640,340 646,330 634,330"/>'
-    +'<rect class="c" '+SR+' x="612" y="470" width="56" height="100" rx="10"/>'
-    +'<circle class="c" '+SR+' cx="640" cy="498" r="15"/>'
-    +'<circle class="c" '+SR+' cx="640" cy="542" r="15"/>'
-    +'<circle class="t" '+DOT+' cx="656" cy="492" r="2.5"/><circle class="t" '+DOT+' cx="656" cy="500" r="2.5"/>'
-    +'<circle class="t" '+DOT+' cx="656" cy="536" r="2.5"/><circle class="t" '+DOT+' cx="656" cy="548" r="2.5"/>'
-    +'<rect class="c" '+SR+' x="84" y="250" width="116" height="430" rx="4"/>'
-    +'<path class="d" '+DF+' d="M98,264 h88 v402 h-88 z"/>'
-    +'<rect class="c" '+SR+' x="106" y="790" width="72" height="18" rx="6"/>'
-    +'<polygon class="c" '+SR+' points="112,808 172,808 160,880 124,880"/>'
-    +'<ellipse class="c" '+SR+' cx="142" cy="726" rx="16" ry="58" transform="rotate(-38 142 726)"/>'
-    +'<ellipse class="c" '+SR+' cx="142" cy="720" rx="16" ry="60" transform="rotate(-16 142 720)"/>'
-    +'<ellipse class="c" '+SR+' cx="142" cy="716" rx="15" ry="62"/>'
-    +'<ellipse class="c" '+SR+' cx="142" cy="720" rx="16" ry="60" transform="rotate(16 142 720)"/>'
-    +'<ellipse class="c" '+SR+' cx="142" cy="726" rx="16" ry="58" transform="rotate(38 142 726)"/>'
-    +'<rect class="c" '+SR+' x="50" y="856" width="700" height="26"/>'
-    +'<rect class="c" '+SR+' x="50" y="882" width="700" height="68"/>'
-    +'<path class="d" '+DF+' d="M150,882 V950 M270,882 V950 M530,882 V950 M650,882 V950 M50,916 H750"/>'
-},
-{
-  id:"glass-elevator", title:"The Glass Elevator", cat:"Elevators",
-  svg:'<rect class="c" '+SR+' x="50" y="50" width="700" height="830"/>'
-    +'<rect class="c" '+SR+' x="50" y="50" width="700" height="54"/>'
-    +'<path class="d" '+DF+' d="M150,50 V104 M250,50 V104 M350,50 V104 M450,50 V104 M550,50 V104 M650,50 V104"/>'
-    +'<rect class="c" '+SR+' x="296" y="104" width="14" height="776"/>'
-    +'<rect class="c" '+SR+' x="522" y="104" width="14" height="776"/>'
-    +'<rect class="c" '+SR+' x="340" y="110" width="150" height="54" rx="10"/>'
-    +'<circle class="c" '+SR+' cx="416" cy="196" r="40"/>'
-    +'<circle class="d" '+DF+' cx="416" cy="196" r="26"/>'
-    +'<circle class="c" '+SR+' cx="576" cy="214" r="24"/>'
-    +'<path class="d" '+DF+' d="M398,232 V420 M434,232 V420 M576,238 V290 M446,166 L558,200"/>'
-    +'<rect class="c" '+SR+' x="330" y="420" width="172" height="22"/>'
-    +'<rect class="c" '+SR+' x="316" y="442" width="200" height="22"/>'
-    +'<rect class="c" '+SR+' x="322" y="464" width="54" height="150"/>'
-    +'<rect class="c" '+SR+' x="384" y="464" width="64" height="150"/>'
-    +'<rect class="c" '+SR+' x="456" y="464" width="54" height="150"/>'
-    +'<circle class="c" '+SR+' cx="404" cy="520" r="15"/>'
-    +'<rect class="c" '+SR+' x="391" y="535" width="26" height="56" rx="9"/>'
-    +'<circle class="c" '+SR+' cx="472" cy="526" r="13"/>'
-    +'<rect class="c" '+SR+' x="461" y="539" width="22" height="50" rx="8"/>'
-    +'<path class="d" '+DF+' d="M330,545 H384 M448,545 H510"/>'
-    +'<rect class="c" '+SR+' x="316" y="614" width="200" height="22"/>'
-    +'<polygon class="c" '+SR+' points="316,636 516,636 492,672 340,672"/>'
-    +'<rect class="c" '+SR+' x="544" y="290" width="64" height="132"/>'
-    +'<rect class="c" '+SR+' x="550" y="298" width="52" height="22"/>'
-    +'<rect class="c" '+SR+' x="550" y="326" width="52" height="22"/>'
-    +'<rect class="c" '+SR+' x="550" y="354" width="52" height="22"/>'
-    +'<rect class="c" '+SR+' x="550" y="382" width="52" height="22"/>'
-    +'<rect class="c" '+SR+' x="50" y="276" width="246" height="10"/>'
-    +'<rect class="c" '+SR+' x="50" y="320" width="246" height="16"/>'
-    +'<path class="d" '+DF+' d="M80,286 V320 M120,286 V320 M160,286 V320 M200,286 V320 M240,286 V320 M280,286 V320"/>'
-    +'<rect class="c" '+SR+' x="50" y="496" width="246" height="10"/>'
-    +'<rect class="c" '+SR+' x="50" y="540" width="246" height="16"/>'
-    +'<path class="d" '+DF+' d="M80,506 V540 M120,506 V540 M160,506 V540 M200,506 V540 M240,506 V540 M280,506 V540"/>'
-    +'<rect class="c" '+SR+' x="50" y="716" width="246" height="10"/>'
-    +'<rect class="c" '+SR+' x="50" y="760" width="246" height="16"/>'
-    +'<path class="d" '+DF+' d="M80,726 V760 M120,726 V760 M160,726 V760 M200,726 V760 M240,726 V760 M280,726 V760"/>'
-    +'<rect class="c" '+SR+' x="80" y="502" width="74" height="38" rx="6"/>'
-    +'<ellipse class="c" '+SR+' cx="100" cy="486" rx="14" ry="24"/>'
-    +'<ellipse class="c" '+SR+' cx="120" cy="480" rx="14" ry="28"/>'
-    +'<ellipse class="c" '+SR+' cx="140" cy="486" rx="14" ry="24"/>'
-    +'<rect class="c" '+SR+' x="50" y="880" width="700" height="70"/>'
-},
-{
-  id:"going-up", title:"Inside the Cab", cat:"Elevators",
-  svg:'<polygon class="c" '+SR+' points="120,120 680,120 632,208 168,208"/>'
-    +'<rect class="c" '+SR+' x="255" y="138" width="88" height="42"/>'
-    +'<rect class="c" '+SR+' x="357" y="138" width="88" height="42"/>'
-    +'<rect class="c" '+SR+' x="459" y="138" width="88" height="42"/>'
-    +'<rect class="c" '+SR+' x="168" y="208" width="464" height="512"/>'
-    +'<polygon class="c" '+SR+' points="120,120 168,208 168,720 120,808"/>'
-    +'<polygon class="c" '+SR+' points="680,120 632,208 632,720 680,808"/>'
-    +'<path class="d" '+DF+' d="M138,175 V760 M632,300 l48,-88"/>'
-    +'<polygon class="c" '+SR+' points="120,808 168,720 632,720 680,808"/>'
-    +'<path class="d" '+DF+' d="M240,808 L288,720 M400,808 V720 M560,808 L512,720 M168,764 H210 M632,764 H590"/>'
-    +'<rect class="c" '+SR+' x="196" y="236" width="200" height="180" rx="8"/>'
-    +'<path class="d" '+DF+' d="M208,248 h176 v156 h-176 z"/>'
-    +'<rect class="c" '+SR+' x="424" y="236" width="110" height="180" rx="8"/>'
-    +'<rect class="c" '+SR+' x="188" y="438" width="448" height="20" rx="10"/>'
-    +'<rect class="c" '+SR+' x="220" y="458" width="14" height="18"/>'
-    +'<rect class="c" '+SR+' x="404" y="458" width="14" height="18"/>'
-    +'<rect class="c" '+SR+' x="588" y="458" width="14" height="18"/>'
-    +'<rect class="c" '+SR+' x="196" y="486" width="136" height="214" rx="4"/>'
-    +'<rect class="c" '+SR+' x="338" y="486" width="136" height="214" rx="4"/>'
-    +'<rect class="c" '+SR+' x="480" y="486" width="136" height="214" rx="4"/>'
-    +'<rect class="c" '+SR+' x="560" y="250" width="48" height="330" rx="10"/>'
-    +'<circle class="c" '+SR+' cx="584" cy="280" r="9"/>'
-    +'<circle class="c" '+SR+' cx="584" cy="312" r="9"/>'
-    +'<circle class="c" '+SR+' cx="584" cy="344" r="9"/>'
-    +'<circle class="c" '+SR+' cx="584" cy="376" r="9"/>'
-    +'<circle class="c" '+SR+' cx="584" cy="408" r="9"/>'
-    +'<circle class="t" '+DOT+' cx="600" cy="277" r="1.8"/><circle class="t" '+DOT+' cx="600" cy="283" r="1.8"/>'
-    +'<circle class="t" '+DOT+' cx="600" cy="309" r="1.8"/><circle class="t" '+DOT+' cx="600" cy="315" r="1.8"/>'
-    +'<circle class="t" '+DOT+' cx="600" cy="341" r="1.8"/><circle class="t" '+DOT+' cx="600" cy="347" r="1.8"/>'
-    +'<circle class="t" '+DOT+' cx="600" cy="373" r="1.8"/><circle class="t" '+DOT+' cx="600" cy="379" r="1.8"/>'
-    +'<circle class="t" '+DOT+' cx="600" cy="405" r="1.8"/><circle class="t" '+DOT+' cx="600" cy="411" r="1.8"/>'
-    +'<rect class="c" '+SR+' x="570" y="428" width="28" height="20" rx="4"/>'
-    +'<rect class="c" '+SR+' x="570" y="454" width="28" height="20" rx="4"/>'
-    +'<circle class="c" '+SR+' cx="584" cy="502" r="12"/>'
-    +'<circle class="d" '+DF+' cx="584" cy="502" r="17"/>'
-    +'<rect class="c" '+SR+' x="566" y="528" width="36" height="40" rx="6"/>'
-    +'<path class="d" '+DF+' d="M572,548 a12,10 0 0 1 24,0"/>'
-    +'<circle class="c" '+SR+' cx="300" cy="320" r="44"/>'
-    +'<path class="c" '+SR+' d="M256,320 a44,44 0 0 1 88,0 l-10,-6 a76,76 0 0 0 -68,0 z"/>'
-    +'<rect class="c" '+SR+' x="246" y="380" width="26" height="70" rx="10"/>'
-    +'<rect class="c" '+SR+' x="266" y="366" width="68" height="118" rx="18"/>'
-    +'<polygon class="c" '+SR+' points="332,398 420,428 416,446 330,420"/>'
-    +'<rect class="c" '+SR+' x="276" y="484" width="20" height="96"/>'
-    +'<rect class="c" '+SR+' x="308" y="484" width="20" height="96"/>'
-    +'<ellipse class="c" '+SR+' cx="282" cy="592" rx="24" ry="12"/>'
-    +'<ellipse class="c" '+SR+' cx="316" cy="592" rx="24" ry="12"/>'
-    +'<path class="d" '+DF+' d="M288,310 a6,6 0 1 0 0.1,0 M310,310 a6,6 0 1 0 0.1,0 M292,336 q8,8 16,0"/>'
-    +'<ellipse class="c" '+SR+' cx="452" cy="626" rx="66" ry="38"/>'
-    +'<circle class="c" '+SR+' cx="524" cy="592" r="30"/>'
-    +'<polygon class="c" '+SR+' points="508,570 496,534 528,552"/>'
-    +'<polygon class="c" '+SR+' points="540,570 552,534 520,552"/>'
-    +'<rect class="c" '+SR+' x="506" y="616" width="36" height="10" rx="5"/>'
-    +'<polygon class="c" '+SR+' points="390,614 354,590 364,624"/>'
-    +'<rect class="c" '+SR+' x="418" y="656" width="16" height="40"/>'
-    +'<rect class="c" '+SR+' x="474" y="656" width="16" height="40"/>'
-    +'<path class="d" '+DF+' d="M512,596 a6,6 0 1 0 0.1,0 M534,596 a6,6 0 1 0 0.1,0 M518,610 q7,7 14,0"/>'
-},
-{
-  id:"freight-elevator", title:"The Freight Elevator", cat:"Elevators",
-  svg:'<rect class="c" '+SR+' x="150" y="110" width="500" height="716"/>'
-    +'<rect class="c" '+SR+' x="150" y="110" width="36" height="716"/>'
-    +'<rect class="c" '+SR+' x="614" y="110" width="36" height="716"/>'
-    +'<circle class="t" '+DOT+' cx="168" cy="150" r="3.5"/><circle class="t" '+DOT+' cx="168" cy="250" r="3.5"/><circle class="t" '+DOT+' cx="168" cy="350" r="3.5"/><circle class="t" '+DOT+' cx="168" cy="450" r="3.5"/><circle class="t" '+DOT+' cx="168" cy="550" r="3.5"/><circle class="t" '+DOT+' cx="168" cy="650" r="3.5"/><circle class="t" '+DOT+' cx="168" cy="750" r="3.5"/>'
-    +'<circle class="t" '+DOT+' cx="632" cy="150" r="3.5"/><circle class="t" '+DOT+' cx="632" cy="250" r="3.5"/><circle class="t" '+DOT+' cx="632" cy="350" r="3.5"/><circle class="t" '+DOT+' cx="632" cy="450" r="3.5"/><circle class="t" '+DOT+' cx="632" cy="550" r="3.5"/><circle class="t" '+DOT+' cx="632" cy="650" r="3.5"/><circle class="t" '+DOT+' cx="632" cy="750" r="3.5"/>'
-    +'<rect class="c" '+SR+' x="186" y="110" width="428" height="56"/>'
-    +'<text class="t" x="400" y="148" font-size="26" font-weight="800" text-anchor="middle" fill="#263042" letter-spacing="4">FREIGHT</text>'
-    +'<rect class="c" '+SR+' x="322" y="182" width="156" height="40" rx="6"/>'
-    +'<text class="t" x="400" y="209" font-size="20" font-weight="800" text-anchor="middle" fill="#263042">5000 LBS</text>'
-    +'<rect class="c" '+SR+' x="186" y="236" width="428" height="112"/>'
-    +'<path class="d" '+DF+' d="M206,236 L318,348 M286,236 L398,348 M366,236 L478,348 M446,236 L558,348 M526,236 L614,324 M186,260 L274,348 M186,340 L194,348 M606,236 L614,244"/>'
-    +'<rect class="c" '+SR+' x="186" y="348" width="428" height="14"/>'
-    +'<rect class="c" '+SR+' x="186" y="362" width="428" height="224"/>'
-    +'<rect class="c" '+SR+' x="200" y="400" width="400" height="14"/>'
-    +'<rect class="c" '+SR+' x="200" y="470" width="400" height="14"/>'
-    +'<rect class="c" '+SR+' x="238" y="482" width="146" height="104"/>'
-    +'<path class="d" '+DF+' d="M311,482 V586 M238,534 H384"/>'
-    +'<rect class="c" '+SR+' x="396" y="512" width="106" height="74"/>'
-    +'<path class="d" '+DF+' d="M449,512 V586"/>'
-    +'<rect class="c" '+SR+' x="518" y="498" width="66" height="88"/>'
-    +'<ellipse class="c" '+SR+' cx="551" cy="498" rx="33" ry="11"/>'
-    +'<path class="d" '+DF+' d="M518,528 h66 M518,558 h66"/>'
-    +'<rect class="c" '+SR+' x="186" y="586" width="428" height="12"/>'
-    +'<rect class="c" '+SR+' x="186" y="598" width="428" height="228"/>'
-    +'<path class="d" '+DF+' d="M206,598 L434,826 M286,598 L514,826 M366,598 L594,826 M446,598 L614,766 M526,598 L614,686 M186,626 L386,826 M186,706 L306,826 M186,786 L226,826 M186,712 H614"/>'
-    +'<rect class="c" '+SR+' x="150" y="826" width="500" height="26"/>'
-    +'<path class="d" '+DF+' d="M170,826 l26,26 M230,826 l26,26 M290,826 l26,26 M350,826 l26,26 M410,826 l26,26 M470,826 l26,26 M530,826 l26,26 M590,826 l26,26"/>'
-    +'<polygon class="c" '+SR+' points="150,852 234,852 206,880 150,880"/>'
-    +'<polygon class="c" '+SR+' points="234,852 318,852 290,880 206,880"/>'
-    +'<polygon class="c" '+SR+' points="318,852 402,852 374,880 290,880"/>'
-    +'<polygon class="c" '+SR+' points="402,852 486,852 458,880 374,880"/>'
-    +'<polygon class="c" '+SR+' points="486,852 570,852 542,880 458,880"/>'
-    +'<polygon class="c" '+SR+' points="570,852 650,852 650,880 542,880"/>'
-    +'<rect class="c" '+SR+' x="50" y="880" width="700" height="70"/>'
-},
-{
-  id:"push-the-buttons", title:"Push the Buttons!", cat:"Elevators",
-  svg:'<rect class="c" '+SR+' x="210" y="80" width="380" height="840" rx="14"/>'
-    +'<circle class="c" '+SR+' cx="236" cy="106" r="8"/><path class="d" '+DF+' d="M230,106 h12"/>'
-    +'<circle class="c" '+SR+' cx="564" cy="106" r="8"/><path class="d" '+DF+' d="M560,102 l8,8"/>'
-    +'<circle class="c" '+SR+' cx="236" cy="894" r="8"/><path class="d" '+DF+' d="M236,888 v12"/>'
-    +'<circle class="c" '+SR+' cx="564" cy="894" r="8"/><path class="d" '+DF+' d="M560,898 l8,-8"/>'
-    +'<rect class="c" '+SR+' x="290" y="120" width="220" height="76" rx="10"/>'
-    +'<rect class="c" '+SR+' x="304" y="132" width="140" height="52" rx="6"/>'
-    +'<text class="t" x="374" y="172" font-size="40" font-weight="800" text-anchor="middle" fill="#263042">12</text>'
-    +'<polygon class="c" '+SR+' points="462,172 478,140 494,172"/>'
-    +'<circle class="c" '+SR+' cx="400" cy="256" r="46"/>'
-    +'<circle class="t" '+DOT+' cx="384" cy="242" r="2.5"/><circle class="t" '+DOT+' cx="400" cy="242" r="2.5"/><circle class="t" '+DOT+' cx="416" cy="242" r="2.5"/>'
-    +'<circle class="t" '+DOT+' cx="376" cy="256" r="2.5"/><circle class="t" '+DOT+' cx="392" cy="256" r="2.5"/><circle class="t" '+DOT+' cx="408" cy="256" r="2.5"/><circle class="t" '+DOT+' cx="424" cy="256" r="2.5"/>'
-    +'<circle class="t" '+DOT+' cx="384" cy="270" r="2.5"/><circle class="t" '+DOT+' cx="400" cy="270" r="2.5"/><circle class="t" '+DOT+' cx="416" cy="270" r="2.5"/>'
-    +'<rect class="c" '+SR+' x="258" y="330" width="100" height="56" rx="10"/>'
-    +'<polygon class="t" '+DOT+' points="286,358 298,346 298,370"/><polygon class="t" '+DOT+' points="330,358 318,346 318,370"/><path class="d" '+DF+' d="M308,344 V372"/>'
-    +'<rect class="c" '+SR+' x="442" y="330" width="100" height="56" rx="10"/>'
-    +'<polygon class="t" '+DOT+' points="470,346 470,370 482,358"/><polygon class="t" '+DOT+' points="514,346 514,370 502,358"/><path class="d" '+DF+' d="M492,344 V372"/>'
-    +'<circle class="c" '+SR+' cx="400" cy="358" r="24"/>'
-    +'<path class="d" '+DF+' d="M392,366 a10,10 0 0 1 -5,-17 v-5 a13,10 0 0 1 26,0 v5 a10,10 0 0 1 -5,17 z M396,372 h8"/>'
-    +'<circle class="c" '+SR+' cx="310" cy="452" r="40"/><circle class="c" '+SR+' cx="310" cy="452" r="29"/>'
-    +'<polygon class="t" '+DOT+' points="310,440 314,449 324,449 316,455 319,465 310,459 301,465 304,455 296,449 306,449"/>'
-    +'<circle class="t" '+DOT+' cx="362" cy="446" r="2.5"/><circle class="t" '+DOT+' cx="362" cy="454" r="2.5"/><circle class="t" '+DOT+' cx="370" cy="446" r="2.5"/>'
-    +'<circle class="c" '+SR+' cx="490" cy="452" r="40"/><circle class="c" '+SR+' cx="490" cy="452" r="29"/>'
-    +'<text class="t" x="490" y="464" font-size="30" font-weight="800" text-anchor="middle" fill="#263042">2</text>'
-    +'<circle class="t" '+DOT+' cx="542" cy="446" r="2.5"/><circle class="t" '+DOT+' cx="542" cy="454" r="2.5"/><circle class="t" '+DOT+' cx="550" cy="450" r="2.5"/>'
-    +'<circle class="c" '+SR+' cx="310" cy="546" r="40"/><circle class="c" '+SR+' cx="310" cy="546" r="29"/>'
-    +'<text class="t" x="310" y="558" font-size="30" font-weight="800" text-anchor="middle" fill="#263042">3</text>'
-    +'<circle class="t" '+DOT+' cx="362" cy="540" r="2.5"/><circle class="t" '+DOT+' cx="370" cy="540" r="2.5"/><circle class="t" '+DOT+' cx="362" cy="548" r="2.5"/>'
-    +'<circle class="c" '+SR+' cx="490" cy="546" r="40"/><circle class="c" '+SR+' cx="490" cy="546" r="29"/>'
-    +'<text class="t" x="490" y="558" font-size="30" font-weight="800" text-anchor="middle" fill="#263042">4</text>'
-    +'<circle class="t" '+DOT+' cx="542" cy="540" r="2.5"/><circle class="t" '+DOT+' cx="550" cy="540" r="2.5"/><circle class="t" '+DOT+' cx="550" cy="548" r="2.5"/>'
-    +'<circle class="c" '+SR+' cx="310" cy="640" r="40"/><circle class="c" '+SR+' cx="310" cy="640" r="29"/>'
-    +'<text class="t" x="310" y="652" font-size="30" font-weight="800" text-anchor="middle" fill="#263042">5</text>'
-    +'<circle class="t" '+DOT+' cx="362" cy="634" r="2.5"/><circle class="t" '+DOT+' cx="362" cy="642" r="2.5"/><circle class="t" '+DOT+' cx="370" cy="638" r="2.5"/>'
-    +'<circle class="c" '+SR+' cx="490" cy="640" r="40"/><circle class="c" '+SR+' cx="490" cy="640" r="29"/>'
-    +'<text class="t" x="490" y="652" font-size="30" font-weight="800" text-anchor="middle" fill="#263042">6</text>'
-    +'<circle class="t" '+DOT+' cx="542" cy="634" r="2.5"/><circle class="t" '+DOT+' cx="550" cy="638" r="2.5"/><circle class="t" '+DOT+' cx="542" cy="642" r="2.5"/>'
-    +'<circle class="c" '+SR+' cx="310" cy="734" r="40"/><circle class="c" '+SR+' cx="310" cy="734" r="29"/>'
-    +'<text class="t" x="310" y="746" font-size="30" font-weight="800" text-anchor="middle" fill="#263042">7</text>'
-    +'<circle class="c" '+SR+' cx="490" cy="734" r="40"/><circle class="c" '+SR+' cx="490" cy="734" r="29"/>'
-    +'<text class="t" x="490" y="746" font-size="30" font-weight="800" text-anchor="middle" fill="#263042">8</text>'
-    +'<circle class="c" '+SR+' cx="310" cy="812" r="16"/><path class="d" '+DF+' d="M310,804 v16 M304,812 h12"/>'
-    +'<text class="t" x="310" y="852" font-size="13" font-weight="800" text-anchor="middle" fill="#263042">FIRE</text>'
-    +'<circle class="c" '+SR+' cx="490" cy="812" r="16"/><path class="d" '+DF+' d="M484,806 l12,12"/>'
-    +'<text class="t" x="490" y="852" font-size="13" font-weight="800" text-anchor="middle" fill="#263042">FAN</text>'
-    +'<rect class="c" '+SR+' x="330" y="864" width="140" height="44" rx="8"/>'
-    +'<path class="d" '+DF+' d="M352,886 a10,8 0 0 1 20,0 M428,886 a10,8 0 0 1 20,0 M362,884 q38,-14 76,0"/>'
-},
-{
-  id:"grand-hotel-lift", title:"The Grand Hotel Lift", cat:"Elevators",
-  svg:'<rect class="c" '+SR+' x="50" y="50" width="700" height="830"/>'
-    +'<rect class="c" '+SR+' x="50" y="50" width="700" height="28"/>'
-    +'<path class="d" '+DF+' d="M50,90 H750"/>'
-    +'<rect class="c" '+SR+' x="128" y="266" width="94" height="36" rx="6"/>'
-    +'<rect class="c" '+SR+' x="140" y="302" width="70" height="542"/>'
-    +'<path class="d" '+DF+' d="M156,302 V844 M175,302 V844 M194,302 V844"/>'
-    +'<rect class="c" '+SR+' x="128" y="844" width="94" height="36" rx="4"/>'
-    +'<rect class="c" '+SR+' x="578" y="266" width="94" height="36" rx="6"/>'
-    +'<rect class="c" '+SR+' x="590" y="302" width="70" height="542"/>'
-    +'<path class="d" '+DF+' d="M606,302 V844 M625,302 V844 M644,302 V844"/>'
-    +'<rect class="c" '+SR+' x="578" y="844" width="94" height="36" rx="4"/>'
-    +'<path class="c" '+SR+' d="M226,880 V470 a174,160 0 0 1 348,0 V880 h-44 V470 a130,120 0 0 0 -260,0 V880 z"/>'
-    +'<polygon class="c" '+SR+' points="378,306 422,306 434,352 366,352"/>'
-    +'<path class="c" '+SR+' d="M320,222 a80,80 0 0 1 160,0 z"/>'
-    +'<path class="d" '+DF+' d="M342,196 l8,8 M368,178 l5,10 M400,172 v11 M432,178 l-5,10 M458,196 l-8,8"/>'
-    +'<text class="t" x="338" y="212" font-size="15" font-weight="800" text-anchor="middle" fill="#263042">1</text>'
-    +'<text class="t" x="400" y="192" font-size="15" font-weight="800" text-anchor="middle" fill="#263042">4</text>'
-    +'<text class="t" x="462" y="212" font-size="15" font-weight="800" text-anchor="middle" fill="#263042">7</text>'
-    +'<polygon class="c" '+SR+' points="400,222 434,176 442,184"/>'
-    +'<circle class="c" '+SR+' cx="400" cy="222" r="11"/>'
-    +'<rect class="c" '+SR+' x="270" y="470" width="260" height="410"/>'
-    +'<path class="d" '+DF+' d="M270,560 H530 M270,700 H530"/>'
-    +'<circle class="c" '+SR+' cx="400" cy="512" r="16"/>'
-    +'<path class="d" '+DF+' d="M400,470 V496"/>'
-    +'<rect class="c" '+SR+' x="278" y="470" width="10" height="410"/>'
-    +'<rect class="c" '+SR+' x="326" y="470" width="10" height="410"/>'
-    +'<rect class="c" '+SR+' x="374" y="470" width="10" height="410"/>'
-    +'<rect class="c" '+SR+' x="422" y="470" width="10" height="410"/>'
-    +'<rect class="c" '+SR+' x="470" y="470" width="10" height="410"/>'
-    +'<rect class="c" '+SR+' x="512" y="470" width="10" height="410"/>'
-    +'<path class="d" '+DF+' d="M288,505 L512,617 M288,617 L512,505 M288,645 L512,757 M288,757 L512,645 M288,785 L512,880 M288,880 L512,785"/>'
-    +'<rect class="c" '+SR+' x="94" y="420" width="38" height="72" rx="18"/>'
-    +'<rect class="c" '+SR+' x="107" y="398" width="12" height="26"/>'
-    +'<path class="c" '+SR+' d="M113,372 q12,14 0,26 q-12,-12 0,-26 z"/>'
-    +'<rect class="c" '+SR+' x="668" y="420" width="38" height="72" rx="18"/>'
-    +'<rect class="c" '+SR+' x="681" y="398" width="12" height="26"/>'
-    +'<path class="c" '+SR+' d="M687,372 q12,14 0,26 q-12,-12 0,-26 z"/>'
-    +'<polygon class="c" '+SR+' points="250,880 550,880 596,950 204,950"/>'
-    +'<path class="d" '+DF+' d="M270,896 h262 M258,916 h286"/>'
-    +'<rect class="c" '+SR+' x="50" y="880" width="700" height="70"/>'
-    +'<path class="d" '+DF+' d="M80,912 q30,-14 60,4 M640,900 q26,18 60,6"/>'
-},
-{
-  id:"inside-the-shaft", title:"Inside the Shaft", cat:"Elevators",
-  svg:'<rect class="c" '+SR+' x="60" y="60" width="680" height="880"/>'
-    +'<rect class="c" '+SR+' x="60" y="240" width="680" height="20"/>'
-    +'<rect class="c" '+SR+' x="180" y="150" width="140" height="70" rx="16"/>'
-    +'<path class="d" '+DF+' d="M200,166 v38 M220,166 v38 M240,166 v38"/>'
-    +'<circle class="c" '+SR+' cx="370" cy="185" r="48"/>'
-    +'<circle class="d" '+DF+' cx="370" cy="185" r="34"/><circle class="d" '+DF+' cx="370" cy="185" r="20"/>'
-    +'<circle class="c" '+SR+' cx="600" cy="210" r="26"/>'
-    +'<rect class="c" '+SR+' x="160" y="220" width="340" height="18"/>'
-    +'<rect class="c" '+SR+' x="560" y="120" width="130" height="118" rx="8"/>'
-    +'<path class="d" '+DF+' d="M625,120 V238 M576,146 h34 M576,166 h34 M576,186 h34"/>'
-    +'<circle class="c" '+SR+' cx="524" cy="160" r="20"/>'
-    +'<path class="d" '+DF+' d="M532,178 L545,196 V852"/>'
-    +'<circle class="c" '+SR+' cx="545" cy="868" r="14"/>'
-    +'<rect class="c" '+SR+' x="240" y="260" width="10" height="620"/>'
-    +'<rect class="c" '+SR+' x="550" y="260" width="10" height="620"/>'
-    +'<path class="d" '+DF+' d="M340,233 V368 M370,237 V368 M400,233 V368 M600,236 V300 M412,162 L586,198"/>'
-    +'<rect class="c" '+SR+' x="250" y="368" width="300" height="18"/>'
-    +'<rect class="c" '+SR+' x="260" y="386" width="280" height="170"/>'
-    +'<rect class="c" '+SR+' x="300" y="398" width="95" height="148"/>'
-    +'<rect class="c" '+SR+' x="400" y="398" width="95" height="148"/>'
-    +'<path class="d" '+DF+' d="M397,398 V546"/>'
-    +'<rect class="c" '+SR+' x="250" y="556" width="300" height="16"/>'
-    +'<circle class="c" '+SR+' cx="252" cy="380" r="8"/><circle class="c" '+SR+' cx="548" cy="380" r="8"/>'
-    +'<circle class="c" '+SR+' cx="252" cy="564" r="8"/><circle class="c" '+SR+' cx="548" cy="564" r="8"/>'
-    +'<rect class="c" '+SR+' x="566" y="300" width="70" height="150"/>'
-    +'<rect class="c" '+SR+' x="572" y="308" width="58" height="24"/>'
-    +'<rect class="c" '+SR+' x="572" y="336" width="58" height="24"/>'
-    +'<rect class="c" '+SR+' x="572" y="364" width="58" height="24"/>'
-    +'<rect class="c" '+SR+' x="572" y="392" width="58" height="24"/>'
-    +'<rect class="c" '+SR+' x="572" y="420" width="58" height="24"/>'
-    +'<rect class="c" '+SR+' x="80" y="380" width="120" height="150"/>'
-    +'<path class="d" '+DF+' d="M140,380 V530"/>'
-    +'<circle class="c" '+SR+' cx="126" cy="356" r="10"/><circle class="c" '+SR+' cx="154" cy="356" r="10"/>'
-    +'<rect class="c" '+SR+' x="60" y="530" width="180" height="14"/>'
-    +'<rect class="c" '+SR+' x="80" y="640" width="120" height="150"/>'
-    +'<path class="d" '+DF+' d="M140,640 V790"/>'
-    +'<circle class="c" '+SR+' cx="126" cy="616" r="10"/><circle class="c" '+SR+' cx="154" cy="616" r="10"/>'
-    +'<rect class="c" '+SR+' x="60" y="790" width="180" height="14"/>'
-    +'<path class="d" '+DF+' d="M340,790 l14,-10 l-28,-10 l28,-10 l-28,-10 l28,-10 l-14,-10 M340,790 V840 M340,730 V700"/>'
-    +'<rect class="c" '+SR+' x="310" y="840" width="60" height="40"/>'
-    +'<path class="d" '+DF+' d="M600,790 l14,-10 l-28,-10 l28,-10 l-28,-10 l28,-10 l-14,-10 M600,790 V840 M600,730 V460"/>'
-    +'<rect class="c" '+SR+' x="570" y="840" width="60" height="40"/>'
-    +'<rect class="c" '+SR+' x="60" y="880" width="680" height="60"/>'
-},
-{
-  id:"escalator-ride", title:"Riding the Escalator", cat:"Escalators",
-  svg:'<rect class="c" '+SR+' x="50" y="884" width="700" height="66"/>'
-    +'<polygon class="c" '+SR+' points="296,820 616,500 688,500 688,540 336,860"/>'
-    +'<rect class="c" '+SR+' x="640" y="512" width="26" height="372"/>'
-    +'<path class="c" '+SR+' d="M256,820 H320 V756 H384 V692 H448 V628 H512 V564 H576 V500 H616 L296,820 Z"/>'
-    +'<path class="d" '+DF+' d="M264,812 H314 M328,748 H378 M392,684 H442 M456,620 H506 M520,556 H570"/>'
-    +'<rect class="c" '+SR+' x="96" y="812" width="160" height="20"/>'
-    +'<path class="d" '+DF+' d="M224,812 V832 M236,812 V832 M248,812 V832"/>'
-    +'<rect class="c" '+SR+' x="576" y="492" width="170" height="20"/>'
-    +'<path class="d" '+DF+' d="M584,492 V512 M596,492 V512 M608,492 V512"/>'
-    +'<polygon class="c" '+SR+' points="234,772 554,452 594,452 274,772"/>'
-    +'<path class="d" '+DF+' d="M258,760 L566,452"/>'
-    +'<polygon class="c" '+SR+' points="212,780 572,420 572,398 212,758"/>'
-    +'<circle class="c" '+SR+' cx="212" cy="769" r="11"/>'
-    +'<circle class="c" '+SR+' cx="572" cy="409" r="11"/>'
-    +'<rect class="c" '+SR+' x="572" y="398" width="124" height="22" rx="11"/>'
-    +'<circle class="c" '+SR+' cx="696" cy="409" r="11"/>'
-    +'<rect class="c" '+SR+' x="104" y="758" width="108" height="22" rx="11"/>'
-    +'<circle class="c" '+SR+' cx="104" cy="769" r="11"/>'
-    +'<rect class="c" '+SR+' x="668" y="330" width="56" height="42" rx="6"/>'
-    +'<polygon class="t" '+DOT+' points="696,340 706,356 686,356"/>'
-    +'<path class="d" '+DF+' d="M691,356 h10 v6 h-10 z M696,372 V398"/>'
-    +'<circle class="c" '+SR+' cx="472" cy="474" r="20"/>'
-    +'<path class="c" '+SR+' d="M452,474 a20,20 0 0 1 40,0 l-6,-4 a34,34 0 0 0 -28,0 z"/>'
-    +'<rect class="c" '+SR+' x="452" y="492" width="40" height="66" rx="12"/>'
-    +'<polygon class="c" '+SR+' points="488,508 528,462 538,472 496,520"/>'
-    +'<rect class="c" '+SR+' x="458" y="556" width="13" height="62"/>'
-    +'<rect class="c" '+SR+' x="477" y="556" width="13" height="62"/>'
-    +'<rect class="c" '+SR+' x="452" y="618" width="24" height="10" rx="4"/>'
-    +'<rect class="c" '+SR+' x="472" y="618" width="24" height="10" rx="4"/>'
-},
-{
-  id:"mall-escalators", title:"Mall Escalators", cat:"Escalators",
-  svg:'<rect class="c" '+SR+' x="340" y="116" width="360" height="58" rx="6"/>'
-    +'<text class="t" x="520" y="156" font-size="30" font-weight="800" text-anchor="middle" fill="#263042" letter-spacing="6">TOY STORE</text>'
-    +'<rect class="c" '+SR+' x="340" y="174" width="110" height="296"/>'
-    +'<rect class="c" '+SR+' x="456" y="174" width="110" height="296"/>'
-    +'<rect class="c" '+SR+' x="572" y="174" width="128" height="296"/>'
-    +'<path class="d" '+DF+' d="M340,240 h110 M456,240 h110 M572,240 h128 M636,240 V470"/>'
-    +'<rect class="c" '+SR+' x="50" y="470" width="230" height="22"/>'
-    +'<rect class="c" '+SR+' x="556" y="470" width="194" height="22"/>'
-    +'<rect class="c" '+SR+' x="58" y="434" width="214" height="10" rx="5"/>'
-    +'<path class="d" '+DF+' d="M74,444 V470 M114,444 V470 M154,444 V470 M194,444 V470 M234,444 V470 M268,444 V470"/>'
-    +'<polygon class="c" '+SR+' points="150,748 510,388 510,368 150,728"/>'
-    +'<circle class="c" '+SR+' cx="150" cy="738" r="10"/>'
-    +'<rect class="c" '+SR+' x="510" y="368" width="80" height="20" rx="10"/>'
-    +'<polygon class="c" '+SR+' points="168,738 494,414 528,414 202,738"/>'
-    +'<circle class="c" '+SR+' cx="332" cy="548" r="16"/>'
-    +'<rect class="c" '+SR+' x="318" y="564" width="28" height="50" rx="8"/>'
-    +'<polygon class="c" '+SR+' points="244,830 604,470 656,470 656,508 296,868"/>'
-    +'<path class="c" '+SR+' d="M200,830 H260 V770 H320 V710 H380 V650 H440 V590 H500 V530 H560 V470 H604 L244,830 Z"/>'
-    +'<path class="d" '+DF+' d="M208,822 H258 M268,762 H318 M328,702 H378 M388,642 H438 M448,582 H498 M508,522 H558"/>'
-    +'<rect class="c" '+SR+' x="96" y="820" width="104" height="20"/>'
-    +'<path class="d" '+DF+' d="M172,820 V840 M184,820 V840 M196,820 V840"/>'
-    +'<polygon class="c" '+SR+' points="180,782 540,422 578,422 218,782"/>'
-    +'<path class="d" '+DF+' d="M202,772 L552,422"/>'
-    +'<polygon class="c" '+SR+' points="158,790 556,392 556,370 158,768"/>'
-    +'<circle class="c" '+SR+' cx="158" cy="779" r="11"/>'
-    +'<rect class="c" '+SR+' x="556" y="370" width="120" height="22" rx="11"/>'
-    +'<circle class="c" '+SR+' cx="676" cy="381" r="11"/>'
-    +'<rect class="c" '+SR+' x="60" y="768" width="98" height="22" rx="11"/>'
-    +'<circle class="c" '+SR+' cx="60" cy="779" r="11"/>'
-    +'<circle class="c" '+SR+' cx="404" cy="494" r="19"/>'
-    +'<path class="c" '+SR+' d="M385,494 a19,19 0 0 1 38,0 l-6,-4 a32,32 0 0 0 -26,0 z"/>'
-    +'<rect class="c" '+SR+' x="388" y="512" width="34" height="64" rx="10"/>'
-    +'<polygon class="c" '+SR+' points="420,528 464,488 472,498 426,540"/>'
-    +'<rect class="c" '+SR+' x="392" y="576" width="12" height="62"/>'
-    +'<rect class="c" '+SR+' x="408" y="576" width="12" height="62"/>'
-    +'<rect class="c" '+SR+' x="386" y="638" width="22" height="10" rx="4"/>'
-    +'<rect class="c" '+SR+' x="404" y="638" width="22" height="10" rx="4"/>'
-    +'<rect class="c" '+SR+' x="632" y="806" width="86" height="74" rx="8"/>'
-    +'<ellipse class="c" '+SR+' cx="656" cy="768" rx="14" ry="36" transform="rotate(-20 656 768)"/>'
-    +'<ellipse class="c" '+SR+' cx="676" cy="760" rx="14" ry="40"/>'
-    +'<ellipse class="c" '+SR+' cx="696" cy="768" rx="14" ry="36" transform="rotate(20 696 768)"/>'
-    +'<rect class="c" '+SR+' x="50" y="880" width="700" height="70"/>'
-},
-{
-  id:"mighty-excavator", title:"The Mighty Excavator", cat:"Excavators",
-  svg:'<rect class="c" '+SR+' x="50" y="880" width="700" height="70"/>'
-    +'<path class="c" '+SR+' d="M110,190 a34,34 0 0 1 40,-30 a30,30 0 0 1 56,-8 a30,30 0 0 1 46,26 a26,26 0 0 1 -10,50 l-120,0 a30,30 0 0 1 -12,-38 z"/>'
-    +'<rect class="c" '+SR+' x="180" y="758" width="400" height="112" rx="56"/>'
-    +'<path class="d" '+DF+' d="M240,868 v-12 M280,870 v-12 M320,870 v-12 M360,870 v-12 M400,870 v-12 M440,870 v-12 M480,870 v-12 M520,868 v-12 M240,760 v12 M300,758 v12 M360,758 v12 M420,758 v12 M480,760 v12"/>'
-    +'<rect class="c" '+SR+' x="206" y="784" width="348" height="60" rx="30"/>'
-    +'<circle class="c" '+SR+' cx="252" cy="814" r="30"/>'
-    +'<path class="d" '+DF+' d="M252,780 v8 M252,840 v8 M218,814 h8 M278,814 h8 M228,790 l6,6 M270,832 l6,6 M276,790 l-6,6 M234,832 l-6,6"/>'
-    +'<circle class="c" '+SR+' cx="508" cy="814" r="28"/>'
-    +'<circle class="d" '+DF+' cx="508" cy="814" r="14"/>'
-    +'<circle class="c" '+SR+' cx="310" cy="843" r="13"/>'
-    +'<circle class="c" '+SR+' cx="370" cy="843" r="13"/>'
-    +'<circle class="c" '+SR+' cx="430" cy="843" r="13"/>'
-    +'<circle class="c" '+SR+' cx="380" cy="788" r="9"/>'
-    +'<rect class="c" '+SR+' x="310" y="740" width="140" height="20"/>'
-    +'<rect class="c" '+SR+' x="200" y="640" width="380" height="100" rx="14"/>'
-    +'<path class="d" '+DF+' d="M228,656 v40 M244,656 v40 M260,656 v40 M290,630 H460 M300,630 V640 M380,630 V640 M450,630 V640"/>'
-    +'<rect class="c" '+SR+' x="176" y="648" width="90" height="86" rx="18"/>'
-    +'<rect class="c" '+SR+' x="302" y="606" width="16" height="36" rx="4"/>'
-    +'<ellipse class="c" '+SR+' cx="310" cy="604" rx="12" ry="5"/>'
-    +'<rect class="c" '+SR+' x="462" y="536" width="118" height="126" rx="10"/>'
-    +'<rect class="c" '+SR+' x="534" y="548" width="36" height="74"/>'
-    +'<rect class="c" '+SR+' x="472" y="548" width="54" height="60"/>'
-    +'<path class="d" '+DF+' d="M472,616 h54 M456,556 V640 M470,662 h30 M478,682 h30"/>'
-    +'<polygon class="c" '+SR+' points="600,676 578,640 662,472 700,494"/>'
-    +'<polygon class="c" '+SR+' points="548,690 610,586 628,596 566,700"/>'
-    +'<path class="d" '+DF+' d="M610,586 L628,552 M612,640 q40,-80 70,-150 M626,648 q40,-80 68,-148"/>'
-    +'<polygon class="c" '+SR+' points="662,472 700,494 722,632 688,642"/>'
-    +'<polygon class="c" '+SR+' points="636,530 674,500 684,514 646,544"/>'
-    +'<path class="d" '+DF+' d="M674,500 L692,488"/>'
-    +'<polygon class="c" '+SR+' points="686,548 700,542 716,598 702,604"/>'
-    +'<path class="d" '+DF+' d="M716,598 L722,622"/>'
-    +'<polygon class="c" '+SR+' points="704,626 720,618 730,640 714,648"/>'
-    +'<path class="c" '+SR+' d="M692,644 a74,74 0 0 0 54,96 l30,-36 a56,56 0 0 1 -48,-72 z"/>'
-    +'<polygon class="c" '+SR+' points="746,742 752,766 762,742"/>'
-    +'<polygon class="c" '+SR+' points="726,714 730,740 742,718"/>'
-    +'<path class="c" '+SR+' d="M636,880 a52,44 0 0 1 62,-32 a46,38 0 0 1 52,32 z"/>'
-    +'<ellipse class="c" '+SR+' cx="120" cy="868" rx="34" ry="14"/>'
-    +'<ellipse class="c" '+SR+' cx="168" cy="872" rx="20" ry="10"/>'
-},
-{
-  id:"dig-dig-dig", title:"Dig, Dig, Dig!", cat:"Excavators",
-  svg:'<rect class="c" '+SR+' x="50" y="880" width="700" height="70"/>'
-    +'<path class="c" '+SR+' d="M50,196 a30,30 0 0 1 36,-26 a26,26 0 0 1 50,-6 a26,26 0 0 1 40,22 a22,22 0 0 1 -8,44 l-104,0 a26,26 0 0 1 -14,-34 z"/>'
-    +'<path class="d" '+DF+' d="M596,300 q14,-16 28,0 q14,-16 28,0 M652,346 q14,-16 28,0 q14,-16 28,0"/>'
-    +'<rect class="c" '+SR+' x="556" y="880" width="140" height="46"/>'
-    +'<path class="d" '+DF+' d="M570,880 V920 M682,880 V920"/>'
-    +'<path class="c" '+SR+' d="M446,880 a46,38 0 0 1 54,-32 a38,32 0 0 1 46,32 z"/>'
-    +'<rect class="c" '+SR+' x="140" y="764" width="270" height="86" rx="43"/>'
-    +'<path class="d" '+DF+' d="M190,848 v-10 M230,850 v-10 M270,850 v-10 M310,850 v-10 M350,848 v-10 M190,766 v10 M250,764 v10 M310,764 v10 M360,766 v10"/>'
-    +'<rect class="c" '+SR+' x="162" y="786" width="226" height="44" rx="22"/>'
-    +'<circle class="c" '+SR+' cx="186" cy="808" r="22"/>'
-    +'<path class="d" '+DF+' d="M186,782 v6 M186,828 v6 M162,808 h6 M204,808 h6"/>'
-    +'<circle class="c" '+SR+' cx="362" cy="808" r="20"/>'
-    +'<circle class="c" '+SR+' cx="248" cy="834" r="10"/>'
-    +'<circle class="c" '+SR+' cx="298" cy="834" r="10"/>'
-    +'<polygon class="c" '+SR+' points="408,772 448,758 448,846 408,834"/>'
-    +'<polygon class="c" '+SR+' points="388,798 408,790 408,806 388,812"/>'
-    +'<rect class="c" '+SR+' x="150" y="664" width="180" height="96" rx="14"/>'
-    +'<rect class="c" '+SR+' x="136" y="672" width="60" height="80" rx="16"/>'
-    +'<path class="d" '+DF+' d="M214,680 v40 M228,680 v40 M242,680 v40"/>'
-    +'<rect class="c" '+SR+' x="220" y="538" width="118" height="128" rx="10"/>'
-    +'<rect class="c" '+SR+' x="300" y="550" width="30" height="82"/>'
-    +'<rect class="c" '+SR+' x="232" y="550" width="58" height="70"/>'
-    +'<path class="c" '+SR+' d="M251,584 a17,15 0 0 1 34,0 z"/>'
-    +'<rect class="c" '+SR+' x="247" y="582" width="42" height="7" rx="3"/>'
-    +'<circle class="c" '+SR+' cx="268" cy="596" r="12"/>'
-    +'<rect class="c" '+SR+' x="252" y="608" width="32" height="40" rx="8"/>'
-    +'<polygon class="c" '+SR+' points="282,616 314,606 318,616 286,628"/>'
-    +'<path class="d" '+DF+' d="M318,604 v-12"/>'
-    +'<polygon class="c" '+SR+' points="340,680 322,644 434,548 462,574"/>'
-    +'<polygon class="c" '+SR+' points="306,700 372,624 386,636 320,712"/>'
-    +'<path class="d" '+DF+' d="M372,624 L394,600"/>'
-    +'<polygon class="c" '+SR+' points="434,548 462,574 528,668 498,682"/>'
-    +'<polygon class="c" '+SR+' points="410,580 448,550 458,562 420,592"/>'
-    +'<polygon class="c" '+SR+' points="472,606 486,598 508,652 494,660"/>'
-    +'<path class="d" '+DF+' d="M508,652 L518,668"/>'
-    +'<polygon class="c" '+SR+' points="500,672 514,664 524,682 510,690"/>'
-    +'<path class="c" '+SR+' d="M492,682 a62,62 0 0 0 40,84 l28,-30 a48,48 0 0 1 -38,-62 z"/>'
-    +'<polygon class="c" '+SR+' points="532,768 538,790 548,766"/>'
-    +'<polygon class="c" '+SR+' points="548,748 554,772 564,748"/>'
-    +'<polygon class="c" '+SR+' points="92,880 112,820 132,880"/>'
-    +'<rect class="c" '+SR+' x="84" y="874" width="56" height="10" rx="3"/>'
-    +'<path class="d" '+DF+' d="M101,856 h22"/>'
-    +'<polygon class="c" '+SR+' points="706,880 720,838 734,880"/>'
-    +'<rect class="c" '+SR+' x="700" y="876" width="42" height="8" rx="3"/>'
-    +'<path class="d" '+DF+' d="M713,864 h14"/>'
-}
-];
-
-/* ============================================================
-   CRAYON BOX
-   ============================================================ */
-var COLORS=["#ef4444","#f97316","#ffb703","#fde047","#84cc16","#22c55e","#14b8a6","#06b6d4","#3b82f6","#6366f1","#9b5de5","#d946ef","#ff5d8f","#fcd7b6","#c68642","#8d5524","#a3aab6","#475569"];
-
-/* ============================================================
-   STATE + PERSISTENCE
-   ============================================================ */
-var state={screen:"home",cat:"All",pageId:null,color:COLORS[0],undo:[]};
-var root=document.getElementById("root");
-function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function loadJSON(key,fb){try{var v=JSON.parse(localStorage.getItem(key));return v||fb;}catch(e){return fb;}}
-function saveJSON(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
-function getSaves(){return loadJSON("color.saves",{});}
-function setSave(pageId,fills){var s=getSaves();s[pageId]=fills;saveJSON("color.saves",s);}
-function findPage(id){return PAGES.find(function(p){return p.id===id;});}
-
-var toastTimer=null;
-function showToast(msg){
-  var t=document.getElementById("toast");
-  t.textContent=msg;t.classList.add("show");
-  if(toastTimer)clearTimeout(toastTimer);
-  toastTimer=setTimeout(function(){t.classList.remove("show");},2200);
-}
-
-/* ============================================================
-   RENDER
-   ============================================================ */
-function crayonLogo(){
-  return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#263042" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2 15 8 H9 Z" fill="#ff5d8f"/><path d="M9 8 h6 v12 a1,1 0 0 1 -1,1 h-4 a1,1 0 0 1 -1,-1 Z" fill="#ffb703"/><path d="M9 11 h6" /></svg>';
-}
-function topbar(){
-  return '<header class="topbar"><button class="brand" data-action="home">'
-    +'<span class="brand__mark">'+crayonLogo()+'</span>'
-    +'<span><span class="brand__name">Going Up!</span><span class="brand__sub">Coloring Book</span></span>'
-    +'</button><div class="topbar__spacer"></div></header>';
-}
-function thumbSVG(p){
-  return '<svg viewBox="0 0 800 1000" aria-hidden="true">'+p.svg+'</svg>';
-}
-function homeHTML(){
-  var cats=["All","Elevators","Escalators","Excavators"];
-  var chips=cats.map(function(c){
-    return '<button class="chip" data-active="'+(state.cat===c)+'" data-action="cat" data-cat="'+c+'">'+c+'</button>';
-  }).join("");
-  var pages=PAGES.filter(function(p){return state.cat==="All"||p.cat===state.cat;});
-  var cards=pages.map(function(p){
-    return '<button class="pageCard" data-action="open" data-id="'+p.id+'">'
-      +'<span class="pageCard__tag" data-cat="'+p.cat+'">'+p.cat.slice(0,-1)+'</span>'
-      +'<span class="pageCard__thumb">'+thumbSVG(p)+'</span>'
-      +'<span class="pageCard__title">'+esc(p.title)+'</span>'
-      +'</button>';
-  }).join("");
-  return '<div class="hero"><h1>Pick a picture and <span class="up">color it in!</span></h1>'
-    +'<p>Real elevator machines drawn in detail — hall lanterns, button panels, scissor gates, even the ropes and counterweight inside the shaft. Plus escalators and excavators! Tap a crayon, then tap the picture — or print a page and color it with real crayons.</p></div>'
-    +'<div class="chips">'+chips+'</div>'
-    +'<div class="grid">'+cards+'</div>'
-    +'<p class="footer">Made for little button-pushers everywhere. Ding! 🛗</p>';
-}
-function colorHTML(){
-  var p=findPage(state.pageId);
-  if(!p){state.screen="home";return homeHTML();}
-  var swatches=COLORS.map(function(c){
-    return '<button class="swatch" style="background:'+c+'" data-active="'+(state.color===c)+'" data-action="swatch" data-color="'+c+'" aria-label="color '+c+'"></button>';
-  }).join("");
-  swatches+='<button class="swatch swatch--eraser" data-active="'+(state.color==="#ffffff")+'" data-action="swatch" data-color="#ffffff" aria-label="eraser"></button>';
-  return '<div class="colorbar">'
-    +'<button class="btn" data-action="home">← Back</button>'
-    +'<h1 class="colorbar__title">'+esc(p.title)+'</h1>'
-    +'<div class="topbar__spacer" style="flex:1"></div>'
-    +'<button class="btn" data-action="undo">↩ Undo</button>'
-    +'<button class="btn btn--sky" data-action="print">🖨 Print</button>'
-    +'<button class="btn btn--sun" data-action="download">⬇ Save picture</button>'
-    +'<button class="btn btn--danger" data-action="reset">✦ Start over</button>'
-    +'</div>'
-    +'<div class="studio">'
-    +'<div class="palette">'+swatches+'</div>'
-    +'<div><div class="stage" id="stage"><svg id="art" viewBox="0 0 800 1000" xmlns="http://www.w3.org/2000/svg">'+p.svg+'</svg></div>'
-    +'<p class="hint">Tap a crayon, then tap a part of the picture to fill it in. Your coloring saves itself!</p></div>'
-    +'</div>';
-}
-function render(){
-  root.innerHTML='<div class="app">'+topbar()+(state.screen==="color"?colorHTML():homeHTML())+'</div>';
-  if(state.screen==="color")applySaved();
-}
-function applySaved(){
-  var art=document.getElementById("art");
-  if(!art)return;
-  var fills=getSaves()[state.pageId]||{};
-  var regions=art.querySelectorAll(".c");
-  regions.forEach(function(el,i){
-    el.setAttribute("data-ri",i);
-    if(fills[i])el.setAttribute("fill",fills[i]);
-  });
-}
-function persistFills(){
-  var art=document.getElementById("art");
-  if(!art)return;
-  var fills={};
-  art.querySelectorAll(".c").forEach(function(el,i){
-    var f=el.getAttribute("fill");
-    if(f&&f!=="#ffffff")fills[i]=f;
-  });
-  setSave(state.pageId,fills);
-}
-
-/* ============================================================
-   ACTIONS
-   ============================================================ */
-function downloadPNG(){
-  var art=document.getElementById("art");
-  if(!art)return;
-  var clone=art.cloneNode(true);
-  clone.setAttribute("width","1200");clone.setAttribute("height","1500");
-  var bgRect=document.createElementNS("http://www.w3.org/2000/svg","rect");
-  bgRect.setAttribute("x","0");bgRect.setAttribute("y","0");
-  bgRect.setAttribute("width","800");bgRect.setAttribute("height","1000");
-  bgRect.setAttribute("fill","#ffffff");
-  clone.insertBefore(bgRect,clone.firstChild);
-  clone.querySelectorAll("text").forEach(function(t){t.setAttribute("font-family","Arial, sans-serif");});
-  var xml=new XMLSerializer().serializeToString(clone);
-  var img=new Image();
-  img.onload=function(){
-    var canvas=document.createElement("canvas");
-    canvas.width=1200;canvas.height=1500;
-    canvas.getContext("2d").drawImage(img,0,0,1200,1500);
-    var a=document.createElement("a");
-    a.download=state.pageId+"-coloring.png";
-    a.href=canvas.toDataURL("image/png");
-    a.click();
-    showToast("Picture saved!");
-  };
-  img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(xml);
-}
-
-document.addEventListener("click",function(ev){
-  var region=ev.target.closest&&ev.target.closest(".c");
-  if(region&&state.screen==="color"&&region.closest("#art")){
-    var prev=region.getAttribute("fill")||"#ffffff";
-    if(prev!==state.color){
-      state.undo.push({ri:region.getAttribute("data-ri"),prev:prev});
-      if(state.undo.length>200)state.undo.shift();
-      region.setAttribute("fill",state.color);
-      persistFills();
+// ---- STRIPE PAYMENT LINKS ----
+const STRIPE_LINKS = {
+    p1: {
+        '12 Pack': { GBP: 'https://buy.stripe.com/14A28s9JR27516wcjh2sM0g', AUD: 'https://buy.stripe.com/cNi9AU09h7rpg1q8312sM0h' },
+        '18 Pack': { GBP: 'https://buy.stripe.com/6oU6oI3ltbHF16wgzx2sM0i', AUD: 'https://buy.stripe.com/4gMbJ28FNdPNaH6cjh2sM0j' }
+    },
+    p2: {
+        '12 Pack': { GBP: 'https://buy.stripe.com/4gMeVe6xF6nlbLa1ED2sM0o', AUD: 'https://buy.stripe.com/8x2bJ2f4bfXV3eEab92sM0l' },
+        '18 Pack': { GBP: 'https://buy.stripe.com/eVq14o6xFeTRcPebfd2sM0m', AUD: 'https://buy.stripe.com/bJecN6g8f4fd9D25UT2sM0n' },
+        '36 Pack': { GBP: 'https://buy.stripe.com/8x200k2hpfXV9D2gzx2sM0p', AUD: 'https://buy.stripe.com/28EfZibRZ9zxdTicjh2sM0q' },
+        '48 Pack': { GBP: 'https://buy.stripe.com/aFa8wQ1dlaDBcPefvt2sM0r', AUD: 'https://buy.stripe.com/eVq00kbRZ4fdbLa4QP2sM0s' }
+    },
+    p3: {
+        '2 Pack': { GBP: 'https://buy.stripe.com/4gM3cw1dlh1Zg1q2IH2sM0t', AUD: 'https://buy.stripe.com/dRmfZi4px1312aA0Az2sM0u' },
+        '4 Pack': { GBP: 'https://buy.stripe.com/bJe5kE09haDBbLa5UT2sM0v', AUD: 'https://buy.stripe.com/5kQ3cw6xF275bLa5UT2sM0w' }
+    },
+    p4: {
+        '12 Pack': { GBP: 'https://buy.stripe.com/dRmaEY9JR1317uUbfd2sM0x', AUD: 'https://buy.stripe.com/bJe14o9JRh1Z02s6YX2sM0y' },
+        '18 Pack': { GBP: 'https://buy.stripe.com/8x25kE5tB4fdaH6ab92sM0z', AUD: 'https://buy.stripe.com/4gM9AU09h275cPe4QP2sM0A' },
+        '36 Pack': { GBP: 'https://buy.stripe.com/bJe7sM09hfXV9D25UT2sM0B', AUD: 'https://buy.stripe.com/8x2bJ2f4bh1Z16werp2sM0C' },
+        '48 Pack': { GBP: 'https://buy.stripe.com/00wfZi7BJ4fd2aAab92sM0D', AUD: 'https://buy.stripe.com/eVq00k09heTR2aA9752sM0E' }
+    },
+    p5: {
+        '1cm':   { GBP: 'https://buy.stripe.com/6oUeVecW3dPN5mMbfd2sM0F', AUD: 'https://buy.stripe.com/14A9AUf4b13116w4QP2sM0G' },
+        '1.5cm': { GBP: 'https://buy.stripe.com/cNi28saNVcLJeXmdnl2sM0H', AUD: 'https://buy.stripe.com/9B6cN6aNVh1Z4iIbfd2sM0I' },
+        '2cm':   { GBP: 'https://buy.stripe.com/14A28scW3h1Z9D2gzx2sM0J', AUD: 'https://buy.stripe.com/5kQfZig8f6nl8yYdnl2sM0K' },
+        '2.5cm': { GBP: 'https://buy.stripe.com/4gMfZicW3cLJ5mM4QP2sM0L', AUD: 'https://buy.stripe.com/bJe4gA3lt9zx8yY4QP2sM0M' }
     }
-    return;
-  }
-  var el=ev.target.closest("[data-action]");
-  if(!el)return;
-  var a=el.getAttribute("data-action");
-  if(a==="home"){state.screen="home";state.undo=[];render();window.scrollTo(0,0);}
-  else if(a==="cat"){state.cat=el.getAttribute("data-cat");render();}
-  else if(a==="open"){state.pageId=el.getAttribute("data-id");state.screen="color";state.undo=[];render();window.scrollTo(0,0);}
-  else if(a==="swatch"){
-    state.color=el.getAttribute("data-color");
-    document.querySelectorAll(".swatch").forEach(function(s){s.setAttribute("data-active",s.getAttribute("data-color")===state.color);});
-  }
-  else if(a==="undo"){
-    var u=state.undo.pop();
-    if(u){
-      var target=document.querySelector('#art .c[data-ri="'+u.ri+'"]');
-      if(target){target.setAttribute("fill",u.prev);persistFills();}
-    }else showToast("Nothing to undo yet!");
-  }
-  else if(a==="print"){window.print();}
-  else if(a==="download"){downloadPNG();}
-  else if(a==="reset"){
-    document.querySelectorAll("#art .c").forEach(function(r){r.setAttribute("fill","#ffffff");});
-    state.undo=[];
-    persistFills();
-    showToast("Fresh page — color away!");
-  }
+};
+
+function updateOrderLink(pid, pack) {
+    var btn = document.getElementById(pid + '-order-btn');
+    if (btn && STRIPE_LINKS[pid] && STRIPE_LINKS[pid][pack] && STRIPE_LINKS[pid][pack][activeCurrency]) {
+        btn.href = STRIPE_LINKS[pid][pack][activeCurrency];
+    }
+}
+
+// ---- CLOUDFLARE WORKER URL ----
+// After deploying checkout-worker.js, replace the URL below with your Worker URL
+const WORKER_URL = 'https://spring-firefly-f9c7.exceldaily7.workers.dev';
+
+// ---- STRIPE PRICE IDs (for cart checkout sessions) ----
+const PRICE_IDS = {
+    p1: {
+        '12 Pack': { GBP: 'price_1TYh8HJcTL0QukOFppTrMgyb', AUD: 'price_1TYh8HJcTL0QukOFjSpNEZts' },
+        '18 Pack': { GBP: 'price_1TYh8qJcTL0QukOFjfoiDOBv', AUD: 'price_1TYh8qJcTL0QukOF3Dpyz9bH' }
+    },
+    p2: {
+        '12 Pack': { GBP: 'price_1TYh9jJcTL0QukOFe80Gp3ng', AUD: 'price_1TYh9jJcTL0QukOFuLl4a50L' },
+        '18 Pack': { GBP: 'price_1TYhAcJcTL0QukOFgUxVMlTS', AUD: 'price_1TYhAcJcTL0QukOFyV9pINqL' },
+        '36 Pack': { GBP: 'price_1TYhJJJcTL0QukOFTdle67kP', AUD: 'price_1TYhJkJcTL0QukOFa4W991UT' },
+        '48 Pack': { GBP: 'price_1TYhKUJcTL0QukOFhxWbGKxW', AUD: 'price_1TYhKUJcTL0QukOFRIcrHqhC' }
+    },
+    p3: {
+        '2 Pack': { GBP: 'price_1TYhL9JcTL0QukOFBoTdWWn0', AUD: 'price_1TYhL9JcTL0QukOFsEcENR2B' },
+        '4 Pack': { GBP: 'price_1TYhLlJcTL0QukOFwRNZAS9k', AUD: 'price_1TYhLlJcTL0QukOFyujuqdZP' }
+    },
+    p4: {
+        '12 Pack': { GBP: 'price_1TYhMeJcTL0QukOF0iwapbVe', AUD: 'price_1TYhMeJcTL0QukOFeGMCN8T2' },
+        '18 Pack': { GBP: 'price_1TYhONJcTL0QukOF488EgHlw', AUD: 'price_1TYhONJcTL0QukOFQSIpvcgJ' },
+        '36 Pack': { GBP: 'price_1TYhP7JcTL0QukOFxMadVayN', AUD: 'price_1TYhP7JcTL0QukOF9Ke4Hjbi' },
+        '48 Pack': { GBP: 'price_1TYhPoJcTL0QukOFzzYHTA2G', AUD: 'price_1TYhPoJcTL0QukOFo7JnnzfB' }
+    },
+    p5: {
+        '1cm':   { GBP: 'price_1TYhSYJcTL0QukOFGQkWNUv5', AUD: 'price_1TYhSXJcTL0QukOFncgJHLHQ' },
+        '1.5cm': { GBP: 'price_1TYhYHJcTL0QukOFagzpEU2O', AUD: 'price_1TYhYHJcTL0QukOFSkJTKCa7' },
+        '2cm':   { GBP: 'price_1TYha8JcTL0QukOFHHfG4JOA', AUD: 'price_1TYhZCJcTL0QukOFZf5Y15pI' },
+        '2.5cm': { GBP: 'price_1TYhZuJcTL0QukOFX7aaDvV1', AUD: 'price_1TYhZuJcTL0QukOFlvhiZKBd' }
+    }
+};
+
+const PRODUCT_NAMES = {
+    p1: 'Soundsbay Honeycomb',
+    p2: 'TONOR Hexagon',
+    p3: 'TONOR Wood Panels',
+    p4: 'TONOR Square',
+    p5: 'FIXCHORD Tape'
+};
+
+// ---- CART STATE ----
+var cart = [];
+
+function addCurrentToCart(pid) {
+    var selColor = document.querySelector('#' + pid + '-colors .color-swatch.selected');
+    var selPack  = document.querySelector('#' + pid + '-packs .pack-btn.selected');
+    if (!selColor || !selPack) return;
+    var color = selColor.dataset.color;
+    var pack  = selPack.dataset.pack;
+    var priceId = PRICE_IDS[pid] && PRICE_IDS[pid][pack] && PRICE_IDS[pid][pack][activeCurrency];
+    var base    = PRODUCTS[pid].colors[color].packs[pack];
+    var priceVal = (base * RATES[activeCurrency]).toFixed(2);
+    _addToCart(pid, pack, color, priceId, priceVal);
+}
+
+function addCurrentTapeToCart() {
+    var selTape = document.querySelector('#p5-sizes .tape-size-card.selected');
+    if (!selTape) return;
+    var size    = selTape.querySelector('.size-label').textContent.replace('Width: ', '').trim();
+    var priceId = PRICE_IDS.p5[size] && PRICE_IDS.p5[size][activeCurrency];
+    var priceVal = (TAPE_BASE[size] * RATES[activeCurrency]).toFixed(2);
+    _addToCart('p5', size, null, priceId, priceVal);
+}
+
+function _addToCart(pid, pack, color, priceId, priceVal) {
+    var key = pid + '|' + pack + (color ? '|' + color : '');
+    var existing = null;
+    for (var i = 0; i < cart.length; i++) {
+        if (cart[i].key === key) { existing = cart[i]; break; }
+    }
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({ key: key, pid: pid, pack: pack, color: color, priceId: priceId, price: priceVal, qty: 1 });
+    }
+    renderCart();
+    openCart();
+}
+
+function removeFromCart(key) {
+    cart = cart.filter(function(i) { return i.key !== key; });
+    renderCart();
+}
+
+function updateQty(key, delta) {
+    for (var i = 0; i < cart.length; i++) {
+        if (cart[i].key === key) {
+            cart[i].qty += delta;
+            if (cart[i].qty <= 0) { cart.splice(i, 1); }
+            break;
+        }
+    }
+    renderCart();
+}
+
+function getCartTotal() {
+    return cart.reduce(function(s, i) { return s + parseFloat(i.price) * i.qty; }, 0).toFixed(2);
+}
+
+function renderCart() {
+    var list       = document.getElementById('cart-items');
+    var totalEl    = document.getElementById('cart-total');
+    var emptyEl    = document.getElementById('cart-empty');
+    var checkoutBtn = document.getElementById('cart-checkout-btn');
+    var badge      = document.getElementById('cart-badge');
+    var badgeMob   = document.getElementById('cart-badge-mobile');
+
+    var totalQty = cart.reduce(function(s, i) { return s + i.qty; }, 0);
+
+    [badge, badgeMob].forEach(function(b) {
+        if (!b) return;
+        if (totalQty > 0) { b.textContent = totalQty; b.classList.add('visible'); }
+        else { b.classList.remove('visible'); }
+    });
+
+    if (!list) return;
+
+    if (cart.length === 0) {
+        list.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = 'flex';
+        if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.style.opacity = '0.5'; }
+        if (totalEl) totalEl.textContent = SYMBOLS[activeCurrency] + '0.00';
+        return;
+    }
+
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.style.opacity = '1'; }
+
+    list.innerHTML = cart.map(function(item) {
+        var name  = PRODUCT_NAMES[item.pid] || item.pid;
+        var label = name + ' — ' + item.pack + (item.color ? ' · ' + item.color : '');
+        var line  = (parseFloat(item.price) * item.qty).toFixed(2);
+        var k = item.key.replace(/'/g, "\\'");
+        return '<div class="cart-item">' +
+            '<div style="flex:1;min-width:0">' +
+                '<div style="font-size:12px;font-weight:700;color:#e5e7eb;line-height:1.4">' + label + '</div>' +
+                '<div style="font-size:11px;color:#6b7280;margin-top:2px">' + SYMBOLS[activeCurrency] + item.price + ' each</div>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:7px;flex-shrink:0">' +
+                '<button class="qty-btn" onclick="updateQty(\'' + k + '\',-1)">&#8722;</button>' +
+                '<span style="font-size:13px;font-weight:700;min-width:18px;text-align:center">' + item.qty + '</span>' +
+                '<button class="qty-btn" onclick="updateQty(\'' + k + '\',1)">+</button>' +
+                '<span style="font-size:13px;font-weight:800;color:#f5f5f5;min-width:52px;text-align:right">' + SYMBOLS[activeCurrency] + line + '</span>' +
+                '<button onclick="removeFromCart(\'' + k + '\')" style="background:none;border:none;color:#4b5563;cursor:pointer;font-size:18px;padding:2px 4px;line-height:1;transition:color 0.2s;flex-shrink:0" onmouseover="this.style.color=\'#ef4444\'" onmouseout="this.style.color=\'#4b5563\'">&#215;</button>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+
+    if (totalEl) totalEl.textContent = SYMBOLS[activeCurrency] + getCartTotal();
+}
+
+function openCart() {
+    document.getElementById('cart-drawer').classList.add('open');
+    document.getElementById('cart-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+    document.getElementById('cart-drawer').classList.remove('open');
+    document.getElementById('cart-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+async function checkout() {
+    if (cart.length === 0) return;
+    var btn = document.getElementById('cart-checkout-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing…';
+    btn.style.opacity = '0.7';
+    try {
+        var items = cart.map(function(item) {
+            return { price: item.priceId, quantity: item.qty };
+        });
+        var resp = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                items: items,
+                successUrl: window.location.href + '?order=success',
+                cancelUrl: window.location.href
+            })
+        });
+        var data = await resp.json();
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert('Checkout error: ' + (data.error || 'Unknown error. Please try again.'));
+            btn.disabled = false;
+            btn.textContent = 'Checkout →';
+            btn.style.opacity = '1';
+        }
+    } catch (err) {
+        alert('Network error. Please check your connection and try again.');
+        btn.disabled = false;
+        btn.textContent = 'Checkout →';
+        btn.style.opacity = '1';
+    }
+}
+
+// ---- CURRENCY ----
+const RATES = { GBP: 0.85, AUD: 1.65 };
+const SYMBOLS = { GBP: '£', AUD: 'A$' };
+const TAPE_BASE = { '1cm': 7.19, '1.5cm': 9.59, '2cm': 11.75, '2.5cm': 14.39 };
+var activeCurrency = 'GBP';
+
+function setCurrency(curr) {
+    activeCurrency = curr;
+    var sym = SYMBOLS[curr];
+    var rate = RATES[curr];
+
+    // Update buttons (both nav and mobile)
+    document.querySelectorAll('.curr-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.currency === curr);
+    });
+
+    // Update p1–p4 prices
+    ['p1','p2','p3','p4'].forEach(function(pid) {
+        var selColor = document.querySelector('#' + pid + '-colors .color-swatch.selected');
+        var selPack  = document.querySelector('#' + pid + '-packs .pack-btn.selected');
+        if (selColor && selPack) {
+            var base = PRODUCTS[pid].colors[selColor.dataset.color].packs[selPack.dataset.pack];
+            var el = document.getElementById(pid + '-price');
+            if (el) el.textContent = sym + (base * rate).toFixed(2);
+        }
+    });
+
+    // Update tape card prices and p5 price display
+    document.querySelectorAll('#p5-sizes .tape-size-card').forEach(function(card) {
+        var lbl = card.querySelector('.size-label');
+        var priceEl = card.querySelector('.size-price');
+        if (lbl && priceEl) {
+            var size = lbl.textContent.replace('Width: ', '').trim();
+            if (TAPE_BASE[size]) priceEl.textContent = sym + (TAPE_BASE[size] * rate).toFixed(2);
+        }
+    });
+    var selTape = document.querySelector('#p5-sizes .tape-size-card.selected');
+    if (selTape) {
+        var size = selTape.querySelector('.size-label').textContent.replace('Width: ', '').trim();
+        var p5el = document.getElementById('p5-price');
+        if (p5el && TAPE_BASE[size]) p5el.textContent = sym + (TAPE_BASE[size] * rate).toFixed(2);
+    }
+
+    // Update shipping labels
+    var flagHtml = curr === 'GBP'
+        ? '<img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free UK &amp; AU Delivery'
+        : '<img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"> Free AU &amp; UK Delivery';
+    document.querySelectorAll('.price-shipping').forEach(function(el) { el.innerHTML = flagHtml; });
+
+    // Update all Order Now links for new currency
+    ['p1','p2','p3','p4'].forEach(function(pid) {
+        var selPack = document.querySelector('#' + pid + '-packs .pack-btn.selected');
+        if (selPack) updateOrderLink(pid, selPack.dataset.pack);
+    });
+    // Update p5 tape link
+    var selTape = document.querySelector('#p5-sizes .tape-size-card.selected');
+    if (selTape) {
+        var sz = selTape.querySelector('.size-label').textContent.replace('Width: ', '').trim();
+        updateOrderLink('p5', sz);
+    }
+
+    // Re-price any items already in the cart when currency switches
+    cart.forEach(function(item) {
+        if (item.pid === 'p5') {
+            item.price = (TAPE_BASE[item.pack] * RATES[curr]).toFixed(2);
+            item.priceId = PRICE_IDS.p5[item.pack] && PRICE_IDS.p5[item.pack][curr];
+        } else {
+            var prod = PRODUCTS[item.pid];
+            if (prod && prod.colors[item.color] && prod.colors[item.color].packs[item.pack]) {
+                item.price = (prod.colors[item.color].packs[item.pack] * RATES[curr]).toFixed(2);
+                item.priceId = PRICE_IDS[item.pid] && PRICE_IDS[item.pid][item.pack] && PRICE_IDS[item.pid][item.pack][curr];
+            }
+        }
+    });
+    renderCart();
+}
+
+// ---- PRODUCT DATA ----
+const PRODUCTS = {
+    p1: {
+        colors: {
+            'Black':  { hex:'#1a1a1a', packs: { '12 Pack': 38.57, '18 Pack': 51.50 } },
+            'White':  { hex:'#f0f0f0', packs: { '12 Pack': 38.57, '18 Pack': 51.50 } },
+            'Grey':   { hex:'#9ca3af', packs: { '12 Pack': 38.57, '18 Pack': 51.50 } }
+        },
+        default: { color: 'Black', pack: '12 Pack' }
+    },
+    p2: {
+        colors: {
+            'White':  { hex:'#f0f0f0', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } },
+            'Black':  { hex:'#1a1a1a', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } },
+            'Blue':   { hex:'#1d4ed8', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } },
+            'Orange': { hex:'#ea580c', packs: { '12 Pack': 23.99, '18 Pack': 35.99, '36 Pack': 71.99, '48 Pack': 95.99 } }
+        },
+        default: { color: 'White', pack: '18 Pack' }
+    },
+    p3: {
+        colors: {
+            'Black':       { hex:'#1a1a1a', packs: { '2 Pack': 71.99, '4 Pack': 119.99 } },
+            'Burlywood':   { hex:'#deb887', packs: { '2 Pack': 71.99, '4 Pack': 119.99 } },
+            'Dark Walnut': { hex:'#3d1f0a', packs: { '2 Pack': 71.99 } },
+            'Grey':        { hex:'#6b7280', packs: { '2 Pack': 71.99, '4 Pack': 119.99 } }
+        },
+        default: { color: 'Black', pack: '4 Pack' }
+    },
+    p4: {
+        colors: {
+            'Black': { hex:'#1a1a1a', packs: { '12 Pack': 29.99, '18 Pack': 35.99 } },
+            'Grey':  { hex:'#9ca3af', packs: { '12 Pack': 29.99, '18 Pack': 35.99, '36 Pack': 83.99 } },
+            'White': { hex:'#f0f0f0', packs: { '12 Pack': 29.99, '18 Pack': 35.99, '36 Pack': 83.99, '48 Pack': 95.99 } }
+        },
+        default: { color: 'Black', pack: '12 Pack' }
+    }
+};
+
+// ---- SLIDER STATE ----
+const sliders = { p1: 0, p2: 0, p3: 0, p4: 0, p5: 0 };
+
+function goToSlide(pid, idx) {
+    sliders[pid] = ((idx % 3) + 3) % 3;
+    const track = document.getElementById(pid + '-track');
+    if (track) track.style.transform = 'translateX(-' + (sliders[pid] * 100) + '%)';
+    document.querySelectorAll('#' + pid + '-dots .dot').forEach(function(d, i) {
+        d.classList.toggle('active', i === sliders[pid]);
+    });
+}
+function nextSlide(pid) { goToSlide(pid, sliders[pid] + 1); }
+function prevSlide(pid) { goToSlide(pid, sliders[pid] - 1); }
+
+// ---- COLOR SELECTION ----
+function selectColor(pid, color, el) {
+    var prod = PRODUCTS[pid];
+    if (!prod) return;
+
+    // Update swatches
+    document.querySelectorAll('#' + pid + '-colors .color-swatch').forEach(function(s) {
+        s.classList.toggle('selected', s.dataset.color === color);
+    });
+
+    // Update label
+    var lbl = document.getElementById(pid + '-color-label');
+    if (lbl) lbl.textContent = color;
+
+    // Get available packs for this color
+    var availPacks = Object.keys(prod.colors[color].packs);
+
+    // Update pack buttons
+    var currentPack = null;
+    document.querySelectorAll('#' + pid + '-packs .pack-btn').forEach(function(btn) {
+        var avail = availPacks.indexOf(btn.dataset.pack) >= 0;
+        btn.disabled = !avail;
+        btn.classList.toggle('disabled', !avail);
+        if (btn.classList.contains('selected')) {
+            if (!avail) { btn.classList.remove('selected'); }
+            else { currentPack = btn.dataset.pack; }
+        }
+    });
+
+    // Handle Product 3 Dark Walnut note
+    if (pid === 'p3') {
+        var note = document.getElementById('p3-pack-note');
+        if (note) note.textContent = (color === 'Dark Walnut') ? '(2 Pack only for Dark Walnut)' : '';
+    }
+
+    // If no pack selected, select first available
+    if (!currentPack) {
+        var firstBtn = document.querySelector('#' + pid + '-packs .pack-btn:not([disabled])');
+        if (firstBtn) {
+            firstBtn.classList.add('selected');
+            currentPack = firstBtn.dataset.pack;
+        }
+    }
+
+    // Update price
+    if (currentPack) {
+        updatePrice(pid, color, currentPack);
+    }
+}
+
+// ---- PACK SELECTION ----
+function selectPack(pid, pack, btn) {
+    if (btn.disabled) return;
+    document.querySelectorAll('#' + pid + '-packs .pack-btn').forEach(function(b) {
+        b.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+
+    var selColor = document.querySelector('#' + pid + '-colors .color-swatch.selected');
+    if (selColor) updatePrice(pid, selColor.dataset.color, pack);
+    updateOrderLink(pid, pack);
+}
+
+// ---- UPDATE PRICE ----
+function updatePrice(pid, color, pack) {
+    var prod = PRODUCTS[pid];
+    if (!prod || !prod.colors[color] || !prod.colors[color].packs[pack]) return;
+    var price = prod.colors[color].packs[pack];
+    var el = document.getElementById(pid + '-price');
+    if (el) el.textContent = SYMBOLS[activeCurrency] + (price * RATES[activeCurrency]).toFixed(2);
+    updateOrderLink(pid, pack);
+}
+
+// ---- TAPE SIZE SELECTION ----
+function selectTapeSize(size, price, el) {
+    document.querySelectorAll('#p5-sizes .tape-size-card').forEach(function(c) {
+        c.classList.remove('selected');
+    });
+    el.classList.add('selected');
+    var priceEl = document.getElementById('p5-price');
+    if (priceEl) priceEl.textContent = SYMBOLS[activeCurrency] + (price * RATES[activeCurrency]).toFixed(2);
+    updateOrderLink('p5', size);
+}
+
+// ---- MOBILE MENU ----
+function toggleMenu() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+}
+
+// ---- FAQ ----
+function toggleFaq(btn) {
+    var answer = btn.nextElementSibling;
+    var isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-answer').forEach(function(a) { a.classList.remove('open'); });
+    document.querySelectorAll('.faq-question').forEach(function(b) { b.classList.remove('open'); });
+    if (!isOpen) {
+        answer.classList.add('open');
+        btn.classList.add('open');
+    }
+}
+
+// ---- SCROLL REVEAL ----
+var ro = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
+
+// ---- FORMS ----
+function submitEmail() {
+    var email = document.getElementById('footer-email').value.trim();
+    if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+    document.getElementById('footer-email').value = '';
+    document.getElementById('email-success').classList.remove('hidden');
+}
+function submitContactForm(e) {
+    e.preventDefault();
+    document.getElementById('form-success').classList.remove('hidden');
+    e.target.reset();
+}
+
+// ---- CLOSE MENU ON OUTSIDE CLICK ----
+document.addEventListener('click', function(e) {
+    var menu = document.getElementById('mobile-menu');
+    var btn = document.querySelector('.hamburger');
+    if (menu && menu.classList.contains('open') && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
+        menu.classList.remove('open');
+    }
 });
 
-render();
+// ---- INIT ON LOAD ----
+window.addEventListener('DOMContentLoaded', function() {
+    // Init all sliders at slide 0
+    ['p1','p2','p3','p4','p5'].forEach(function(pid) { goToSlide(pid, 0); });
+
+    // Init product defaults
+    ['p1','p2','p3','p4'].forEach(function(pid) {
+        var prod = PRODUCTS[pid];
+        if (!prod) return;
+        var def = prod.default;
+
+        // Set default color swatch
+        var swatch = document.querySelector('#' + pid + '-colors .color-swatch[data-color="' + def.color + '"]');
+        if (swatch) swatch.classList.add('selected');
+
+        // Set default pack button
+        document.querySelectorAll('#' + pid + '-packs .pack-btn').forEach(function(btn) {
+            if (btn.dataset.pack === def.pack) btn.classList.add('selected');
+        });
+
+        // Set initial price & availability
+        selectColor(pid, def.color, null);
+    });
+
+    // Set default currency to GBP
+    setCurrency('GBP');
+});
 </script>
 </body>
 </html>
