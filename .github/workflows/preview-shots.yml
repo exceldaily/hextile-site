@@ -1,9 +1,5 @@
 name: Preview screenshots
-on:
-  workflow_dispatch:
-  push:
-    branches: [claude/hextile-trees-guides-ykujaw]
-    paths: [index.html, preview-shots.js]
+on: workflow_dispatch
 
 permissions:
   contents: write
