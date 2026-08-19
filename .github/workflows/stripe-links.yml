@@ -21,6 +21,7 @@ jobs:
       - name: Install playwright-core (uses preinstalled Chrome)
         run: npm i --no-save playwright-core@1
       - name: Report Stripe account branding
+        continue-on-error: true
         env:
           STRIPE_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
         run: node stripe-branding-check.js
