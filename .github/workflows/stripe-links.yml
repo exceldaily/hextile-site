@@ -26,7 +26,7 @@ jobs:
       - name: Recreate deactivated links and update the site
         if: ${{ github.event.inputs.mode == 'recreate' }}
         env:
-          STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+          STRIPE_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
         run: node stripe-links-tool.js --recreate
       - name: Commit new links
         if: ${{ github.event.inputs.mode == 'recreate' }}
