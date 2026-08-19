@@ -1,0 +1,7 @@
+# Cloudflare Worker config for the Hextile cart checkout.
+# The name matches the URL the site already calls:
+#   https://spring-firefly-f9c7.exceldaily7.workers.dev
+# so redeploying requires no change to index.html.
+name = "spring-firefly-f9c7"
+main = "checkout-worker.js"
+compatibility_date = "2026-01-01"

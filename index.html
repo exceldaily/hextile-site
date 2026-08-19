@@ -1368,12 +1368,28 @@ function closeCart() {
     document.body.style.overflow = '';
 }
 
+// If the checkout worker is unreachable, a single-product cart can still
+// complete through that product's direct Stripe Payment Link.
+function fallbackCheckout() {
+    if (cart.length !== 1) return false;
+    var item = cart[0];
+    var link = STRIPE_LINKS[item.pid] && STRIPE_LINKS[item.pid][item.pack] && STRIPE_LINKS[item.pid][item.pack][activeCurrency];
+    if (!link) return false;
+    window.location.href = link;
+    return true;
+}
+
 async function checkout() {
     if (cart.length === 0) return;
     var btn = document.getElementById('cart-checkout-btn');
     btn.disabled = true;
     btn.textContent = 'Processing…';
     btn.style.opacity = '0.7';
+    function restoreBtn() {
+        btn.disabled = false;
+        btn.textContent = 'Checkout →';
+        btn.style.opacity = '1';
+    }
     try {
         var items = cart.map(function(item) {
             return { price: item.priceId, quantity: item.qty };
@@ -1390,17 +1406,15 @@ async function checkout() {
         var data = await resp.json();
         if (data.url) {
             window.location.href = data.url;
-        } else {
-            alert('Checkout error: ' + (data.error || 'Unknown error. Please try again.'));
-            btn.disabled = false;
-            btn.textContent = 'Checkout →';
-            btn.style.opacity = '1';
+        } else if (!fallbackCheckout()) {
+            alert('Checkout error: ' + (data.error || 'Unknown error. Please try again, or order each product with its Order Now button.'));
+            restoreBtn();
         }
     } catch (err) {
-        alert('Network error. Please check your connection and try again.');
-        btn.disabled = false;
-        btn.textContent = 'Checkout →';
-        btn.style.opacity = '1';
+        if (!fallbackCheckout()) {
+            alert('Cart checkout is temporarily unavailable. Please order each product with its "Order Now" button — every product checks out securely through Stripe.');
+            restoreBtn();
+        }
     }
 }
 
