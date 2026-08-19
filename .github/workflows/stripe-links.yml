@@ -1,0 +1,27 @@
+name: Stripe payment links
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "check (report only) or fix (reactivate dead links, needs STRIPE_KEY secret)"
+        required: false
+        default: "check"
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check all payment links
+        run: node stripe-links-tool.js
+      - name: Reactivate deactivated links
+        if: ${{ github.event.inputs.mode == 'fix' }}
+        env:
+          STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+        run: node stripe-links-tool.js --fix
+      - name: Verify after fix
+        if: ${{ github.event.inputs.mode == 'fix' }}
+        run: node stripe-links-tool.js
