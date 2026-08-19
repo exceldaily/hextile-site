@@ -3,9 +3,12 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "check (report only) or fix (reactivate dead links, needs STRIPE_KEY secret)"
+        description: "check (report only) or recreate (make new links for dead ones, needs STRIPE_KEY secret)"
         required: false
         default: "check"
+
+permissions:
+  contents: write
 
 jobs:
   links:
@@ -15,13 +18,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install playwright-core (uses preinstalled Chrome)
+        run: npm i --no-save playwright-core@1
       - name: Check all payment links
+        if: ${{ github.event.inputs.mode != 'recreate' }}
         run: node stripe-links-tool.js
-      - name: Reactivate deactivated links
-        if: ${{ github.event.inputs.mode == 'fix' }}
+      - name: Recreate deactivated links and update the site
+        if: ${{ github.event.inputs.mode == 'recreate' }}
         env:
           STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
-        run: node stripe-links-tool.js --fix
-      - name: Verify after fix
-        if: ${{ github.event.inputs.mode == 'fix' }}
-        run: node stripe-links-tool.js
+        run: node stripe-links-tool.js --recreate
+      - name: Commit new links
+        if: ${{ github.event.inputs.mode == 'recreate' }}
+        run: |
+          if ! git diff --quiet -- index.html; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add index.html
+            git commit -m "Replace deactivated Stripe payment links with new ones"
+            git push
+            echo "Pushed updated links."
+          else
+            echo "No link changes to commit."
+          fi
