@@ -51,12 +51,19 @@ const LINKS = {
 const FIX = process.argv.includes('--fix');
 const KEY = process.env.STRIPE_KEY;
 
+// A deactivated payment link still serves its page with HTTP 200 — the only
+// reliable signal is Stripe's own merchant API for that link id.
 async function probe(name, url) {
+  const id = url.split('/').pop();
   try {
-    const res = await fetch(url, { redirect: 'follow' });
+    const res = await fetch('https://merchant-ui-api.stripe.com/payment-links/' + id, {
+      headers: { 'Accept': 'application/json' },
+    });
     const body = await res.text();
-    const dead = /no longer active|link is inactive|something went wrong/i.test(body);
-    return { name, url, status: dead ? 'INACTIVE' : (res.ok ? 'active' : 'HTTP ' + res.status) };
+    if (/payment_link_deactivated/.test(body)) return { name, url, status: 'INACTIVE' };
+    if (res.status === 404) return { name, url, status: 'NOT FOUND' };
+    if (res.ok) return { name, url, status: 'active' };
+    return { name, url, status: 'HTTP ' + res.status };
   } catch (e) {
     return { name, url, status: 'ERROR ' + e.message };
   }
