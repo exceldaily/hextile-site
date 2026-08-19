@@ -1,0 +1,27 @@
+name: Debug live checkout
+on: workflow_dispatch
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe the checkout worker URL directly
+        run: |
+          echo "--- GET https://spring-firefly-f9c7.exceldaily7.workers.dev ---"
+          curl -sS -o /tmp/get.txt -w "HTTP %{http_code}\n" https://spring-firefly-f9c7.exceldaily7.workers.dev || true
+          head -c 400 /tmp/get.txt; echo; echo
+          echo "--- POST with the 1cm tape AUD price ---"
+          curl -sS -o /tmp/post.txt -w "HTTP %{http_code}\n" -X POST https://spring-firefly-f9c7.exceldaily7.workers.dev \
+            -H "Content-Type: application/json" \
+            -d '{"items":[{"price":"price_1TYhSXJcTL0QukOFncgJHLHQ","quantity":1}],"successUrl":"https://hextile.studio/?order=success","cancelUrl":"https://hextile.studio/"}' || true
+          head -c 800 /tmp/post.txt; echo
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm i --no-save playwright@1
+          npx playwright install --with-deps chromium
+      - name: Drive the live site tape checkout
+        run: node debug-live-checkout.js
