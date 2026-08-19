@@ -1,104 +1,82 @@
 /**
- * Hextile — Stripe Payment Link checker / recreator.
+ * Hextile — Stripe Payment Link repair, driven by the Stripe API.
  *
- * CHECK (no credentials): loads every payment link in a real browser and
- * records whether Stripe reports it deactivated. This is the only reliable
- * test — a deactivated link still serves its page with HTTP 200.
- *   node stripe-links-tool.js
+ *   STRIPE_KEY=sk_live_... node stripe-links-tool.js          # report only
+ *   STRIPE_KEY=sk_live_... node stripe-links-tool.js --fix    # repair + rewrite index.html
  *
- * RECREATE (needs STRIPE_KEY): for every dead link, creates a NEW payment
- * link from the same price id, then rewrites index.html with the new URLs.
- *   STRIPE_KEY=rk_live_... node stripe-links-tool.js --recreate
- *
- * The key is read from the environment only and is never written anywhere.
+ * For every link the site uses, ask Stripe whether it is active. Inactive
+ * links are first reactivated (active=true); if Stripe refuses, a brand new
+ * payment link is created from the same price id and swapped into the site.
  */
 
 const fs = require('fs');
-
 const HTML = __dirname + '/index.html';
-
-function loadMaps() {
-  const html = fs.readFileSync(HTML, 'utf8');
-  function grab(name) {
-    const m = html.match(new RegExp('const ' + name + ' = \\{[\\s\\S]*?\\n\\};'));
-    if (!m) throw new Error('could not find ' + name + ' in index.html');
-    return eval('(' + m[0].replace('const ' + name + ' = ', '').replace(/;$/, '') + ')');
-  }
-  return { links: grab('STRIPE_LINKS'), prices: grab('PRICE_IDS') };
-}
-
+const KEY = process.env.STRIPE_KEY;
+const FIX = process.argv.includes('--fix');
 const NAMES = { p1: 'Soundsbay Honeycomb', p2: 'TONOR Hexagon', p3: 'TONOR Wood Panels', p4: 'TONOR Square', p5: 'FIXCHORD Tape' };
 
-function flatten(links) {
-  const out = [];
-  for (const pid of Object.keys(links))
-    for (const variant of Object.keys(links[pid]))
-      for (const cur of Object.keys(links[pid][variant]))
-        out.push({ pid, variant, cur, label: NAMES[pid] + ' ' + variant + ' ' + cur, url: links[pid][variant][cur] });
-  return out;
+if (!KEY) { console.error('STRIPE_KEY is required'); process.exit(1); }
+
+function grab(html, name) {
+  const m = html.match(new RegExp('const ' + name + ' = \\{[\\s\\S]*?\\n\\};'));
+  if (!m) throw new Error('cannot find ' + name);
+  return eval('(' + m[0].replace('const ' + name + ' = ', '').replace(/;$/, '') + ')');
 }
 
-async function checkAll(entries) {
-  const { chromium } = require('playwright-core');
-  const browser = await chromium.launch({ channel: 'chrome' });
-  const results = [];
-  for (const e of entries) {
-    const page = await browser.newPage();
-    let deactivated = false;
-    page.on('response', r => {
-      if (r.url().includes('/payment-links/') && r.status() === 404) deactivated = true;
-    });
-    try {
-      await page.goto(e.url, { waitUntil: 'networkidle', timeout: 45000 });
-    } catch (err) { /* ignore load timeouts, the response listener is what matters */ }
-    // A live link renders the product name and a Pay button; a dead one shows an error page.
-    const bodyText = await page.evaluate(() => document.body.innerText).catch(() => '');
-    const looksDead = deactivated || /no longer active|link is inactive/i.test(bodyText);
-    results.push({ ...e, dead: looksDead });
-    console.log((looksDead ? '  ** DEAD  ' : '  OK       ') + e.label);
-    await page.close();
-  }
-  await browser.close();
-  return results;
-}
-
-async function stripeApi(path, method, params, key) {
+async function api(path, method, params) {
   const res = await fetch('https://api.stripe.com/v1' + path, {
     method: method || 'GET',
-    headers: {
-      Authorization: 'Bearer ' + key,
-      ...(method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}),
-    },
+    headers: { Authorization: 'Bearer ' + KEY, ...(method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}) },
     body: method === 'POST' ? new URLSearchParams(params).toString() : undefined,
   });
   return res.json();
 }
 
 (async () => {
-  const { links, prices } = loadMaps();
-  const entries = flatten(links);
-  console.log('Checking ' + entries.length + ' payment links in a real browser...\n');
-  const results = await checkAll(entries);
-  const dead = results.filter(r => r.dead);
-  console.log('\n' + (results.length - dead.length) + ' active, ' + dead.length + ' deactivated.');
+  let html = fs.readFileSync(HTML, 'utf8');
+  const links = grab(html, 'STRIPE_LINKS');
+  const prices = grab(html, 'PRICE_IDS');
 
-  if (!dead.length) return;
-  console.log('\nDeactivated:');
-  dead.forEach(d => console.log('  - ' + d.label + '  ' + d.url));
+  // Pull every payment link in the account, indexed by URL.
+  const byUrl = {};
+  let after, pages = 0;
+  do {
+    const page = await api('/payment_links?limit=100' + (after ? '&starting_after=' + after : ''));
+    if (page.error) { console.error('Stripe API error: ' + page.error.message); process.exit(1); }
+    page.data.forEach(pl => { byUrl[pl.url] = pl; });
+    after = page.has_more ? page.data[page.data.length - 1].id : null;
+    pages++;
+  } while (after && pages < 20);
+  console.log('Payment links in account: ' + Object.keys(byUrl).length + '\n');
 
-  if (!process.argv.includes('--recreate')) {
-    console.log('\nRun with STRIPE_KEY=rk_live_... --recreate to create fresh links automatically.');
+  const problems = [];
+  for (const pid of Object.keys(links))
+    for (const variant of Object.keys(links[pid]))
+      for (const cur of Object.keys(links[pid][variant])) {
+        const url = links[pid][variant][cur];
+        const label = NAMES[pid] + ' ' + variant + ' ' + cur;
+        const pl = byUrl[url];
+        if (!pl) { console.log('  MISSING  ' + label); problems.push({ pid, variant, cur, url, label, pl: null }); }
+        else if (!pl.active) { console.log('  INACTIVE ' + label); problems.push({ pid, variant, cur, url, label, pl }); }
+        else console.log('  OK       ' + label);
+      }
+
+  console.log('\n' + problems.length + ' link(s) need repair.');
+  if (!problems.length || !FIX) {
+    if (problems.length) console.log('Re-run with --fix to repair.');
     return;
   }
-  const KEY = process.env.STRIPE_KEY;
-  if (!KEY) { console.error('\n--recreate needs STRIPE_KEY in the environment.'); process.exit(1); }
 
-  let html = fs.readFileSync(HTML, 'utf8');
-  let replaced = 0;
-  for (const d of dead) {
-    const priceId = prices[d.pid] && prices[d.pid][d.variant] && prices[d.pid][d.variant][d.cur];
-    if (!priceId) { console.log('  no price id for ' + d.label + ' — skipped'); continue; }
-    const created = await stripeApi('/payment_links', 'POST', {
+  let changed = 0;
+  for (const p of problems) {
+    if (p.pl) {
+      const upd = await api('/payment_links/' + p.pl.id, 'POST', { active: 'true' });
+      if (!upd.error && upd.active) { console.log('  REACTIVATED ' + p.label); continue; }
+      console.log('  reactivate refused for ' + p.label + (upd.error ? ' (' + upd.error.message + ')' : '') + ' — creating a new link');
+    }
+    const priceId = prices[p.pid] && prices[p.pid][p.variant] && prices[p.pid][p.variant][p.cur];
+    if (!priceId) { console.log('  NO PRICE ID for ' + p.label + ' — skipped'); continue; }
+    const created = await api('/payment_links', 'POST', {
       'line_items[0][price]': priceId,
       'line_items[0][quantity]': '1',
       'line_items[0][adjustable_quantity][enabled]': 'true',
@@ -107,14 +85,12 @@ async function stripeApi(path, method, params, key) {
       'shipping_address_collection[allowed_countries][0]': 'GB',
       'shipping_address_collection[allowed_countries][1]': 'AU',
       'shipping_address_collection[allowed_countries][2]': 'IE',
-    }, KEY);
-    if (created.error) { console.log('  FAILED ' + d.label + ': ' + created.error.message); continue; }
-    html = html.split(d.url).join(created.url);
-    replaced++;
-    console.log('  NEW LINK ' + d.label + ' -> ' + created.url);
+    });
+    if (created.error) { console.log('  FAILED to create for ' + p.label + ': ' + created.error.message); continue; }
+    html = html.split(p.url).join(created.url);
+    changed++;
+    console.log('  NEW LINK ' + p.label + ' -> ' + created.url);
   }
-  if (replaced) {
-    fs.writeFileSync(HTML, html);
-    console.log('\nindex.html updated with ' + replaced + ' new link(s).');
-  }
+  if (changed) { fs.writeFileSync(HTML, html); console.log('\nindex.html updated with ' + changed + ' new link(s).'); }
+  else console.log('\nNo URL changes needed (all repaired in place).');
 })().catch(e => { console.error(e); process.exit(1); });
