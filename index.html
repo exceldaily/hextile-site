@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hextile | Premium Acoustic Panels | UK &amp; Australia</title>
-    <meta name="description" content="Premium acoustic panels for home studios, gaming rooms & offices. Free delivery to Ireland. Soundsbay, TONOR & FIXCHORD — professional soundproofing made easy.">
-    <meta name="keywords" content="acoustic wall panels Ireland, studio sound treatment, hexagon acoustic tiles, PET acoustic felt, DIY soundproofing, home studio Dublin, acoustic panels Ireland">
-    <meta property="og:title" content="Hextile | Premium Acoustic Panels — Ireland">
+    <meta name="description" content="Premium acoustic panels for home studios, gaming rooms & offices. Free delivery to the UK &amp; Australia. Soundsbay, TONOR & FIXCHORD — professional soundproofing made easy.">
+    <meta name="keywords" content="acoustic wall panels UK, acoustic panels Australia, studio sound treatment, hexagon acoustic tiles, PET acoustic felt, DIY soundproofing, home studio soundproofing">
+    <meta property="og:title" content="Hextile | Premium Acoustic Panels — UK &amp; Australia">
     <meta property="og:description" content="Professional acoustic treatment for home studios, gaming rooms and offices. Free delivery to UK &amp; Australia. Shop now.">
     <meta property="og:type" content="website">
 
@@ -24,106 +24,103 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
         :root {
             --accent: #ff5a00;
-            --accent-soft: rgba(255,90,0,0.12);
-            --accent-line: rgba(255,90,0,0.4);
-            --bg: #050505;
-            --panel: #0d0d0d;
-            --line: rgba(255,255,255,0.09);
+            --accent-dark: #e04e00;
+            --accent-soft: #fff3ec;
+            --ink: #151515;
+            --muted: #52525b;
+            --line: #e7e7e7;
         }
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: #fafafa;
+            background: #ffffff;
+            color: var(--ink);
             scroll-behavior: smooth;
         }
-        h1, h2, h3, .price-amount, .size-price {
-            font-family: 'Anton', 'Inter', sans-serif;
-            font-weight: 400 !important;
-            letter-spacing: 0.015em !important;
-        }
-        h1, h2 { line-height: 1.02; }
-        .bg-hero { background: #050505; border-bottom: 1px solid var(--line); }
+        h1, h2, h3 { letter-spacing: -0.02em; }
+        .bg-hero { background: linear-gradient(180deg, #fafaf8 0%, #ffffff 100%); border-bottom: 1px solid var(--line); }
         .hex-clip { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
 
         .bento-card {
-            background: var(--panel);
+            background: #ffffff;
             border: 1px solid var(--line);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 2rem;
             transition: all 0.25s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
         }
         .bento-card:hover {
-            border-color: var(--accent-line);
-            transform: translateY(-4px);
+            border-color: #d4d4d4;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         }
 
         .nav-sticky {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(5,5,5,0.94);
+            background: rgba(10,10,10,0.97);
             backdrop-filter: blur(18px);
             border-bottom: 1px solid rgba(255,255,255,0.08);
+            color: #f5f5f5;
         }
         .gradient-text { color: var(--accent); }
         .btn-primary {
             display: inline-block;
             background: var(--accent);
-            color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
-            border-radius: 6px; transition: all 0.2s ease;
+            color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+            border-radius: 8px; transition: all 0.2s ease;
             text-align: center; cursor: pointer;
         }
-        .btn-primary:hover { background: #ffffff; color: #000; transform: translateY(-2px); }
+        .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
         .btn-secondary {
-            display: inline-block; background: transparent;
-            border: 1px solid rgba(255,255,255,0.35); color: white; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 0.1em; border-radius: 6px;
+            display: inline-block; background: #fff;
+            border: 1px solid #d4d4d4; color: var(--ink); font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.06em; border-radius: 8px;
             transition: all 0.2s ease; text-align: center;
         }
-        .btn-secondary:hover { background: #fff; color: #000; }
+        .btn-secondary:hover { border-color: var(--ink); }
 
         .trust-badge {
-            background: transparent; border: 1px solid rgba(255,255,255,0.18);
-            border-radius: 4px; padding: 0.6rem 1rem;
+            background: #fff; border: 1px solid #ddd;
+            border-radius: 6px; padding: 0.6rem 1rem;
             display: inline-flex; align-items: center; gap: 6px;
-            font-size: 10px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.12em; color: #c9c9c9;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: #555;
         }
 
         .tab-btn { transition: all 0.2s ease; }
-        .tab-btn.active { background: white; color: black; border-color: white; }
+        .tab-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
 
         .stat-cell {
             text-align: center; padding: 2.25rem 1.5rem;
             border-right: 1px solid var(--line);
         }
         .stat-cell:last-child { border-right: none; }
-        .stat-cell .gradient-text { font-family: 'Anton', sans-serif; font-weight: 400 !important; color: #fff; }
+        .stat-cell .gradient-text { color: var(--ink); }
 
         .glow-line {
-            width: 64px; height: 5px;
+            width: 48px; height: 4px;
             background: var(--accent);
-            border-radius: 0; margin-bottom: 1.25rem;
+            border-radius: 2px; margin-bottom: 1.25rem;
         }
 
         /* ---- MARQUEE STRIP ---- */
         .marquee { overflow: hidden; background: var(--accent); user-select: none; }
         .marquee-track { display: flex; width: max-content; animation: marquee-scroll 26s linear infinite; }
         .marquee-track span {
-            font-family: 'Anton', sans-serif; color: #000;
-            text-transform: uppercase; font-size: 15px; letter-spacing: 0.14em;
-            padding: 11px 1.4rem; white-space: nowrap; line-height: 1;
+            font-weight: 800; color: #fff;
+            text-transform: uppercase; font-size: 11.5px; letter-spacing: 0.18em;
+            padding: 12px 1.4rem; white-space: nowrap; line-height: 1;
         }
         @keyframes marquee-scroll { to { transform: translateX(-50%); } }
 
         /* ---- IMAGE SLIDER ---- */
         .slider-wrap {
             position: relative; overflow: hidden;
-            border-radius: 10px 10px 0 0;
-            aspect-ratio: 4/3; background: #e9e9e9;
+            border-radius: 12px 12px 0 0;
+            aspect-ratio: 4/3; background: #f2f2f0;
             flex-shrink: 0;
         }
         .slider-track {
@@ -143,12 +140,13 @@
         }
         .slider-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.75); border: none;
-            color: white; width: 34px; height: 34px; border-radius: 4px;
+            background: rgba(255,255,255,0.92); border: 1px solid #ddd;
+            color: #151515; width: 34px; height: 34px; border-radius: 8px;
             cursor: pointer; z-index: 10; display: flex; align-items: center;
             justify-content: center; font-size: 14px; transition: all 0.2s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
         }
-        .slider-btn:hover { background: var(--accent); color: #000; }
+        .slider-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
         .slider-btn.prev { left: 10px; }
         .slider-btn.next { right: 10px; }
         .slider-dots {
@@ -157,171 +155,172 @@
         }
         .dot {
             width: 8px; height: 8px; border-radius: 50%;
-            background: rgba(0,0,0,0.3); cursor: pointer; transition: all 0.25s;
+            background: rgba(0,0,0,0.25); cursor: pointer; transition: all 0.25s;
         }
         .dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
 
         /* ---- PRODUCT CARD ---- */
         .product-card {
-            background: var(--panel);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px; overflow: hidden;
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 12px; overflow: hidden;
             transition: all 0.25s ease;
             display: flex; flex-direction: column;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
         }
         .product-card:hover {
-            border-color: var(--accent-line);
-            transform: translateY(-3px);
+            border-color: #d4d4d4;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
         }
         .product-details { padding: 1.75rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
         .product-badge {
             display: inline-flex; align-items: center; gap: 5px;
-            background: transparent; border: 1px solid var(--accent);
-            color: var(--accent); font-size: 9px; font-weight: 900;
-            text-transform: uppercase; letter-spacing: 0.18em;
-            padding: 4px 10px; border-radius: 3px;
+            background: var(--accent-soft); border: 1px solid #ffd9c2;
+            color: var(--accent-dark); font-size: 9px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.14em;
+            padding: 4px 10px; border-radius: 4px;
         }
-        .product-title { font-size: 1.3rem; text-transform: uppercase; letter-spacing: 0.02em !important; line-height: 1.15; }
-        .product-desc { color: #a3a3a3; font-size: 0.82rem; line-height: 1.65; }
+        .product-title { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.35; color: var(--ink); }
+        .product-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.65; }
 
         /* Color & Pack selectors */
-        .variant-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.18em; color: #8a8a8a; margin-bottom: 8px; }
+        .variant-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: #8a8a8a; margin-bottom: 8px; }
         .color-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
         .color-swatch {
             width: 28px; height: 28px; border-radius: 50%;
             cursor: pointer; border: 2px solid transparent;
             transition: all 0.2s; position: relative;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
         }
         .color-swatch:hover { transform: scale(1.15); }
-        .color-swatch.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(255,90,0,0.25); }
+        .color-swatch.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(255,90,0,0.18); }
         .color-swatch .swatch-tooltip {
             display: none; position: absolute; bottom: 110%; left: 50%;
             transform: translateX(-50%);
-            background: #1a1a1a; border: 1px solid rgba(255,255,255,0.12);
-            color: #fafafa; font-size: 9px; font-weight: 700;
-            white-space: nowrap; padding: 3px 7px; border-radius: 3px;
+            background: #1a1a1a; border: none;
+            color: #fff; font-size: 9px; font-weight: 700;
+            white-space: nowrap; padding: 3px 7px; border-radius: 4px;
         }
         .color-swatch:hover .swatch-tooltip { display: block; }
 
         .pack-options { display: flex; gap: 8px; flex-wrap: wrap; }
         .pack-btn {
-            padding: 7px 14px; border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: transparent;
-            color: #d4d4d4; font-size: 11px; font-weight: 800;
+            padding: 7px 14px; border-radius: 7px;
+            border: 1px solid #d4d4d4;
+            background: #fff;
+            color: #444; font-size: 11px; font-weight: 600;
             cursor: pointer; transition: all 0.15s; white-space: nowrap;
         }
-        .pack-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-        .pack-btn.selected { background: var(--accent); border-color: var(--accent); color: #000; }
-        .pack-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+        .pack-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-dark); }
+        .pack-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+        .pack-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
         .size-btn {
-            padding: 7px 14px; border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: transparent;
-            color: #d4d4d4; font-size: 11px; font-weight: 800;
+            padding: 7px 14px; border-radius: 7px;
+            border: 1px solid #d4d4d4;
+            background: #fff;
+            color: #444; font-size: 11px; font-weight: 600;
             cursor: pointer; transition: all 0.15s; white-space: nowrap;
         }
-        .size-btn:hover { border-color: var(--accent); color: var(--accent); }
-        .size-btn.selected { background: var(--accent); border-color: var(--accent); color: #000; }
+        .size-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+        .size-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
 
         .price-display {
             display: flex; align-items: baseline; gap: 10px;
             padding: 1rem 0; border-top: 1px solid var(--line);
             border-bottom: 1px solid var(--line);
         }
-        .price-amount { font-size: 2.1rem; color: #fff; }
-        .price-shipping { font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+        .price-amount { font-size: 1.8rem; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+        .price-shipping { font-size: 10px; color: var(--accent-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
 
         .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
-        .feature-list li { font-size: 0.8rem; color: #a3a3a3; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
-        .feature-list li span.check { color: var(--accent); flex-shrink: 0; margin-top: 1px; font-weight: 900; font-size: 0.85rem; }
+        .feature-list li { font-size: 0.8rem; color: var(--muted); display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; }
+        .feature-list li span.check { color: var(--accent); flex-shrink: 0; margin-top: 1px; font-weight: 800; font-size: 0.85rem; }
 
         /* FAQ */
         .faq-item { border-bottom: 1px solid var(--line); }
         .faq-question {
             width: 100%; text-align: left; padding: 1.25rem 0;
-            font-weight: 700; font-size: 0.9rem;
+            font-weight: 600; font-size: 0.9rem;
             display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; color: #e5e5e5; background: none; border: none; gap: 1rem;
+            cursor: pointer; color: var(--ink); background: none; border: none; gap: 1rem;
         }
-        .faq-question:hover { color: #fff; }
-        .faq-answer { display: none; padding-bottom: 1.25rem; color: #a3a3a3; font-size: 0.875rem; line-height: 1.75; }
+        .faq-question:hover { color: var(--accent-dark); }
+        .faq-answer { display: none; padding-bottom: 1.25rem; color: var(--muted); font-size: 0.875rem; line-height: 1.75; }
         .faq-answer.open { display: block; }
         .faq-icon {
-            width: 26px; height: 26px; border-radius: 4px;
-            background: transparent; border: 1px solid var(--accent-line);
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--accent-soft); border: 1px solid #ffd9c2;
             display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; font-size: 15px; color: var(--accent);
+            flex-shrink: 0; font-size: 15px; color: var(--accent-dark);
             transition: transform 0.25s ease, background 0.25s ease;
         }
-        .faq-question.open .faq-icon { background: var(--accent); color: #000; transform: rotate(45deg); }
+        .faq-question.open .faq-icon { background: var(--accent); border-color: var(--accent); color: #fff; transform: rotate(45deg); }
 
         /* Scroll reveal */
         .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
         .step-num {
-            width: 50px; height: 50px; border-radius: 6px;
-            background: var(--accent); border: none;
+            width: 46px; height: 46px; border-radius: 10px;
+            background: var(--accent-soft); border: 1px solid #ffd9c2;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Anton', sans-serif;
-            font-size: 1.25rem; font-weight: 400; color: #000; flex-shrink: 0;
+            font-size: 1.05rem; font-weight: 800; color: var(--accent-dark); flex-shrink: 0;
         }
 
         #mobile-menu { display: none; }
         #mobile-menu.open { display: block; }
-        .hamburger span { display: block; width: 22px; height: 2px; background: white; border-radius: 2px; transition: all 0.3s; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
 
         input:focus, textarea:focus, select:focus {
-            outline: none; border-color: var(--accent-line) !important;
+            outline: none; border-color: var(--accent) !important;
             box-shadow: 0 0 0 3px rgba(255,90,0,0.1);
         }
 
-        /* Currency switcher */
-        .currency-switcher { display: flex; align-items: center; gap: 2px; background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 3px; }
-        .curr-btn { padding: 4px 10px; border-radius: 3px; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; cursor: pointer; border: none; background: transparent; color: #8a8a8a; transition: all 0.15s; white-space: nowrap; }
-        .curr-btn.active { background: var(--accent); color: #000; }
+        /* Currency switcher (lives in the dark nav) */
+        .currency-switcher { display: flex; align-items: center; gap: 2px; background: transparent; border: 1px solid rgba(255,255,255,0.25); border-radius: 7px; padding: 3px; }
+        .curr-btn { padding: 4px 10px; border-radius: 5px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; border: none; background: transparent; color: #9a9a9a; transition: all 0.15s; white-space: nowrap; }
+        .curr-btn.active { background: var(--accent); color: #fff; }
 
-        /* Ireland badge */
+        /* Region badge */
         .ireland-badge {
             display: inline-flex; align-items: center; gap: 5px;
-            background: transparent; border: 1px solid rgba(255,255,255,0.18);
-            border-radius: 4px; padding: 3px 8px;
-            font-size: 9px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 0.12em; color: #c9c9c9; white-space: nowrap;
+            background: transparent; border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 6px; padding: 3px 8px;
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: #c9c9c9; white-space: nowrap;
         }
 
         /* P5 tape sizes table */
         .tape-size-card {
-            background: transparent; border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 6px; padding: 1rem 1.25rem;
+            background: #fff; border: 1px solid #ddd;
+            border-radius: 10px; padding: 1rem 1.25rem;
             cursor: pointer; transition: all 0.15s; text-align: center;
         }
         .tape-size-card:hover { border-color: var(--accent); }
         .tape-size-card.selected { background: var(--accent-soft); border-color: var(--accent); }
-        .tape-size-card .size-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #d4d4d4; }
-        .tape-size-card .size-price { font-size: 1.35rem; color: #fff; margin-top: 4px; }
+        .tape-size-card .size-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #555; }
+        .tape-size-card .size-price { font-size: 1.25rem; font-weight: 800; color: var(--ink); margin-top: 4px; }
 
         /* Spec row */
-        .spec-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+        .spec-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--line); font-size: 0.85rem; }
         .spec-row:last-child { border-bottom: none; }
         .spec-label { color: #8a8a8a; }
-        .spec-value { font-weight: 700; color: #e5e5e5; }
+        .spec-value { font-weight: 600; color: var(--ink); }
 
-        /* ---- CART ---- */
-        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        /* ---- CART (drawer stays dark) ---- */
+        .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .cart-overlay.open { opacity: 1; pointer-events: all; }
-        .cart-drawer { position: fixed; right: 0; top: 0; height: 100%; width: 100%; max-width: 430px; background: #0d0d0d; border-left: 1px solid rgba(255,255,255,0.1); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94); }
+        .cart-drawer { position: fixed; right: 0; top: 0; height: 100%; width: 100%; max-width: 430px; background: #111; color: #f5f5f5; border-left: 1px solid rgba(255,255,255,0.1); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94); }
         .cart-drawer.open { transform: translateX(0); }
         .cart-btn-wrap { position: relative; display: inline-flex; }
-        .cart-badge { position: absolute; top: -7px; right: -7px; background: var(--accent); color: #000; font-size: 9px; font-weight: 900; border-radius: 999px; min-width: 18px; height: 18px; display: none; align-items: center; justify-content: center; padding: 0 4px; pointer-events: none; }
+        .cart-badge { position: absolute; top: -7px; right: -7px; background: var(--accent); color: #fff; font-size: 9px; font-weight: 800; border-radius: 999px; min-width: 18px; height: 18px; display: none; align-items: center; justify-content: center; padding: 0 4px; pointer-events: none; }
         .cart-badge.visible { display: flex; }
-        .cart-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .qty-btn { width: 28px; height: 28px; border-radius: 4px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; transition: all 0.15s; line-height: 1; }
-        .qty-btn:hover { background: var(--accent); border-color: var(--accent); color: #000; }
-        .btn-add-cart { display: block; width: 100%; background: var(--accent); color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s ease; text-align: center; }
-        .btn-add-cart:hover { background: #fff; color: #000; transform: translateY(-2px); }
+        .cart-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .qty-btn { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; transition: all 0.15s; line-height: 1; }
+        .qty-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .btn-add-cart { display: block; width: 100%; background: var(--accent); color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .btn-add-cart:hover { background: var(--accent-dark); transform: translateY(-1px); }
     </style>
 </head>
 <body class="antialiased min-h-screen">
@@ -384,8 +383,8 @@
      HERO
 ================================================================ -->
 <header class="bg-hero overflow-hidden relative">
-    <div class="absolute top-16 left-8 w-36 h-36 bg-orange-600/5 hex-clip pointer-events-none"></div>
-    <div class="absolute top-32 right-12 w-52 h-52 bg-white/3 hex-clip pointer-events-none"></div>
+    <div class="absolute top-16 left-8 w-36 h-36 bg-orange-100/60 hex-clip pointer-events-none"></div>
+    <div class="absolute top-32 right-12 w-52 h-52 bg-gray-100 hex-clip pointer-events-none"></div>
 
     <div class="max-w-6xl mx-auto px-6 md:px-8 py-14 md:py-20 text-center">
         <div class="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/25 rounded px-4 py-2 mb-7">
@@ -394,12 +393,12 @@
             <span class="text-orange-400 text-[10px] font-bold uppercase tracking-widest">Free Delivery to UK &amp; Australia — Order Today</span>
         </div>
 
-        <h1 class="text-5xl sm:text-7xl md:text-[5.5rem] font-black mb-5 tracking-tight uppercase leading-none italic">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-5 tracking-tight leading-[1.12]">
             Your Room.<br>
             <span class="gradient-text">Acoustically Perfect.</span>
         </h1>
 
-        <p class="text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-3 font-medium leading-relaxed">
+        <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto mb-3 font-medium leading-relaxed">
             Professional acoustic panels for home studios, gaming rooms &amp; offices.
         </p>
         <p class="text-sm text-orange-500 font-bold mb-4">Soundsbay · TONOR · FIXCHORD — Curated &amp; Delivered to UK &amp; Australia.</p>
@@ -417,13 +416,13 @@
             <div class="trust-badge"><span class="text-yellow-400">&#128230;</span> 5 Premium Products</div>
         </div>
 
-        <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-white/8 shadow-2xl shadow-black/60">
-            <img src="hextile-launch.jpg" alt="Professional acoustic panels installed on studio wall" class="w-full h-full object-cover">
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-200 shadow-2xl shadow-black/60">
+            <img src="hero-studio.webp" alt="Professional acoustic panels installed on studio wall" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
             <div class="absolute bottom-6 left-6 flex gap-3 flex-wrap">
-                <div class="trust-badge" style="background:rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.2)">0.9 NRC Rated</div>
-                <div class="trust-badge" style="background:rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.2)">Self-Adhesive Install</div>
-                <div class="trust-badge" style="background:rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.2)">5 Products In Stock</div>
+                <div class="trust-badge" style="background:rgba(0,0,0,0.65);border-color:rgba(255,255,255,0.25);color:#fff">0.9 NRC Rated</div>
+                <div class="trust-badge" style="background:rgba(0,0,0,0.65);border-color:rgba(255,255,255,0.25);color:#fff">Self-Adhesive Install</div>
+                <div class="trust-badge" style="background:rgba(0,0,0,0.65);border-color:rgba(255,255,255,0.25);color:#fff">5 Products In Stock</div>
             </div>
         </div>
     </div>
@@ -443,22 +442,22 @@
 <!-- ================================================================
      STATS BAR
 ================================================================ -->
-<section class="border-y border-white/5 bg-black/50">
+<section class="border-y border-gray-200 bg-gray-50">
     <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4">
         <div class="stat-cell reveal">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">0.9</div>
+            <div class="text-3xl md:text-4xl font-extrabold gradient-text mb-1">0.9</div>
             <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">NRC Rating</div>
         </div>
         <div class="stat-cell reveal" style="transition-delay:.1s">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">5</div>
+            <div class="text-3xl md:text-4xl font-extrabold gradient-text mb-1">5</div>
             <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Products</div>
         </div>
         <div class="stat-cell reveal" style="transition-delay:.2s">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1" style="display:flex;justify-content:center;gap:6px;align-items:center"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="width:32px;height:auto;border-radius:2px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="width:32px;height:auto;border-radius:2px"></div>
+            <div class="text-3xl md:text-4xl font-extrabold gradient-text mb-1" style="display:flex;justify-content:center;gap:6px;align-items:center"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="width:32px;height:auto;border-radius:2px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="width:32px;height:auto;border-radius:2px"></div>
             <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">UK &amp; Australia</div>
         </div>
         <div class="stat-cell reveal" style="transition-delay:.3s">
-            <div class="text-4xl md:text-5xl font-black gradient-text mb-1">&lt;30<span class="text-xl">min</span></div>
+            <div class="text-3xl md:text-4xl font-extrabold gradient-text mb-1">&lt;30<span class="text-xl">min</span></div>
             <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Install Time</div>
         </div>
     </div>
@@ -471,8 +470,8 @@
     <div class="text-center mb-14 reveal">
         <div class="glow-line mx-auto"></div>
         <p class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-3">Curated Range</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Shop the Collection</h2>
-        <p class="text-gray-400 text-sm mt-3 max-w-xl mx-auto">All prices include VAT. Free delivery to all Irish addresses. Select your colour and pack size below.</p>
+        <h2 class="text-2xl md:text-4xl font-bold tracking-tight">Shop the Collection</h2>
+        <p class="text-gray-600 text-sm mt-3 max-w-xl mx-auto">All prices include VAT. Free delivery across the UK &amp; Australia. Select your colour and pack size below.</p>
     </div>
 
     <!-- Products 1 & 2 -->
@@ -524,7 +523,7 @@
 
                 <!-- Color -->
                 <div>
-                    <div class="variant-label">Colour: <span id="p1-color-label" style="color:#d1d5db">Black</span></div>
+                    <div class="variant-label">Colour: <span id="p1-color-label" style="color:#151515;font-weight:700">Black</span></div>
                     <div class="color-swatches" id="p1-colors">
                         <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p1','Black',this)"><div class="swatch-tooltip">Black</div></div>
                         <div class="color-swatch" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.4)" onclick="selectColor('p1','White',this)"><div class="swatch-tooltip">White</div></div>
@@ -598,7 +597,7 @@
                 <p class="product-desc">Ultra-dense 1700g/m² hex panels with a 0.9 NRC rating. Absorbs 90% of noise frequencies and eliminates 97% of echo — studio performance, home price.</p>
 
                 <div>
-                    <div class="variant-label">Colour: <span id="p2-color-label" style="color:#d1d5db">White</span></div>
+                    <div class="variant-label">Colour: <span id="p2-color-label" style="color:#151515;font-weight:700">White</span></div>
                     <div class="color-swatches" id="p2-colors">
                         <div class="color-swatch selected" data-color="White" style="background:#f0f0f0;border-color:rgba(200,200,200,0.5)" onclick="selectColor('p2','White',this)"><div class="swatch-tooltip">White</div></div>
                         <div class="color-swatch" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p2','Black',this)"><div class="swatch-tooltip">Black</div></div>
@@ -673,7 +672,7 @@
                 <p class="product-desc">Premium wood slat panels that double as luxury wall décor. MDF core, real wood veneer finish — reduce echo while transforming your space into something beautiful.</p>
 
                 <div>
-                    <div class="variant-label">Colour: <span id="p3-color-label" style="color:#d1d5db">Black</span></div>
+                    <div class="variant-label">Colour: <span id="p3-color-label" style="color:#151515;font-weight:700">Black</span></div>
                     <div class="color-swatches" id="p3-colors">
                         <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p3','Black',this)"><div class="swatch-tooltip">Black</div></div>
                         <div class="color-swatch" data-color="Burlywood" style="background:#deb887;border-color:#c9a96e" onclick="selectColor('p3','Burlywood',this)"><div class="swatch-tooltip">Burlywood</div></div>
@@ -742,7 +741,7 @@
                 <p class="product-desc">Clean 30×30cm square tiles with a smooth, minimalist finish. Maximum coverage, minimum fuss — 0.9 NRC performance that blends into any interior.</p>
 
                 <div>
-                    <div class="variant-label">Colour: <span id="p4-color-label" style="color:#d1d5db">Black</span></div>
+                    <div class="variant-label">Colour: <span id="p4-color-label" style="color:#151515;font-weight:700">Black</span></div>
                     <div class="color-swatches" id="p4-colors">
                         <div class="color-swatch selected" data-color="Black" style="background:#1a1a1a;border-color:rgba(255,255,255,0.15)" onclick="selectColor('p4','Black',this)"><div class="swatch-tooltip">Black</div></div>
                         <div class="color-swatch" data-color="Grey" style="background:#9ca3af;border-color:#6b7280" onclick="selectColor('p4','Grey',this)"><div class="swatch-tooltip">Grey</div></div>
@@ -877,18 +876,18 @@
     <div class="text-center mb-10 reveal">
         <div class="glow-line mx-auto"></div>
         <p class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-3">Studio In Action</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Hear the difference.</h2>
+        <h2 class="text-2xl md:text-4xl font-bold tracking-tight">Hear the difference.</h2>
     </div>
-    <div class="relative group rounded-xl overflow-hidden border border-white/5 reveal">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/92 via-black/20 to-transparent z-10 flex flex-col justify-end p-5 md:p-14">
+    <div class="relative group rounded-xl overflow-hidden border border-gray-200 reveal">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/92 via-black/20 to-transparent z-10 flex flex-col justify-end p-5 md:p-14 text-white">
             <div class="max-w-xl">
                 <div class="text-[10px] text-orange-500 uppercase tracking-widest font-bold mb-2">Professional Treatment</div>
-                <h2 class="text-xl md:text-5xl font-black uppercase italic leading-none mb-3">Studio Grade<br>Performance.</h2>
-                <p class="hidden md:block text-gray-400 text-sm leading-relaxed mb-6">Our curated range of acoustic panels eliminates echo, reduces noise, and transforms any room into a professional recording environment — all with peel-and-stick ease.</p>
+                <h2 class="text-xl md:text-4xl font-bold leading-tight mb-3">Studio Grade<br>Performance.</h2>
+                <p class="hidden md:block text-gray-300 text-sm leading-relaxed mb-6">Our curated range of acoustic panels eliminates echo, reduces noise, and transforms any room into a professional recording environment — all with peel-and-stick ease.</p>
                 <a href="#shop" class="btn-primary px-6 py-3 text-xs md:px-8 md:py-3.5 md:text-sm">Shop Now &rarr;</a>
             </div>
         </div>
-        <img src="video-banner.png" alt="Professional acoustic panels studio setup" class="w-full aspect-video object-cover brightness-50 group-hover:brightness-60 transition-all duration-700">
+        <img src="showcase-room.webp" alt="Professional acoustic panels studio setup" class="w-full aspect-video object-cover brightness-90 group-hover:brightness-100 transition-all duration-700">
     </div>
 </section>
 
@@ -899,28 +898,28 @@
     <div class="text-center mb-14 reveal">
         <div class="glow-line mx-auto"></div>
         <p class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-3">Simple Process</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">From Order to Studio<br>in 3 Steps.</h2>
+        <h2 class="text-2xl md:text-4xl font-bold tracking-tight">From Order to Studio<br>in 3 Steps.</h2>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bento-card flex flex-col gap-5 reveal">
             <div class="step-num">1</div>
             <div>
-                <h3 class="text-lg font-black uppercase italic mb-2">Pick Your Product</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Browse our curated range above. Select your colour and pack size — the price updates instantly so you always know exactly what you're paying.</p>
+                <h3 class="text-lg font-semibold mb-2">Pick Your Product</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">Browse our curated range above. Select your colour and pack size — the price updates instantly so you always know exactly what you're paying.</p>
             </div>
         </div>
         <div class="bento-card flex flex-col gap-5 reveal" style="transition-delay:.1s">
             <div class="step-num">2</div>
             <div>
-                <h3 class="text-lg font-black uppercase italic mb-2">Place Your Order</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Hit "Order Now" to send us your details via email. We'll confirm your order, arrange payment, and dispatch your panels directly to your Irish address.</p>
+                <h3 class="text-lg font-semibold mb-2">Place Your Order</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">Add your panels to the cart and check out securely with Stripe. We confirm your order and dispatch straight to your door in the UK or Australia.</p>
             </div>
         </div>
         <div class="bento-card flex flex-col gap-5 reveal" style="transition-delay:.2s">
             <div class="step-num">3</div>
             <div>
-                <h3 class="text-lg font-black uppercase italic mb-2">Install &amp; Enjoy</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Peel, stick, and hear the difference. Most panel installations take under 30 minutes with zero tools. No drilling, no damage, fully renter-friendly.</p>
+                <h3 class="text-lg font-semibold mb-2">Install &amp; Enjoy</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">Peel, stick, and hear the difference. Most panel installations take under 30 minutes with zero tools. No drilling, no damage, fully renter-friendly.</p>
             </div>
         </div>
     </div>
@@ -932,28 +931,28 @@
 <section class="max-w-7xl mx-auto px-6 md:px-8 py-10 pb-20">
     <div class="bento-card grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 reveal">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-xl flex-shrink-0"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"></div>
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-xl flex-shrink-0"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"><img src="https://flagcdn.com/w20/au.png" alt="Australia" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:0"></div>
             <div>
-                <div class="font-bold text-sm">Ships to Ireland</div>
+                <div class="font-bold text-sm">Ships to UK &amp; Australia</div>
                 <div class="text-gray-500 text-xs">Free delivery, every order</div>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-orange-500 text-xl flex-shrink-0">&#128274;</div>
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-orange-500 text-xl flex-shrink-0">&#128274;</div>
             <div>
                 <div class="font-bold text-sm">Secure Payments</div>
                 <div class="text-gray-500 text-xs">Safe &amp; transparent checkout</div>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-yellow-400 text-xl flex-shrink-0">&#127775;</div>
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-yellow-400 text-xl flex-shrink-0">&#127775;</div>
             <div>
                 <div class="font-bold text-sm">Curated Quality</div>
                 <div class="text-gray-500 text-xs">Only proven brands &amp; products</div>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-orange-400 text-xl flex-shrink-0">&#128172;</div>
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-orange-400 text-xl flex-shrink-0">&#128172;</div>
             <div>
                 <div class="font-bold text-sm">Expert Support</div>
                 <div class="text-gray-500 text-xs">Email or phone — we're here</div>
@@ -969,7 +968,7 @@
     <div class="text-center mb-14 reveal">
         <div class="glow-line mx-auto"></div>
         <p class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-3">Got Questions?</p>
-        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Everything You<br>Need to Know.</h2>
+        <h2 class="text-2xl md:text-4xl font-bold tracking-tight">Everything You<br>Need to Know.</h2>
     </div>
 
     <!-- Buying & Delivery -->
@@ -977,11 +976,11 @@
         <p class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-4 px-1">Buying &amp; Delivery</p>
         <div class="bento-card p-0 px-6">
             <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">How many panels do I need?<span class="faq-icon">+</span></button><div class="faq-answer">We recommend covering 20–30% of your wall surface area for effective treatment. Our 18-pack products are sized for a standard vocal booth or studio corner. Use our pack size selectors above to choose the coverage that fits your room.</div></div>
-            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Do you deliver to all of Ireland?<span class="faq-icon">+</span></button><div class="faq-answer">Yes — we deliver to all addresses across the Republic of Ireland and Northern Ireland. Delivery is free on every order, no minimum spend required.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Where do you deliver?<span class="faq-icon">+</span></button><div class="faq-answer">We deliver to all addresses across the United Kingdom and Australia. Delivery is free on every order, no minimum spend required.</div></div>
             <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">How do I place an order?<span class="faq-icon">+</span></button><div class="faq-answer">Click "Order Now" on any product card. This opens an email to our team pre-filled with the product name. Let us know your colour, pack size, and delivery address and we'll confirm your order within 24 hours.</div></div>
-            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Are the prices shown the final price?<span class="faq-icon">+</span></button><div class="faq-answer">Yes. All prices shown are final, inclusive of VAT, with free delivery to Ireland included. There are no hidden fees or surprise charges at checkout.</div></div>
+            <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Are the prices shown the final price?<span class="faq-icon">+</span></button><div class="faq-answer">Yes. All prices shown are final, inclusive of VAT, with free delivery to the UK &amp; Australia included. There are no hidden fees or surprise charges at checkout.</div></div>
             <div class="faq-item"><button class="faq-question" onclick="toggleFaq(this)">Do you offer bulk discounts?<span class="faq-icon">+</span></button><div class="faq-answer">Yes — for orders of 3+ products or large-coverage installations, contact us directly at Exceldaily@hotmail.com and we'll discuss custom pricing for your project.</div></div>
-            <div class="faq-item" style="border-bottom:none"><button class="faq-question" onclick="toggleFaq(this)">What is the lead time?<span class="faq-icon">+</span></button><div class="faq-answer">Most orders are dispatched within 2–5 business days and arrive in Ireland within 7–10 business days. We'll keep you updated at every step via email.</div></div>
+            <div class="faq-item" style="border-bottom:none"><button class="faq-question" onclick="toggleFaq(this)">What is the lead time?<span class="faq-icon">+</span></button><div class="faq-answer">Most orders are dispatched within 2–5 business days and arrive within 7–10 business days. We'll keep you updated at every step via email.</div></div>
         </div>
     </div>
 
@@ -1020,19 +1019,19 @@
         <div class="reveal">
             <div class="glow-line"></div>
             <p class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-3">Get in Touch</p>
-            <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter italic mb-4">Talk to the<br>Team.</h2>
-            <p class="text-gray-400 leading-relaxed mb-8 text-sm">Have a question about which panels suit your space? We're here to help you get the best acoustic result for your budget.</p>
+            <h2 class="text-2xl md:text-4xl font-bold tracking-tight mb-4">Talk to the<br>Team.</h2>
+            <p class="text-gray-600 leading-relaxed mb-8 text-sm">Have a question about which panels suit your space? We're here to help you get the best acoustic result for your budget.</p>
 
             <div class="space-y-5 mb-8">
                 <a href="mailto:customersupport@hextile.studio" class="flex items-center gap-4 group">
-                    <div class="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 group-hover:bg-white/10 transition flex-shrink-0">&#9993;</div>
+                    <div class="w-11 h-11 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-orange-500 group-hover:bg-gray-200 transition flex-shrink-0">&#9993;</div>
                     <div>
                         <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">Email</div>
                         <div class="text-sm font-bold group-hover:text-orange-500 transition">customersupport@hextile.studio</div>
                     </div>
                 </a>
                 <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg flex-shrink-0"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:20px;height:15px;border-radius:2px"></div>
+                    <div class="w-11 h-11 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-lg flex-shrink-0"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:20px;height:15px;border-radius:2px"></div>
                     <div>
                         <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">UK Location</div>
                         <div class="text-sm font-bold">Global Gossip Internet Café</div>
@@ -1042,25 +1041,25 @@
             </div>
 
             <div class="bento-card !p-5">
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Delivering Across Ireland</p>
-                <p class="text-gray-400 text-sm leading-relaxed">We ship professional acoustic solutions to all addresses across the UK and Australia — London, Manchester, Sydney, Melbourne, and everywhere in between.</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"><img src="https://flagcdn.com/w20/au.png" alt="Australia" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:4px"> Delivering Across the UK &amp; Australia</p>
+                <p class="text-gray-600 text-sm leading-relaxed">We ship professional acoustic solutions to all addresses across the UK and Australia — London, Manchester, Sydney, Melbourne, and everywhere in between.</p>
             </div>
         </div>
 
         <div class="bento-card reveal" style="transition-delay:.15s">
-            <h3 class="text-lg font-black uppercase italic mb-6">Send a Message</h3>
+            <h3 class="text-lg font-semibold mb-6">Send a Message</h3>
             <form onsubmit="submitContactForm(event)" class="space-y-4">
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Your Name</label>
-                    <input type="text" required placeholder="Your name" class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition placeholder-gray-600">
+                    <input type="text" required placeholder="Your name" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm transition placeholder-gray-400">
                 </div>
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Email Address</label>
-                    <input type="email" required placeholder="you@email.com" class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition placeholder-gray-600">
+                    <input type="email" required placeholder="you@email.com" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm transition placeholder-gray-400">
                 </div>
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Enquiry Type</label>
-                    <select class="w-full border border-white/8 rounded-xl px-4 py-3 text-sm text-gray-400 appearance-none transition" style="background-color:#141414;">
+                    <select class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-700 appearance-none transition bg-white">
                         <option>Order Enquiry</option>
                         <option>Product Question</option>
                         <option>Bulk / Trade Order</option>
@@ -1069,7 +1068,7 @@
                 </div>
                 <div>
                     <label class="text-[10px] text-gray-500 uppercase tracking-widest font-bold block mb-2">Message</label>
-                    <textarea required rows="4" placeholder="Tell us about your room and what you're trying to achieve..." class="w-full bg-white/5 border border-white/8 rounded-xl px-4 py-3 text-sm transition resize-none placeholder-gray-600"></textarea>
+                    <textarea required rows="4" placeholder="Tell us about your room and what you're trying to achieve..." class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm transition resize-none placeholder-gray-400"></textarea>
                 </div>
                 <button type="submit" class="btn-primary w-full py-4 text-sm">Send Message &rarr;</button>
             </form>
@@ -1085,15 +1084,15 @@
 ================================================================ -->
 <section class="max-w-7xl mx-auto px-6 md:px-8 pb-20">
     <div class="relative overflow-hidden rounded-xl p-10 md:p-14 text-center reveal"
-        style="background:#0d0d0d;border:1px solid rgba(255,90,0,0.35);">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-orange-600/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+        style="background:#faf9f7;border:1px solid #e7e7e7;">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-orange-200/40 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-gray-200/40 rounded-full blur-3xl pointer-events-none"></div>
         <div class="relative z-10">
-            <div class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-3"><img src="https://flagcdn.com/w20/ie.png" alt="Ireland" style="display:inline-block;vertical-align:middle;width:18px;height:13px;border-radius:2px;margin-right:2px"> Free Delivery to Ireland</div>
-            <h2 class="text-3xl md:text-5xl font-black italic uppercase mb-4 tracking-tighter">Get Your Studio<br>Sounding Right.</h2>
-            <p class="text-gray-400 mb-8 text-sm max-w-md mx-auto">Join our mailing list for exclusive deals, new product drops, and acoustic tips delivered straight to your inbox.</p>
+            <div class="text-[10px] text-orange-500 uppercase tracking-[0.3em] font-bold mb-3"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:2px"><img src="https://flagcdn.com/w20/au.png" alt="Australia" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:4px"> Free Delivery — UK &amp; Australia</div>
+            <h2 class="text-2xl md:text-4xl font-bold mb-4 tracking-tight">Get Your Studio<br>Sounding Right.</h2>
+            <p class="text-gray-600 mb-8 text-sm max-w-md mx-auto">Join our mailing list for exclusive deals, new product drops, and acoustic tips delivered straight to your inbox.</p>
             <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                <input type="email" id="footer-email" placeholder="your@email.com" class="flex-grow bg-black/50 border border-white/15 rounded-md px-6 py-4 text-sm placeholder-gray-600 focus:outline-none transition">
+                <input type="email" id="footer-email" placeholder="your@email.com" class="flex-grow bg-white border border-gray-300 rounded-lg px-6 py-4 text-sm placeholder-gray-400 focus:outline-none transition">
                 <button onclick="submitEmail()" class="btn-primary px-10 py-4 text-sm whitespace-nowrap">Subscribe</button>
             </div>
             <div id="email-success" class="hidden mt-4 text-green-400 text-sm font-bold">&#10003; You're in! Watch your inbox for exclusive deals.</div>
@@ -1105,14 +1104,14 @@
 <!-- ================================================================
      FOOTER
 ================================================================ -->
-<footer class="bg-black/70 border-t border-white/5">
+<footer class="bg-[#0f0f0f] text-gray-300 border-t border-gray-200">
     <div class="max-w-7xl mx-auto px-6 md:px-8 py-14">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
             <div class="col-span-2 md:col-span-1">
                 <div class="flex items-center gap-3 mb-4">
                     <img src="logo.png" alt="Hextile" style="height:40px;width:auto;object-fit:contain;mix-blend-mode:screen">
                 </div>
-                <p class="text-gray-500 text-xs leading-relaxed mb-4">Professional acoustic panels for home studios, gaming rooms and offices. Delivered free to Ireland.</p>
+                <p class="text-gray-500 text-xs leading-relaxed mb-4">Professional acoustic panels for home studios, gaming rooms and offices. Delivered free across the UK &amp; Australia.</p>
                 <div class="ireland-badge"><img src="https://flagcdn.com/w20/gb.png" alt="UK" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:3px"><img src="https://flagcdn.com/w20/au.png" alt="AU" style="display:inline-block;vertical-align:middle;width:16px;height:11px;border-radius:1px;margin-right:4px"> UK &amp; Australia</div>
             </div>
             <div>
