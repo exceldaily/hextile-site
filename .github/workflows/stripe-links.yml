@@ -22,12 +22,14 @@ jobs:
         run: npm i --no-save playwright-core@1
       - name: Check all payment links
         if: ${{ github.event.inputs.mode != 'recreate' }}
+        env:
+          STRIPE_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
         run: node stripe-links-tool.js
       - name: Recreate deactivated links and update the site
         if: ${{ github.event.inputs.mode == 'recreate' }}
         env:
           STRIPE_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-        run: node stripe-links-tool.js --recreate
+        run: node stripe-links-tool.js --fix
       - name: Commit new links
         if: ${{ github.event.inputs.mode == 'recreate' }}
         run: |
